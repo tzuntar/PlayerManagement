@@ -1,0 +1,94 @@
+name: PlayerManagement
+version: ${project.version}
+main: com.redcreator37.playermanagement.PlayerManagement
+api-version: 1.13
+authors: [RedCreator37]
+description: A plugin that extends native playerdata handling capabilities
+website: redcreator37.github.io
+
+# dependencies
+depend:
+  - Essentials
+  - Vault
+
+# register commands
+commands:
+  registerid:
+    description: Registers a player for the first time using the given name
+    permission: management.user
+    usage: /registerid name
+  getid:
+    description: Gets a player's ID card
+    permission: management.admin
+    usage: /getid player_name
+  setjob:
+    description: Sets a player's job
+    permission: management.user
+    usage: /setjob job_name player_name
+  job:
+    description: Gets a player's job
+    permission: management.user
+    usage: /job player_name
+  setcompany:
+    description: Sets a player's company
+    permission: management.user
+    usage: /setcompany company_name player_name
+  setnotes:
+    description: Sets a player's notes
+    permission: management.user
+    usage: /setnotes player_name Any Text
+  punish:
+    description: Increases a player's punishment score
+    permission: management.admin
+    usage: /punish player_name [Reason]
+  deleteid:
+    description: Deletes a player's ID from the database
+    permission: management.admin
+    usage: /deleteid player_name
+  jobadmin:
+    description: Adds/removes jobs in the database
+    permission: management.admin
+    usage: /jobadmin add|remove job_name [Job Description]
+  company:
+    description: All company-related commands
+    permission: management.company
+    usage: /company
+  establish:
+    description: Establishes a new company
+    permission: management.company.establish
+    usage: /establish company_name
+  playeradmin:
+    description: Manages the player database
+    permission: management.admin
+    usage: /playeradmin
+  cpay:
+    description: Same as /pay, but for companies
+    permission: management.company
+    usage: /cpay from to amount
+
+# register permissions
+permissions:
+  management.user:
+    description: The recommended user-level permission
+    default: op
+  management.admin:
+    description: Gives access to all commands
+    default: op
+  management.company:
+    description: Gives access to most company-related commands
+    default: op
+  management.company.establish:
+    description: Gives a player the permission to establish a new company
+    default: op
+  management.company.employ:
+    description: Gives a player the permission to employ at other companies
+    default: op
+  playerlist.member:
+    description: Member rank
+    default: op
+  playerlist.vip:
+    description: VIP rank
+    default: op
+  playerlist.admin:
+    description: Admin rank
+    default: op

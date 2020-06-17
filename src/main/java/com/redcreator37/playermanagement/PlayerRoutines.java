@@ -1,0 +1,312 @@
+package com.redcreator37.playermanagement;
+
+import com.earth2me.essentials.User;
+import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.UUID;
+
+/**
+ * Common player routines
+ */
+public final class PlayerRoutines {
+
+    /**
+     * Noninstantiable
+     */
+    private PlayerRoutines() {
+    }
+
+    /**
+     * Returns the ServerPlayer object with the matching username
+     * from the player list
+     *
+     * @param players  the player list to get the player from
+     * @param username the entered username
+     * @return the matching ServerPlayer object, or null if the
+     * player with this username wasn't found
+     */
+    public static ServerPlayer getPlayerFromUsername(List<ServerPlayer> players, String username) {
+        return players.stream().filter(serverPlayer -> serverPlayer
+                .getUsername().equals(username))
+                .findFirst().orElse(null);
+    }
+
+    /**
+     * Returns <code>true</code> if this ServerPlayer doesn't exist
+     * and sends the message to the invoker
+     *
+     * @param invoker the command invoker which will see any output
+     * @param target  the target ServerPlayer to assert whether it's null
+     * @param entered the entered player username
+     * @return true if the ServerPlayer object is null, false otherwise
+     */
+    public static boolean checkPlayerNonExistent(Player invoker, ServerPlayer target, String entered) {
+        if (target == null) {
+            invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + "Unknown or non-registered player: " + ChatColor.GREEN
+                    + entered + ChatColor.GOLD + ".");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the player has sufficient permissions
+     *
+     * @param player     the target player
+     * @param permission the permission to check
+     * @return true if the user has the specified permission, else otherwise
+     */
+    public static boolean checkPlayerPermissions(Player player, String permission) {
+        if (!player.hasPermission(permission)) {
+            player.sendMessage(PlayerManagement.prefix
+                    + ChatColor.GOLD + "You do not have sufficient" +
+                    " permissions to access this command.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if this player's inventory is full
+     *
+     * @param player the player whose inventory to check
+     * @return true if the inventory is full, false otherwise
+     */
+    public static boolean checkInventoryFull(Player player) {
+        if (player.getInventory().firstEmpty() == -1) {  // make sure the inventory isn't full
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + "Inventory full!");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Attempts to get the player from this CommandSender object
+     *
+     * @param sender the CommandSender object
+     * @return the matching player or null
+     */
+    public static Player getPlayerFromSender(CommandSender sender) {
+        Player p;
+        try {   // make sure it's actually a player
+            p = (Player) sender;
+        } catch (Exception ex) {
+            sender.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + "This command can only be used by players!");
+            return null;
+        }
+        return p;
+    }
+
+    /**
+     * Returns the current date in a string
+     *
+     * @param dateFormat the date format (ex. yyyy-MM-dd)
+     * @return the current date in the specified format
+     */
+    public static String getCurrentDate(String dateFormat) {
+        return new SimpleDateFormat(dateFormat)
+                .format(Calendar.getInstance().getTime());
+    }
+
+    /**
+     * Adds money to this player
+     *
+     * @param player       the player
+     * @param players      the list of all ServerPlayers
+     * @param companies    the list of all Companies
+     * @param defAmount    the default amount
+     * @param defThreshold the default threshold after which the
+     *                     player will no longer receive any
+     *                     additional money
+     */
+    static void autoEconomyPlayer(Player player, List<ServerPlayer> players,
+                                  List<Company> companies, double defAmount,
+                                  double defThreshold) {
+        ServerPlayer target = getPlayerFromUsername(players, player.getName());
+        if (target == null || Objects.requireNonNull(PlayerManagement.ess)
+                .getUser(player).isAfk())   // unknown player or AFK
+            return;
+        double amount;
+
+        Company targetCompany = target.getCompany();
+        if (targetCompany.getName().equals("N/A")) {  // the player isn't employed
+            amount = calculateAmount(defThreshold, defAmount,
+                    PlayerManagement.eco.getBalance(player));
+        } else if (!targetCompany.getName().equals("N/A")) {  // the player is employed, find the company
+            BigDecimal paycheck = targetCompany.getPaycheck();
+            if (targetCompany.getMoney().doubleValue() < paycheck.doubleValue()) {
+                // get the owner player handle
+                User owner = PlayerManagement.ess
+                        .getOfflineUser(targetCompany.getOwner());
+
+                // get the OfflinePlayer object from the UUID
+                OfflinePlayer ownerPl;
+                try {
+                    ownerPl = Bukkit.getOfflinePlayer(UUID.fromString(
+                            getPlayerFromUsername(PlayerManagement.players,
+                                    targetCompany.getOwner()).getUuid()));
+                } catch (NullPointerException e) {
+                    player.sendMessage(PlayerManagement.prefix + ChatColor.RED
+                            + "ERROR: Company owner specified in the database is not valid!");
+                    return; // failsafe in case an invalid player is specified in the db
+                }
+
+                if (owner.canAfford(paycheck)) {
+                    PlayerManagement.eco.withdrawPlayer(ownerPl, paycheck.doubleValue());
+                    owner.addMail("WARNING! Money was taken from your account because" +
+                            " your company could not afford to pay the paychecks!");
+                } else {
+                    player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
+                            + targetCompany + ChatColor.GOLD
+                            + " cannot afford to pay your paycheck!");
+                    owner.addMail("WARNING! Your company could not afford the" +
+                            " paycheck for the player " + player.getName() + "!");
+                    return;
+                }
+            } else {
+                Company company = companies.stream().filter(c -> c
+                        .getName().equals(targetCompany.getName()))
+                        .findFirst().orElse(null);
+
+                if (company == null) {
+                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                            + "Unknown company: " + ChatColor.GREEN + targetCompany);
+                    return;
+                }
+
+                // attempt to update the database Company object
+                for (int i = 0; i < companies.size(); i++) {
+                    Company c = companies.get(i);
+                    if (c.getName().equals(company.getName())) {
+                        c.setMoney(c.getMoney().subtract(paycheck));
+                        companies.set(i, c);
+                        break;
+                    }
+                }
+            }
+
+            amount = paycheck.doubleValue();
+        } else return;
+
+        PlayerManagement.eco.depositPlayer(player, amount);
+
+        if ((int) amount < 1) return;    // don't display on small / negative values
+        player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
+                + "$" + amount + ChatColor.GOLD
+                + " has been added to your account.");
+    }
+
+    /**
+     * Calculates the amount of money give based on these parameters
+     *
+     * @param threshold the threshold after which the player won't be
+     *                  given any additional money anymore (ex. 1000)
+     * @param base      the base amount of money to be given (ex. 250)
+     * @param balance   the player's current balance
+     * @return the calculated amount of money, or 0 if the threshold
+     * was already reached
+     */
+    public static double calculateAmount(double threshold, double base, double balance) {
+        double intermediate = balance / threshold;
+        if (intermediate > 1) return 0;
+        return base * (1 - intermediate);
+    }
+
+    /**
+     * Returns the BigDecimal from this string or null
+     * if the string doesn't contain a valid number
+     *
+     * @param player  the player who entered the number
+     * @param entered the entered String
+     * @return matching BigDecimal or null if invalid
+     */
+    public static BigDecimal getEnteredBigDecimal(Player player, String entered) {
+        try {
+            return new BigDecimal(entered);
+        } catch (Exception e) {
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + "Invalid number: " + ChatColor.GREEN + entered);
+            return null;
+        }
+    }
+
+    /**
+     * Displays the info for the specified company
+     *
+     * @param player  the player that'll see the info
+     * @param company the company to get the data from
+     */
+    public static void displayCompanyInfo(Player player, Company company) {
+        String desc = " " + PlayerManagement.companyBegin
+                + "\n " + PlayerManagement.companyBegin
+                + "\n §bName: §a§l§o" + company
+                + "\n §bDescription: §f" + company.getDescription()
+                + "\n §6Balance: §f" + formatDecimal(company.getMoney())
+                + "\n §6Employees: §f" + company.getEmployees()
+                + "\n §6Salary: §f" + formatDecimal(company.getPaycheck())
+                + "\n §6Owner: §f" + company.getOwner()
+                + "\n §6Established: §f" + company.getEstablished()
+                + "\n " + PlayerManagement.companyEnd;
+        player.sendMessage(desc);
+    }
+
+    /**
+     * Returns a formatted number string
+     *
+     * @param decimal the number to format
+     * @return the formatted string
+     */
+    public static String formatDecimal(BigDecimal decimal) {
+        return NumberFormat.getCurrencyInstance(Locale.US)
+                .format(decimal.doubleValue());
+    }
+
+    /**
+     * Truncates this string to the specified amount of characters
+     *
+     * @param str    the input string
+     * @param length the maximal length
+     * @return the truncated string
+     */
+    public static String truncate(String str, int length) {
+        return str.substring(0, Math.min(str.length(), length));
+    }
+
+    /**
+     * Returns true if this list contains the string
+     *
+     * @param list the array list to search through
+     * @param s    the string to look for
+     * @return true if the string is found, false otherwise
+     */
+    public static boolean checkIfContains(List<String> list, String s) {
+        return list.stream().anyMatch(s1 -> s1.equals(s));
+    }
+
+    /**
+     * Converts this list into a string array
+     *
+     * @param list the input list
+     * @return the string array
+     */
+    public static String[] stringListToArray(List<String> list) {
+        return list.toArray(new String[0]);
+    }
+
+}

@@ -250,23 +250,27 @@ public final class PlayerRoutines {
     /**
      * Displays the info for the specified company in a book
      *
-     * @param player  the player that'll see the info
-     * @param company the company to get the data from
+     * @param p the player that'll see the info
+     * @param c the company to get the data from
      */
-    public static void displayCompanyInfo(Player player, Company company) {
+    public static void displayCompanyInfo(Player p, Company c) {
         List<String> pages = new ArrayList<>();
+        BigDecimal afterPayments = c.getBalance().subtract(c.getPaycheck()
+                .multiply(BigDecimal.valueOf(c.getEmployees())));
+
         pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                + "\n\n§0§lName: §r§2§l§o" + company
-                + "\n\n§0§lDescription: §r§1§o" + company.getDescription()
-                + "\n\n§0§lBalance: §r§1" + formatDecimal(company.getBalance())
-                + "\n\n§0§lEmployees: §r§1" + company.getEmployees());
+                + "\n\n§0§lName: §r§2§l§o" + c
+                + "\n\n§0§lDescription: §r§1§o" + c.getDescription()
+                + "\n\n§0§lBalance: §r§1" + formatDecimal(c.getBalance())
+                + "\n\n§0§lEmployees: §r§1" + c.getEmployees());
         pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                + "\n\n§0§lSalary: §r§1" + formatDecimal(company.getPaycheck())
+                + "\n\n§0§lSalary: §r§1" + formatDecimal(c.getPaycheck())
                 + "\n§rPaid every §1" + PlayerManagement
                 .autoEcoTimeSeconds / 60 + "§r min."
-                + "\n\n§0§lOwner: §r§1" + company.getOwner()
-                + "\n\n§0§lEstablished: §r§1" + company.getEstablishedDate());
-        PlayerCard.openBook(player, pages, "N/A", "N/A");
+                + "\n\n§0§Balance after payments: §r§1" + afterPayments
+                + "\n\n§0§lOwner: §r§1" + c.getOwner()
+                + "\n\n§0§lEstablished: §r§1" + c.getEstablishedDate());
+        PlayerCard.openBook(p, pages, "N/A", "N/A");
     }
 
     /**

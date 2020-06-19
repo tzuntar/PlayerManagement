@@ -267,7 +267,7 @@ public final class PlayerRoutines {
                 + "\n\n§0§lSalary: §r§1" + formatDecimal(c.getPaycheck())
                 + "\n§rPaid every §1" + PlayerManagement
                 .autoEcoTimeSeconds / 60 + "§r min."
-                + "\n\n§0§Balance after payments: §r§1" + afterPayments
+                + "\n\n§0Balance after payments: §r§1" + formatDecimal(afterPayments)
                 + "\n\n§0§lOwner: §r§1" + c.getOwner()
                 + "\n\n§0§lEstablished: §r§1" + c.getEstablishedDate());
         PlayerCard.openBook(p, pages, "N/A", "N/A");

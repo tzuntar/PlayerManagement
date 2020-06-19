@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -82,6 +83,26 @@ public class PlayerCard implements Listener {
     }
 
     /**
+     * Returns a formatted graph based on these values
+     *
+     * @param level the value, <strong>must be <= max</strong>
+     * @param max   the max value for reference
+     * @return the color formatted string
+     */
+    @SuppressWarnings("SameParameterValue")
+    private static String getBarGraph(double level, double max) {
+        StringBuilder graph = new StringBuilder((int) max * 2);
+        String lvl = "§2";
+        if (level / max < 0.50) lvl = "§6";
+        if (level / max < 0.25) lvl = "§4";
+        graph.append(lvl);
+
+        for (int i = 0; i < max / 2; i++)
+            graph.append(i < level / 2 ? "■" : "  ");
+        return graph.toString();
+    }
+
+    /**
      * Displays the data for the specified UUID to this player
      *
      * @param p          the player that the data will be displayed to
@@ -101,6 +122,13 @@ public class PlayerCard implements Listener {
             return;
         }
 
+        String health = getBarGraph(p.getHealth(), 20);
+        String foodLevel = getBarGraph(p.getFoodLevel(), 20);
+        String saturationLevel = getBarGraph(p.getSaturation(), 20);
+        double armor = Objects.requireNonNull(p
+                .getAttribute(Attribute.GENERIC_ARMOR)).getValue();
+        String armorLevel = getBarGraph(armor, 20);
+
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid));
         List<String> pages = new ArrayList<>();
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
@@ -114,6 +142,15 @@ public class PlayerCard implements Listener {
                 + "\n\n§0§lMoney: §r§1" + PlayerRoutines.formatDecimal(BigDecimal
                 .valueOf(PlayerManagement.eco.getBalance(player)))
                 + "\n\n§0§lPunishments: §r§1" + getPunishments(target));
+        pages.add("§1§l ---< §9§lPLAYER §1§l>---"   // values are cast to int for formatting purposes
+                + "\n\n §0§lHealth:      §1" + (int) p.getHealth() + "§8/§120"
+                + "\n §r§8[" + health + "§8]"
+                + "\n\n §0§lFood:         §1" + p.getFoodLevel() + "§8/§120"
+                + "\n §r§8[" + foodLevel + "§8]"
+                + "\n\n §0§lSaturation:  §1" + (int) p.getSaturation() + "§8/§120"
+                + "\n §r§8[" + saturationLevel + "§8]"
+                + "\n\n §0§lArmor:        §1" + (int) armor + "§8/§120"
+                + "\n §r§8[" + armorLevel + "§8]");
         if (!getJob(target).equals("N/A"))
             pages.add("§1§l ----< §5§lJOB §1§l>----"
                     + "\n\n§0§lJob name: §r§1" + target.getJob()
@@ -125,7 +162,7 @@ public class PlayerCard implements Listener {
                     + "\n\n§0§lOwner: §r§1" + target.getCompany().getOwner());
             pages.add("§1§l --< §2§lCOMPANY §1§l>--"
                     + "\n\n§0§lEmployees: §r§1" + target.getCompany().getEmployees()
-                    + "\n\n§0§lEstablished: §r§1" + target.getCompany().getEstablished()
+                    + "\n\n§0§lEstablished: §r§1" + target.getCompany().getEstablishedDate()
                     + "\n\n§0§lSalary: §r§1" + PlayerRoutines
                     .formatDecimal(target.getCompany().getPaycheck())
                     + "\n§rPaid every §1" + PlayerManagement

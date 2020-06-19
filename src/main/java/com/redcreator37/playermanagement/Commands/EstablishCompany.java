@@ -55,7 +55,7 @@ public class EstablishCompany implements CommandExecutor {
             try {
                 PlayerManagement.eco.withdrawPlayer(p, PlayerManagement
                         .companyEstablishPrice);
-                newCompany.setMoney(new BigDecimal(PlayerManagement
+                newCompany.setBalance(new BigDecimal(PlayerManagement
                         .companyEstablishPrice / 2));
 
                 CompanyDb.insertCompany(newCompany, PlayerManagement.databasePath);

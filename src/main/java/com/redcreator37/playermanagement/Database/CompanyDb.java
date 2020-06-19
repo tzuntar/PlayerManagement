@@ -40,10 +40,10 @@ public final class CompanyDb {
         st.closeOnCompletion();
         st.setString(1, c.getName());
         st.setString(2, c.getDescription());
-        st.setString(3, c.getMoney().toString());
+        st.setString(3, c.getBalance().toString());
         st.setInt(4, c.getEmployees());
         st.setString(5, c.getOwner());
-        st.setString(6, c.getEstablished());
+        st.setString(6, c.getEstablishedDate());
         st.setString(7, c.getPaycheck().toString());
         if (update) st.setInt(8, c.getId());
         st.executeUpdate();

@@ -77,11 +77,11 @@ public class CompanyMenu implements Listener {
         newItem(Material.PAPER, "§a§l" + company, 1,
                 new String[]{
                         "§bDescription: §f" + company.getDescription(),
-                        "§6Balance: §f" + formatDecimal(company.getMoney()),
+                        "§6Balance: §f" + formatDecimal(company.getBalance()),
                         "§6Employees: §f" + company.getEmployees(),
                         "§6Salary: §f" + formatDecimal(company.getPaycheck()),
                         "§6Owner: §f" + company.getOwner(),
-                        "§6Established: §f" + company.getEstablished()
+                        "§6Established: §f" + company.getEstablishedDate()
                 }, 0);
         newItem(Material.OAK_DOOR, "Close", 1,
                 new String[]{"§7§oCloses the menu and saves any changes"}, 8);
@@ -162,7 +162,7 @@ public class CompanyMenu implements Listener {
             default:
                 if (clickedItem.contains("Deposit")) {
                     eco.withdrawPlayer(player, 10);
-                    company.setMoney(company.getMoney().add(new BigDecimal(10)));
+                    company.setBalance(company.getBalance().add(new BigDecimal(10)));
                     player.sendMessage(prefix + "§a$10§6 has been taken from your account.");
 
                     TransactionDb.addTransactionAsync(player, new Transaction(4097,
@@ -171,7 +171,7 @@ public class CompanyMenu implements Listener {
                                             + player.getName(), new BigDecimal(10)),
                             databasePath);
                 } else if (clickedItem.contains("Withdraw")) {
-                    company.setMoney(company.getMoney().subtract(new BigDecimal(10)));
+                    company.setBalance(company.getBalance().subtract(new BigDecimal(10)));
                     eco.depositPlayer(player, 10);
                     player.sendMessage(prefix + "§a$10§6 has been added to your account.");
 

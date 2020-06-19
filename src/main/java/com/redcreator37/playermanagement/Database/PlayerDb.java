@@ -60,7 +60,7 @@ public final class PlayerDb {
      * @return the list of players in the database
      * @throws SQLException on error
      */
-    public static List<ServerPlayer> commonPlayerQuery(String sql, String database) throws SQLException {
+    private static List<ServerPlayer> commonPlayerQuery(String sql, String database) throws SQLException {
         List<ServerPlayer> players = new ArrayList<>();
         Connection con = SharedDb.connect(database);
         con.setAutoCommit(true);    // important!

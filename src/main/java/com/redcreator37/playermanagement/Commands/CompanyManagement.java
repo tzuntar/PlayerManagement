@@ -111,7 +111,7 @@ public class CompanyManagement implements CommandExecutor {
                 break;
             case "deposit":
                 eco.withdrawPlayer(p, amount.doubleValue());
-                company.setMoney(company.getMoney().add(amount));
+                company.setBalance(company.getBalance().add(amount));
                 p.sendMessage(prefix + "§a$" + amount
                         + " §6has been taken from your account.");
 
@@ -121,7 +121,7 @@ public class CompanyManagement implements CommandExecutor {
                         + " from the player " + target, amount), databasePath);
                 break;
             case "withdraw":
-                company.setMoney(company.getMoney().subtract(amount));
+                company.setBalance(company.getBalance().subtract(amount));
                 eco.depositPlayer(p, amount.doubleValue());
                 p.sendMessage(prefix + "§a$" + amount
                         + " §6has been added to your account.");

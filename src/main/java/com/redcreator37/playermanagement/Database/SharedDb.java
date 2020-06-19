@@ -22,7 +22,7 @@ public final class SharedDb {
      * @param database database path
      * @throws SQLException on error
      */
-    public static Connection connect(String database) throws SQLException {
+    static Connection connect(String database) throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + database);
     }
 

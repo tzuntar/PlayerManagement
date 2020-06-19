@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -150,7 +151,7 @@ public final class PlayerRoutines {
                     PlayerManagement.eco.getBalance(player));
         } else if (!targetCompany.getName().equals("N/A")) {  // the player is employed, find the company
             BigDecimal paycheck = targetCompany.getPaycheck();
-            if (targetCompany.getMoney().doubleValue() < paycheck.doubleValue()) {
+            if (targetCompany.getBalance().doubleValue() < paycheck.doubleValue()) {
                 // get the owner player handle
                 User owner = PlayerManagement.ess
                         .getOfflineUser(targetCompany.getOwner());
@@ -194,7 +195,7 @@ public final class PlayerRoutines {
                 for (int i = 0; i < companies.size(); i++) {
                     Company c = companies.get(i);
                     if (c.getName().equals(company.getName())) {
-                        c.setMoney(c.getMoney().subtract(paycheck));
+                        c.setBalance(c.getBalance().subtract(paycheck));
                         companies.set(i, c);
                         break;
                     }
@@ -247,23 +248,25 @@ public final class PlayerRoutines {
     }
 
     /**
-     * Displays the info for the specified company
+     * Displays the info for the specified company in a book
      *
      * @param player  the player that'll see the info
      * @param company the company to get the data from
      */
     public static void displayCompanyInfo(Player player, Company company) {
-        String desc = " " + PlayerManagement.companyBegin
-                + "\n " + PlayerManagement.companyBegin
-                + "\n §bName: §a§l§o" + company
-                + "\n §bDescription: §f" + company.getDescription()
-                + "\n §6Balance: §f" + formatDecimal(company.getMoney())
-                + "\n §6Employees: §f" + company.getEmployees()
-                + "\n §6Salary: §f" + formatDecimal(company.getPaycheck())
-                + "\n §6Owner: §f" + company.getOwner()
-                + "\n §6Established: §f" + company.getEstablished()
-                + "\n " + PlayerManagement.companyEnd;
-        player.sendMessage(desc);
+        List<String> pages = new ArrayList<>();
+        pages.add("§1§l --< §2§lCOMPANY §1§l>--"
+                + "\n\n§0§lName: §r§2§l§o" + company
+                + "\n\n§0§lDescription: §r§1§o" + company.getDescription()
+                + "\n\n§0§lBalance: §r§1" + formatDecimal(company.getBalance())
+                + "\n\n§0§lEmployees: §r§1" + company.getEmployees());
+        pages.add("§1§l --< §2§lCOMPANY §1§l>--"
+                + "\n\n§0§lSalary: §r§1" + formatDecimal(company.getPaycheck())
+                + "\n§rPaid every §1" + PlayerManagement
+                .autoEcoTimeSeconds / 60 + "§r min."
+                + "\n\n§0§lOwner: §r§1" + company.getOwner()
+                + "\n\n§0§lEstablished: §r§1" + company.getEstablishedDate());
+        PlayerCard.openBook(player, pages, "N/A", "N/A");
     }
 
     /**

@@ -72,7 +72,7 @@ public class CompanyPay implements CommandExecutor {
         }
 
         String formattedAmount = PlayerRoutines.formatDecimal(amount);
-        if (source.getMoney().doubleValue() < amount.doubleValue()) {
+        if (source.getBalance().doubleValue() < amount.doubleValue()) {
             p.sendMessage(prefix + ChatColor.GOLD
                     + "The company " + ChatColor.GREEN + source + ChatColor.GOLD
                     + " can't afford to pay " + ChatColor.GREEN + formattedAmount
@@ -81,13 +81,13 @@ public class CompanyPay implements CommandExecutor {
         }
 
         // withdraw the amount from the source
-        source.setMoney(source.getMoney().subtract(amount));
+        source.setBalance(source.getBalance().subtract(amount));
         TransactionDb.addTransactionAsync(p, new Transaction(4097,
                 source.getId(), "->", "Pay " + formattedAmount,
                 "Pay " + formattedAmount + " to " + target, amount), databasePath);
 
         // add to the target
-        target.setMoney(target.getMoney().add(amount));
+        target.setBalance(target.getBalance().add(amount));
         TransactionDb.addTransactionAsync(p, new Transaction(4097,
                 target.getId(), "<-", "Receive " + formattedAmount,
                 "Receive " + formattedAmount + " from " + source, amount), databasePath);

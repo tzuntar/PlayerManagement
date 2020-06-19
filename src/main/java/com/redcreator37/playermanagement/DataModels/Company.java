@@ -28,7 +28,7 @@ public class Company {
     /**
      * Money the company has assigned to it
      */
-    private BigDecimal money;
+    private BigDecimal balance;
 
     /**
      * The number of employees
@@ -63,7 +63,7 @@ public class Company {
         this.name = name;
         this.description = "";
         this.owner = owner;
-        this.money = new BigDecimal(0);
+        this.balance = new BigDecimal(0);
         this.paycheck = new BigDecimal(10);
         this.employees = 0;
         this.established = PlayerRoutines
@@ -76,19 +76,19 @@ public class Company {
      * @param id          the database id
      * @param name        the name
      * @param description the description
-     * @param money       the amount of money the company has associated
+     * @param balance       the amount of money the company has associated
      *                    with it
      * @param employees   the number of employees
      * @param owner       the username of the owner
      * @param established the date of establishment
      * @param paycheck    the amount of money the players can earn
      */
-    public Company(int id, String name, String description, String money,
+    public Company(int id, String name, String description, String balance,
                    int employees, String owner, String established, String paycheck) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.money = new BigDecimal(money);
+        this.balance = new BigDecimal(balance);
         this.employees = employees;
         this.owner = owner;
         this.established = established;
@@ -107,8 +107,8 @@ public class Company {
         return description;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getBalance() {
+        return balance;
     }
 
     public int getEmployees() {
@@ -119,7 +119,7 @@ public class Company {
         return owner;
     }
 
-    public String getEstablished() {
+    public String getEstablishedDate() {
         return established;
     }
 
@@ -131,8 +131,8 @@ public class Company {
         this.description = description;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setBalance(BigDecimal money) {
+        this.balance = money;
     }
 
     public void setEmployees(int employees) {

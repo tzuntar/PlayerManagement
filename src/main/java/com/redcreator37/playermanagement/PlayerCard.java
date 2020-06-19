@@ -103,7 +103,7 @@ public class PlayerCard implements Listener {
     }
 
     /**
-     * Displays the data for the specified UUID to this player
+     * Displays the data for the provided UUID to this player
      *
      * @param p          the player that the data will be displayed to
      * @param playerUuid which player to get the data from

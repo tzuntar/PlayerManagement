@@ -161,9 +161,6 @@ public final class PlayerManagement extends JavaPlugin {
     public static String scoreboardSignText = "§8[§9TopPlayers§8]";
 
     public static double companyEstablishPrice = 3000;
-    public static String companyBegin = "§f§l-=-=-=-=-=- §9§lCOMPANY §f§l-=-=-=-=-=-";
-    public static String companyEnd = "§f§l-=-=-=-=-=-=-=-=-=-=-=-=-=-=-";
-
     public static double punishmentAmount = 3000;
     public static int maxPunishments = 5;
 
@@ -223,8 +220,6 @@ public final class PlayerManagement extends JavaPlugin {
         conf.addDefault("General.CardItemLore", cardItemLore);
         conf.addDefault("General.ScoreboardSignText", scoreboardSignText);
         conf.addDefault("Company.EstablishPrice", companyEstablishPrice);
-        conf.addDefault("Company.OutputBegin", companyBegin);
-        conf.addDefault("Company.OutputEnd", companyEnd);
         conf.addDefault("Punishments.Amount", punishmentAmount);
         conf.addDefault("Punishments.MaxBeforeBan", maxPunishments);
         conf.addDefault("AutomaticEconomy.Enabled", autoEcoEnabled);
@@ -268,9 +263,6 @@ public final class PlayerManagement extends JavaPlugin {
         scoreboardSignText = conf.getString("General.ScoreboardSignText");
 
         companyEstablishPrice = conf.getInt("Company.EstablishPrice");
-        companyBegin = conf.getString("Company.OutputBegin");
-        companyEnd = conf.getString("Company.OutputEnd");
-
         punishmentAmount = conf.getInt("Punishments.Price");
         maxPunishments = conf.getInt("Punishments.MaxBeforeBan");
 

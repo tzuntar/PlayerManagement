@@ -12,8 +12,6 @@ General:
   ScoreboardSignText: §8[§9TopPlayers§8]  # the formatted text that [TopPlayers] on signs will be replaced with
 Company:
   EstablishPrice: 3000.0        # the price of establishing a new company
-  OutputBegin: §f§l-=-=-=-=-=- §9§lCOMPANY §f§l-=-=-=-=-=-  # displayed before listing company info in the chat
-  OutputEnd: §f§l-=-=-=-=-=-=-=-=-=-=-=-=-=-=-  # displaying after listing...
 Punishments:
   Amount: 3000.0                # the default fine
   MaxBeforeBan: 5               # the number of times a player can be punished before they're auto-banned

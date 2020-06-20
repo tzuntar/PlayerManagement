@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Common player routines
@@ -258,6 +259,10 @@ public final class PlayerRoutines {
         BigDecimal afterPayments = c.getBalance().subtract(c.getPaycheck()
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
 
+        List<ServerPlayer> employees = PlayerManagement.players.stream()
+                .filter(serverPlayer -> serverPlayer.getCompany().getName().equals(c.getName()))
+                .collect(Collectors.toList());
+
         pages.add("§1§l --< §2§lCOMPANY §1§l>--"
                 + "\n\n§0§lName: §r§2§l§o" + c
                 + "\n\n§0§lDescription: §r§1§o" + c.getDescription()
@@ -270,6 +275,21 @@ public final class PlayerRoutines {
                 + "\n\n§0Balance after payments: §r§1" + formatDecimal(afterPayments)
                 + "\n\n§0§lOwner: §r§1" + c.getOwner()
                 + "\n\n§0§lEstablished: §r§1" + c.getEstablishedDate());
+
+        for (int i = 0; i < employees.size(); i++) {
+            StringBuilder sb = new StringBuilder("§1§l --< §2§lCOMPANY §1§l>--" +
+                    "\n\n§r§lEmployees:\n\n§r");
+            ServerPlayer pl = employees.get(i);
+            sb.append(pl).append("\n");
+            for (int j = 0; j < 8; j++) {
+                i++;
+                if (i < employees.size()) {
+                    pl = employees.get(i);
+                    sb.append(pl).append("\n");
+                }
+            }
+            pages.add(sb.toString());
+        }
         PlayerCard.openBook(p, pages, "N/A", "N/A");
     }
 

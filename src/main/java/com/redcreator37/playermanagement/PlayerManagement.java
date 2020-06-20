@@ -372,7 +372,7 @@ public final class PlayerManagement extends JavaPlugin {
                                 + "Error while updating the playerdata: " + ChatColor.RED
                                 + ex.getMessage());
                     }
-                }), 1, autoEcoTimeSeconds);
+                }), 1, autoEcoTimeSeconds * 20);
     }
 
     /**

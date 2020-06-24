@@ -41,8 +41,7 @@ public final class PlayerRoutines {
      * player with this username wasn't found
      */
     public static ServerPlayer getPlayerFromUsername(List<ServerPlayer> players, String username) {
-        return players.stream().filter(serverPlayer -> serverPlayer
-                .getUsername().equals(username))
+        return players.stream().filter(pl -> pl.getUsername().equals(username))
                 .findFirst().orElse(null);
     }
 
@@ -260,7 +259,7 @@ public final class PlayerRoutines {
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
 
         List<ServerPlayer> employees = PlayerManagement.players.stream()
-                .filter(serverPlayer -> serverPlayer.getCompany().getName().equals(c.getName()))
+                .filter(pl -> pl.getCompany().getName().equals(c.getName()))
                 .collect(Collectors.toList());
 
         pages.add("§1§l --< §2§lCOMPANY §1§l>--"

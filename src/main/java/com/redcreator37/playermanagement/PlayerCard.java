@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -105,10 +106,10 @@ public class PlayerCard implements Listener {
     /**
      * Displays the data for the provided UUID to this player
      *
-     * @param p          the player that the data will be displayed to
+     * @param invoker    the player that the data will be displayed to
      * @param playerUuid which player to get the data from
      */
-    public static void displayCardData(Player p, String playerUuid) {
+    public static void displayCardData(Player invoker, String playerUuid) {
         ServerPlayer target = null;
         for (ServerPlayer pl : PlayerManagement.players)    // attempt to find the player
             if (pl.getUuid().equals(playerUuid)) {
@@ -116,8 +117,9 @@ public class PlayerCard implements Listener {
                 break;
             }
 
-        if (target == null) {   // invalid uuid or invalid card
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+        Player p = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid)).getPlayer();
+        if (target == null || p == null) {   // invalid uuid or invalid card
+            invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Invalid ID card!");
             return;
         }
@@ -136,12 +138,14 @@ public class PlayerCard implements Listener {
                 + "\n\n§0§lName: §r§1" + target.getName()
                 + "\n\n§0§lRegistration date: §r§1" + target.getJoinDate()
                 + "\n\n§0§lJob name: §r§1" + getJob(target));
+
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lCompany: §r§1" + getCompany(target)
                 + "\n\n§0§lNotes: §r§1§o" + getNotes(target)
                 + "\n\n§0§lMoney: §r§1" + PlayerRoutines.formatDecimal(BigDecimal
                 .valueOf(PlayerManagement.eco.getBalance(player)))
                 + "\n\n§0§lPunishments: §r§1" + getPunishments(target));
+
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"   // values are cast to int for formatting purposes
                 + "\n\n §0§lHealth:      §1" + (int) p.getHealth() + "§8/§120"
                 + "\n §r§8[" + health + "§8]"
@@ -151,10 +155,24 @@ public class PlayerCard implements Listener {
                 + "\n §r§8[" + saturationLevel + "§8]"
                 + "\n\n §0§lArmor:        §1" + (int) armor + "§8/§120"
                 + "\n §r§8[" + armorLevel + "§8]");
+
+        DecimalFormat fourPlaces = new DecimalFormat("##.0000");
+        pages.add("§1§l ---< §9§lPLAYER §1§l>---"
+                + "\n\n§0§lLocation:"
+                + "\n§1§lX: §r" + fourPlaces.format(p.getLocation().getX())
+                + "\n§1§lY: §r" + fourPlaces.format(p.getLocation().getY())
+                + "\n§1§lZ: §r" + fourPlaces.format(p.getLocation().getZ())
+                + "\n\n§r§lExperience:"
+                + "\n§rLevel: §r§1" + p.getLevel()
+                + "\n§rTo next level: §r§1" + p.getExpToLevel()
+                + "\n§rTotal: §r§1" + p.getTotalExperience()
+        );
+
         if (!getJob(target).equals("N/A"))
             pages.add("§1§l ----< §5§lJOB §1§l>----"
                     + "\n\n§0§lJob name: §r§1" + target.getJob()
                     + "\n\n§0§lJob description: §r§1§o" + target.getJob().getDescription());
+
         if (!getCompany(target).equals("N/A")) {
             pages.add("§1§l --< §2§lCOMPANY §1§l>--"
                     + "\n\n§0§lName: §r§1" + target.getCompany()
@@ -168,7 +186,7 @@ public class PlayerCard implements Listener {
                     + "\n§rPaid every §1" + PlayerManagement
                     .autoEcoTimeSeconds / 60 + "§r min.");
         }
-        openBook(p, pages, "N/A", "N/A");
+        openBook(invoker, pages, "N/A", "N/A");
     }
 
     /**

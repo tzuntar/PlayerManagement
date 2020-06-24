@@ -118,20 +118,18 @@ public class PlayerCard implements Listener {
             }
 
         Player p = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid)).getPlayer();
-        if (target == null || p == null) {   // invalid uuid or invalid card
+        if (target == null) {   // invalid uuid or invalid card
             invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Invalid ID card!");
             return;
         }
 
-        String health = getBarGraph(p.getHealth(), 20);
-        String foodLevel = getBarGraph(p.getFoodLevel(), 20);
-        String saturationLevel = getBarGraph(p.getSaturation(), 20);
-        double armor = Objects.requireNonNull(p
-                .getAttribute(Attribute.GENERIC_ARMOR)).getValue();
-        String armorLevel = getBarGraph(armor, 20);
-
         OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid));
+        String balance = "N/A";
+        try {
+            balance = PlayerRoutines.formatDecimal(BigDecimal
+                    .valueOf(PlayerManagement.eco.getBalance(player)));
+        } catch (RuntimeException ignored) {}
         List<String> pages = new ArrayList<>();
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lUsername: §r§1" + target
@@ -142,31 +140,42 @@ public class PlayerCard implements Listener {
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lCompany: §r§1" + getCompany(target)
                 + "\n\n§0§lNotes: §r§1§o" + getNotes(target)
-                + "\n\n§0§lMoney: §r§1" + PlayerRoutines.formatDecimal(BigDecimal
-                .valueOf(PlayerManagement.eco.getBalance(player)))
+                + "\n\n§0§lMoney: §r§1" + balance
                 + "\n\n§0§lPunishments: §r§1" + getPunishments(target));
 
-        pages.add("§1§l ---< §9§lPLAYER §1§l>---"   // values are cast to int for formatting purposes
-                + "\n\n §0§lHealth:      §1" + (int) p.getHealth() + "§8/§120"
-                + "\n §r§8[" + health + "§8]"
-                + "\n\n §0§lFood:         §1" + p.getFoodLevel() + "§8/§120"
-                + "\n §r§8[" + foodLevel + "§8]"
-                + "\n\n §0§lSaturation:  §1" + (int) p.getSaturation() + "§8/§120"
-                + "\n §r§8[" + saturationLevel + "§8]"
-                + "\n\n §0§lArmor:        §1" + (int) armor + "§8/§120"
-                + "\n §r§8[" + armorLevel + "§8]");
+        if (p != null) {    // these are only available if the player is online
+            String health = getBarGraph(p.getHealth(), 20);
+            String foodLevel = getBarGraph(p.getFoodLevel(), 20);
+            String saturationLevel = getBarGraph(p.getSaturation(), 20);
+            double armor = Objects.requireNonNull(p
+                    .getAttribute(Attribute.GENERIC_ARMOR)).getValue();
+            String armorLevel = getBarGraph(armor, 20);
 
-        DecimalFormat fourPlaces = new DecimalFormat("##.0000");
-        pages.add("§1§l ---< §9§lPLAYER §1§l>---"
-                + "\n\n§0§lLocation:"
-                + "\n§1§lX: §r" + fourPlaces.format(p.getLocation().getX())
-                + "\n§1§lY: §r" + fourPlaces.format(p.getLocation().getY())
-                + "\n§1§lZ: §r" + fourPlaces.format(p.getLocation().getZ())
-                + "\n\n§r§lExperience:"
-                + "\n§rLevel: §r§1" + p.getLevel()
-                + "\n§rTo next level: §r§1" + p.getExpToLevel()
-                + "\n§rTotal: §r§1" + p.getTotalExperience()
-        );
+            pages.add("§1§l ---< §9§lPLAYER §1§l>---"   // values are cast to int for formatting purposes
+                    + "\n\n §0§lHealth:      §1" + (int) p.getHealth() + "§8/§120"
+                    + "\n §r§8[" + health + "§8]"
+                    + "\n\n §0§lFood:         §1" + p.getFoodLevel() + "§8/§120"
+                    + "\n §r§8[" + foodLevel + "§8]"
+                    + "\n\n §0§lSaturation:  §1" + (int) p.getSaturation() + "§8/§120"
+                    + "\n §r§8[" + saturationLevel + "§8]"
+                    + "\n\n §0§lArmor:        §1" + (int) armor + "§8/§120"
+                    + "\n §r§8[" + armorLevel + "§8]");
+
+            DecimalFormat fourPlaces = new DecimalFormat("##.0000");
+            pages.add("§1§l ---< §9§lPLAYER §1§l>---"
+                    + "\n\n§0§lLocation:"
+                    + "\n§1§lX: §r" + fourPlaces.format(p.getLocation().getX())
+                    + "\n§1§lY: §r" + fourPlaces.format(p.getLocation().getY())
+                    + "\n§1§lZ: §r" + fourPlaces.format(p.getLocation().getZ())
+                    + "\n\n§r§lExperience:"
+                    + "\n§rLevel: §r§1" + p.getLevel()
+                    + "\n§rTo next level: §r§1" + p.getExpToLevel()
+                    + "\n§rTotal: §r§1" + p.getTotalExperience()
+            );
+        } else {
+            pages.add("§1§l ---< §9§lPLAYER §1§l>---"
+                    + "\n\n§0§o§lUnavailable:\n§rPlayer is not online.");
+        }
 
         if (!getJob(target).equals("N/A"))
             pages.add("§1§l ----< §5§lJOB §1§l>----"

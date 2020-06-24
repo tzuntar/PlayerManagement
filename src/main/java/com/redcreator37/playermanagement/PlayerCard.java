@@ -110,26 +110,23 @@ public class PlayerCard implements Listener {
      * @param playerUuid which player to get the data from
      */
     public static void displayCardData(Player invoker, String playerUuid) {
-        ServerPlayer target = null;
-        for (ServerPlayer pl : PlayerManagement.players)    // attempt to find the player
-            if (pl.getUuid().equals(playerUuid)) {
-                target = pl;
-                break;
-            }
-
-        Player p = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid)).getPlayer();
+        ServerPlayer target = PlayerManagement.players.stream()
+                .filter(pl -> pl.getUuid().equals(playerUuid))
+                .findFirst().orElse(null);
         if (target == null) {   // invalid uuid or invalid card
             invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Invalid ID card!");
             return;
         }
 
-        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid));
+        OfflinePlayer offlinePl = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid));
         String balance = "N/A";
         try {
             balance = PlayerRoutines.formatDecimal(BigDecimal
-                    .valueOf(PlayerManagement.eco.getBalance(player)));
+                    .valueOf(PlayerManagement.eco.getBalance(offlinePl)));
         } catch (RuntimeException ignored) {}
+
+        Player p = offlinePl.getPlayer();
         List<String> pages = new ArrayList<>();
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lUsername: §r§1" + target
@@ -170,12 +167,9 @@ public class PlayerCard implements Listener {
                     + "\n\n§r§lExperience:"
                     + "\n§rLevel: §r§1" + p.getLevel()
                     + "\n§rTo next level: §r§1" + p.getExpToLevel()
-                    + "\n§rTotal: §r§1" + p.getTotalExperience()
-            );
-        } else {
-            pages.add("§1§l ---< §9§lPLAYER §1§l>---"
-                    + "\n\n§0§o§lUnavailable:\n§rPlayer is not online.");
-        }
+                    + "\n§rTotal: §r§1" + p.getTotalExperience());
+        } else pages.add("§1§l ---< §9§lPLAYER §1§l>---"
+                + "\n\n§0§o§lUnavailable:\n§rPlayer is not online.");
 
         if (!getJob(target).equals("N/A"))
             pages.add("§1§l ----< §5§lJOB §1§l>----"

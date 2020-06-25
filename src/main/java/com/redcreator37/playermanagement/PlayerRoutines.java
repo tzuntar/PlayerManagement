@@ -326,6 +326,17 @@ public final class PlayerRoutines {
     }
 
     /**
+     * Returns the value or "N/A" if the value is null / empty
+     *
+     * @param value the input string
+     * @return value or "N/A" if null/empty
+     */
+    static String getValueOrEmpty(String value) {
+        return value == null || value.trim().equals("")
+                ? "N/A" : value;
+    }
+
+    /**
      * Converts this list into a string array
      *
      * @param list the input list

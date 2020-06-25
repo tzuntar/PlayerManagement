@@ -127,8 +127,8 @@ public class PlayerCard implements Listener {
         } catch (RuntimeException ignored) {}
 
         Player p = offlinePl.getPlayer();
-        String job = getValueOrEmpty(target.getJob().getName()),
-                company = getValueOrEmpty(target.getCompany().getName());
+        String job = PlayerRoutines.getValueOrEmpty(target.getJob().getName()),
+                company = PlayerRoutines.getValueOrEmpty(target.getCompany().getName());
         List<String> pages = new ArrayList<>();
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lUsername: §r§1" + target
@@ -138,9 +138,9 @@ public class PlayerCard implements Listener {
 
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lCompany: §r§1" + company
-                + "\n\n§0§lNotes: §r§1§o" + getValueOrEmpty(target.getNotes())
+                + "\n\n§0§lNotes: §r§1§o" + PlayerRoutines.getValueOrEmpty(target.getNotes())
                 + "\n\n§0§lMoney: §r§1" + balance
-                + "\n\n§0§lPunishments: §r§1" + getPunishments(target));
+                + "\n\n§0§lPunishments: §r§1" + formatPunishments(target));
 
         if (p != null) {    // these are only available if the player is online
             String health = getBarGraph(p.getHealth(), 20);
@@ -213,25 +213,15 @@ public class PlayerCard implements Listener {
     }
 
     /**
-     * Returns the value or "N/A" if the value is null / empty
-     *
-     * @param value the input string
-     * @return value or "N/A" if null/empty
-     */
-    private static String getValueOrEmpty(String value) {
-        return value == null || value.trim().equals("")
-                ? "N/A" : value;
-    }
-
-    /**
-     * Returns any punishments this player might have or 0 by default
+     * Returns the number of punishments this player has or 0
      *
      * @param player the player whose number of punishments to retrieve
      * @return a color-formatted string
      */
-    private static String getPunishments(ServerPlayer player) {
+    private static String formatPunishments(ServerPlayer player) {
         return player.getPunishments() > 0
                 ? ChatColor.DARK_RED + String.valueOf(player.getPunishments())
                 : ChatColor.DARK_BLUE + "0";
     }
+
 }

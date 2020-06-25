@@ -106,8 +106,8 @@ public class PlayerCard implements Listener {
     /**
      * Displays the data for the provided UUID to this player
      *
-     * @param invoker    the player that the data will be displayed to
-     * @param playerUuid which player to get the data from
+     * @param invoker    the player requesting the data
+     * @param playerUuid the UUID of the player to look up
      */
     public static void displayCardData(Player invoker, String playerUuid) {
         ServerPlayer target = PlayerManagement.players.stream()
@@ -127,16 +127,18 @@ public class PlayerCard implements Listener {
         } catch (RuntimeException ignored) {}
 
         Player p = offlinePl.getPlayer();
+        String job = getValueOrEmpty(target.getJob().getName()),
+                company = getValueOrEmpty(target.getCompany().getName());
         List<String> pages = new ArrayList<>();
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lUsername: §r§1" + target
                 + "\n\n§0§lName: §r§1" + target.getName()
                 + "\n\n§0§lRegistration date: §r§1" + target.getJoinDate()
-                + "\n\n§0§lJob name: §r§1" + getJob(target));
+                + "\n\n§0§lJob name: §r§1" + job);
 
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
-                + "\n\n§0§lCompany: §r§1" + getCompany(target)
-                + "\n\n§0§lNotes: §r§1§o" + getNotes(target)
+                + "\n\n§0§lCompany: §r§1" + company
+                + "\n\n§0§lNotes: §r§1§o" + getValueOrEmpty(target.getNotes())
                 + "\n\n§0§lMoney: §r§1" + balance
                 + "\n\n§0§lPunishments: §r§1" + getPunishments(target));
 
@@ -171,12 +173,12 @@ public class PlayerCard implements Listener {
         } else pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§o§lUnavailable:\n§rPlayer is not online.");
 
-        if (!getJob(target).equals("N/A"))
+        if (!job.equals("N/A"))
             pages.add("§1§l ----< §5§lJOB §1§l>----"
                     + "\n\n§0§lJob name: §r§1" + target.getJob()
                     + "\n\n§0§lJob description: §r§1§o" + target.getJob().getDescription());
 
-        if (!getCompany(target).equals("N/A")) {
+        if (!company.equals("N/A")) {
             pages.add("§1§l --< §2§lCOMPANY §1§l>--"
                     + "\n\n§0§lName: §r§1" + target.getCompany()
                     + "\n\n§0§lDescription: §r§1§o" + target.getCompany().getDescription()
@@ -211,39 +213,14 @@ public class PlayerCard implements Listener {
     }
 
     /**
-     * Returns this player's job name or N/A if none was found
+     * Returns the value or "N/A" if the value is null / empty
      *
-     * @param player the player whose job to look up
-     * @return the job name in a string or N/A if not applicable
+     * @param value the input string
+     * @return value or "N/A" if null/empty
      */
-    public static String getJob(ServerPlayer player) {
-        return player.getJob().getName() == null ||
-                player.getJob().getName().trim().equals("")
-                ? "N/A" : player.getJob().getName();
-    }
-
-    /**
-     * Returns this player's company name or N/A if none was found
-     *
-     * @param player the player whose company to look up
-     * @return the company name in a string or N/A if not applicable
-     */
-    public static String getCompany(ServerPlayer player) {
-        return player.getCompany() == null ||
-                player.getCompany().getName().trim().equals("")
-                ? "N/A" : player.getCompany().getName();
-    }
-
-    /**
-     * Returns any notes this player might have or N/A if empty
-     *
-     * @param player the player whose notes to retrieve
-     * @return the notes in a string or N/A if not applicable
-     */
-    private static String getNotes(ServerPlayer player) {
-        return player.getNotes() == null ||
-                player.getNotes().trim().equals("")
-                ? "N/A" : player.getNotes();
+    private static String getValueOrEmpty(String value) {
+        return value == null || value.trim().equals("")
+                ? "N/A" : value;
     }
 
     /**

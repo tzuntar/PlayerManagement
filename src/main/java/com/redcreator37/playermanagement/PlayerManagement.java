@@ -46,7 +46,7 @@ import java.util.Objects;
 public final class PlayerManagement extends JavaPlugin {
 
     /**
-     * Any output to the in-game console will be prefixed by this
+     * Any in-game console output will get prefixed by this
      */
     public static String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "Server"
             + ChatColor.DARK_GRAY + "] ";

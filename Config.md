@@ -1,6 +1,6 @@
 # Configuration File Values
 
-The following is the structure of the config file as of PlayerManagement 1.4:
+The following is the structure of the config file as of PlayerManagement 1.5:
 
 ```yaml
 General:
@@ -67,7 +67,7 @@ PlayerList:
     Admins: §cAdmins
 ```
 
-These are the `{placeholders}` supported as of PlayerManagement 1.4:
+These are the `{placeholders}` supported as of PlayerManagement 1.5:
 
 ```yaml
 {playercount}     # the number of online players

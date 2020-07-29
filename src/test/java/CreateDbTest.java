@@ -27,7 +27,6 @@ public class CreateDbTest {
     @SuppressWarnings({"unused", "UnusedAssignment"})
     public void setUpDatabaseTest() {
         boolean success = true;
-
         String db = "target/test.db";
         File oldDb = new File(db);
         if (oldDb.exists() && !oldDb.delete())
@@ -42,12 +41,10 @@ public class CreateDbTest {
             SharedDb.createDatabaseTables(db);
             // insert a blank job using a bogus id
             JobDb.insertJob(new Job(4097, "N/A", "N/A"), db);
-
             players = new ArrayList<>();
             jobs = new ArrayList<>();
             companies = new ArrayList<>();
             transactions = new ArrayList<>();
-
             System.out.println("Created an empty database");
         } catch (SQLException e) {
             System.out.println("Error while creating the database: " + e.getMessage());

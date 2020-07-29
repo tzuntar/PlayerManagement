@@ -53,10 +53,7 @@ public class PlayerCard implements Listener {
      * @param lore   the item (card) lore
      */
     private static void handlePlayerCardEvent(Player player, List<String> lore) {
-        ServerPlayer target = PlayerManagement.players.stream()
-                .filter(pl -> pl.getUuid().equals(lore.get(1)))
-                .findFirst().orElse(null);
-
+        ServerPlayer target = PlayerManagement.players.get(lore.get(1));
         if (target != null) displayCardData(player, target.getUuid());
         else player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                 + "Invalid ID card!");
@@ -110,9 +107,7 @@ public class PlayerCard implements Listener {
      * @param playerUuid the UUID of the player to look up
      */
     public static void displayCardData(Player invoker, String playerUuid) {
-        ServerPlayer target = PlayerManagement.players.stream()
-                .filter(pl -> pl.getUuid().equals(playerUuid))
-                .findFirst().orElse(null);
+        ServerPlayer target = PlayerManagement.players.get(playerUuid);
         if (target == null) {   // invalid uuid or invalid card
             invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Invalid ID card!");

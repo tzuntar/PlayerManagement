@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement.Commands;
 
-import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -31,9 +30,8 @@ public class PlayerAdmin implements CommandExecutor {
         p.sendMessage("§bID §9|   §bUSERNAME   §9|   §bJOINED   §9| §bJOB NAME §9| §bCOMPANY §9|   §bPNSMT.");
         p.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
 
-        for (ServerPlayer pl : PlayerManagement.players) {
+        PlayerManagement.players.forEach((s, pl) -> {
             StringBuilder b = new StringBuilder();
-
             String id = String.valueOf(pl.getId());
             if (id.length() < 2) id += " ";
             b.append(id).append(" | ");
@@ -42,9 +40,8 @@ public class PlayerAdmin implements CommandExecutor {
             b.append(truncate(pl.getJob().getName(), 14)).append(" | ");
             b.append(truncate(pl.getCompany().getName(), 10)).append(" | ");
             b.append(pl.getPunishments());
-
             p.sendMessage(b.toString());
-        }
+        });
 
         p.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
         return true;

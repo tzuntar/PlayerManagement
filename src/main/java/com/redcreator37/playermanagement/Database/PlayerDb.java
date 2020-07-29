@@ -8,8 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Player-related database routines
@@ -59,8 +59,8 @@ public final class PlayerDb {
      * @return the list of players in the database
      * @throws SQLException on error
      */
-    private static List<ServerPlayer> commonPlayerQuery(String sql, String database) throws SQLException {
-        List<ServerPlayer> players = new ArrayList<>();
+    private static Map<String, ServerPlayer> commonPlayerQuery(String sql, String database) throws SQLException {
+        Map<String, ServerPlayer> players = new HashMap<>();
         Connection con = SharedDb.connect(database);
         Statement st = con.createStatement();
         st.closeOnCompletion();
@@ -79,7 +79,7 @@ public final class PlayerDb {
                     PlayerManagement.companies, set.getString("company")));
             p.setNotes(set.getString("notes"));
             p.setPunishments(set.getInt("punishments"));
-            players.add(p);
+            players.put(p.getUuid(), p);
         }
 
         set.close();
@@ -94,7 +94,7 @@ public final class PlayerDb {
      * @return the player list
      * @throws SQLException on error
      */
-    public static List<ServerPlayer> getAllPlayers(String db) throws SQLException {
+    public static Map<String, ServerPlayer> getAllPlayers(String db) throws SQLException {
         String cmd = "SELECT players.* FROM players INNER JOIN jobs ON jobs.name = players.job" +
                 " INNER JOIN companies ON companies.name = players.company;";
         return commonPlayerQuery(cmd, db);
@@ -108,7 +108,7 @@ public final class PlayerDb {
      * @return the player list
      * @throws SQLException on error
      */
-    public static List<ServerPlayer> getAllNewlyRegistered(String db) throws SQLException {
+    public static Map<String, ServerPlayer> getAllNewlyRegistered(String db) throws SQLException {
         String cmd = "SELECT * FROM players";
         return commonPlayerQuery(cmd, db);
     }

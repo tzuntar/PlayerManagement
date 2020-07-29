@@ -13,7 +13,9 @@ import org.junit.Test;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Tests the database creation functionality
@@ -35,13 +37,13 @@ public class CreateDbTest {
         List<Transaction> transactions;
         List<Company> companies;
         List<Job> jobs;
-        List<ServerPlayer> players;
+        Map<String, ServerPlayer> players;
 
         try {
             SharedDb.createDatabaseTables(db);
             // insert a blank job using a bogus id
             JobDb.insertJob(new Job(4097, "N/A", "N/A"), db);
-            players = new ArrayList<>();
+            players = new HashMap<>();
             jobs = new ArrayList<>();
             companies = new ArrayList<>();
             transactions = new ArrayList<>();

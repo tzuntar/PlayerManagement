@@ -13,12 +13,13 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Common player routines
@@ -40,9 +41,12 @@ public final class PlayerRoutines {
      * @return the matching ServerPlayer object, or null if the
      * player with this username wasn't found
      */
-    public static ServerPlayer getPlayerFromUsername(List<ServerPlayer> players, String username) {
-        return players.stream().filter(pl -> pl.getUsername().equals(username))
-                .findFirst().orElse(null);
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public static ServerPlayer getPlayerFromUsername(Map<String, ServerPlayer> players, String username) {
+        return players.get(Arrays.stream(Bukkit
+                .getOfflinePlayers()).filter(pl -> Objects
+                .equals(pl.getName(), username))
+                .findFirst().get().getUniqueId().toString());
     }
 
     /**
@@ -136,7 +140,7 @@ public final class PlayerRoutines {
      *                     player will no longer receive any
      *                     additional money
      */
-    static void autoEconomyPlayer(Player player, List<ServerPlayer> players,
+    static void autoEconomyPlayer(Player player, Map<String, ServerPlayer> players,
                                   List<Company> companies, double defAmount,
                                   double defThreshold) {
         ServerPlayer target = getPlayerFromUsername(players, player.getName());
@@ -258,9 +262,11 @@ public final class PlayerRoutines {
         BigDecimal afterPayments = c.getBalance().subtract(c.getPaycheck()
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
 
-        List<ServerPlayer> employees = PlayerManagement.players.stream()
-                .filter(pl -> pl.getCompany().getName().equals(c.getName()))
-                .collect(Collectors.toList());
+        List<ServerPlayer> employees = new ArrayList<>();
+        PlayerManagement.players.forEach((s, pl) -> {
+            if (pl.getCompany().getName().equals(c.getName()))
+                employees.add(pl);
+        });
 
         pages.add("§1§l --< §2§lCOMPANY §1§l>--"
                 + "\n\n§0§lName: §r§2§l§o" + c

@@ -34,7 +34,9 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -75,8 +77,10 @@ public final class PlayerManagement extends JavaPlugin {
 
     /**
      * Contains the data for all players on the server
+     * The key is the player UUID, the value is the matching
+     * ServerPlayer object
      */
-    public static List<ServerPlayer> players = null;
+    public static Map<String, ServerPlayer> players = null;
 
     /**
      * Contains the data for all jobs on the server
@@ -323,7 +327,7 @@ public final class PlayerManagement extends JavaPlugin {
                 CompanyDb.insertCompany(new Company(4097, "N/A", "N/A"), databasePath);
                 JobDb.insertJob(new Job(4097, "N/A", "N/A"), databasePath);
 
-                players = new ArrayList<>();
+                players = new HashMap<>();
                 jobs = new ArrayList<>();
                 companies = new ArrayList<>();
                 transactions = new ArrayList<>();

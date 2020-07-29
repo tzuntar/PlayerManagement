@@ -23,13 +23,10 @@ public class AdvancementReward implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
         Player p = event.getPlayer();
-
-        ServerPlayer target = null;
-        for (ServerPlayer pl : PlayerManagement.players)
-            if (pl.getUsername().equals(event.getPlayer().getName()))
-                target = pl;
-
+        ServerPlayer target = PlayerRoutines.getPlayerFromUsername(PlayerManagement
+                .players, event.getPlayer().getName());
         if (target == null) return;
+
         Bukkit.getScheduler().runTask(PlayerManagement.getPlugin(PlayerManagement.class), () -> {
             // get the reward per rank
             double reward;

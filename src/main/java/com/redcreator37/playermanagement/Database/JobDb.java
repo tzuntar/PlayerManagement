@@ -32,7 +32,6 @@ public final class JobDb {
      */
     private static void runJobSqlUpdate(String sql, Job job, String database) throws SQLException {
         Connection con = SharedDb.connect(database);
-        con.setAutoCommit(true);
         PreparedStatement st = con.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, job.getName());
@@ -52,7 +51,6 @@ public final class JobDb {
         String cmd = "SELECT * FROM jobs";
         List<Job> jobs = new ArrayList<>();
         Connection con = SharedDb.connect(database);
-        con.setAutoCommit(true);
         Statement st = con.createStatement();
         ResultSet set = st.executeQuery(cmd);
 
@@ -90,7 +88,6 @@ public final class JobDb {
     public static void removeJob(int id, String database) throws SQLException {
         String cmd = "DELETE FROM jobs WHERE id = " + id + ";";
         Connection con = SharedDb.connect(database);
-        con.setAutoCommit(true);
         PreparedStatement st = con.prepareStatement(cmd);
         st.executeUpdate();
         con.close();

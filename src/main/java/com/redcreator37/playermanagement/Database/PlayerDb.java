@@ -33,7 +33,6 @@ public final class PlayerDb {
      */
     private static void runPlayerSqlUpdate(String sql, ServerPlayer player, String db, boolean update) throws SQLException {
         Connection con = SharedDb.connect(db);
-        con.setAutoCommit(true);
         PreparedStatement st = con.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, player.getUsername());
@@ -63,7 +62,6 @@ public final class PlayerDb {
     private static List<ServerPlayer> commonPlayerQuery(String sql, String database) throws SQLException {
         List<ServerPlayer> players = new ArrayList<>();
         Connection con = SharedDb.connect(database);
-        con.setAutoCommit(true);    // important!
         Statement st = con.createStatement();
         st.closeOnCompletion();
         ResultSet set = st.executeQuery(sql);
@@ -152,7 +150,6 @@ public final class PlayerDb {
     public static void removePlayer(int id, String db) throws SQLException {
         String cmd = "DELETE FROM players WHERE id = " + id + ";";
         Connection con = SharedDb.connect(db);
-        con.setAutoCommit(true);
         PreparedStatement st = con.prepareStatement(cmd);
         st.executeUpdate();
         con.close();

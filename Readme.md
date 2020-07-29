@@ -31,7 +31,7 @@ Older versions of these plugins *might* work, but are not supported. This plugin
 
 Download [the latest release](https://github.com/RedCreator37/PlayerManagement/releases) and put it into `plugins` folder of your server. Run your server for the first time to generate the config files and a blank database.
 
-*It's highly recommended that you stop the server at this point to make sure everything is [configured properly](./Config.md).*
+> ℹ It's highly recommended that you stop the server at this point to make sure everything is [configured properly](./Config.md).
 
 Once in the game, run `/registerid Some Name` to register yourself into the database. *Some Name* can be anything and can contain spaces.
 

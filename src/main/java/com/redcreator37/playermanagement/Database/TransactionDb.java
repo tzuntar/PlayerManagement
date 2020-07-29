@@ -37,7 +37,6 @@ public final class TransactionDb {
      */
     private static void runTransactionSqlUpdate(String sql, Transaction t, String db) throws SQLException {
         Connection con = SharedDb.connect(db);
-        con.setAutoCommit(true);
         PreparedStatement st = con.prepareStatement(sql);
         st.closeOnCompletion();
         st.setInt(1, t.getCompanyId());
@@ -60,7 +59,6 @@ public final class TransactionDb {
         String cmd = "SELECT * FROM transactions";
         List<Transaction> transactions = new ArrayList<>();
         Connection con = SharedDb.connect(db);
-        con.setAutoCommit(true);
         Statement st = con.createStatement();
         ResultSet set = st.executeQuery(cmd);
 

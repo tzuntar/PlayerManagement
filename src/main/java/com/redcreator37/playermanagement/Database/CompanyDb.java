@@ -35,7 +35,6 @@ public final class CompanyDb {
      */
     private static void runCompanySqlUpdate(String sql, Company c, String db, boolean update) throws SQLException {
         Connection con = SharedDb.connect(db);
-        con.setAutoCommit(true);
         PreparedStatement st = con.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, c.getName());
@@ -61,7 +60,6 @@ public final class CompanyDb {
         String cmd = "SELECT * FROM companies";
         List<Company> companies = new ArrayList<>();
         Connection con = SharedDb.connect(db);
-        con.setAutoCommit(true);
         Statement st = con.createStatement();
         ResultSet set = st.executeQuery(cmd);
 

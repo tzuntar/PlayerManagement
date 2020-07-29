@@ -23,7 +23,9 @@ public final class SharedDb {
      * @throws SQLException on error
      */
     static Connection connect(String database) throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + database);
+        Connection con = DriverManager.getConnection("jdbc:sqlite:" + database);
+        con.setAutoCommit(true);
+        return con;
     }
 
     /**
@@ -34,8 +36,7 @@ public final class SharedDb {
      */
     public static void createDatabaseTables(String database) throws SQLException {
         Connection con = connect(database);
-        con.setAutoCommit(true);
-        String cmd = "create table if not exists players\n(\n" +
+        String sql = "create table if not exists players\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint players_pk\n" +
                 "            primary key autoincrement,\n" +
@@ -51,18 +52,14 @@ public final class SharedDb {
                 "            references companies (name),\n" +
                 "    notes       text default '',\n" +
                 "    punishments int  default 0 not null\n);";
-        PreparedStatement st = con.prepareStatement(cmd);
-        st.execute();
-
-        cmd = "create table if not exists jobs\n(\n" +
+        con.prepareStatement(sql).execute();
+        sql = "create table if not exists jobs\n(\n" +
                 "    id          integer not null\n" +
                 "        primary key autoincrement,\n" +
                 "    name        text    not null,\n" +
                 "    description text default ''\n);";
-        PreparedStatement st2 = con.prepareStatement(cmd);
-        st2.execute();
-
-        cmd = "create table if not exists companies\n(\n" +
+        con.prepareStatement(sql).execute();
+        sql = "create table if not exists companies\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint companies_pk\n" +
                 "            primary key autoincrement,\n" +
@@ -75,10 +72,8 @@ public final class SharedDb {
                 "            references players (username),\n" +
                 "    established text    default '',\n" +
                 "    paycheck    text    default '10'\n);";
-        PreparedStatement st3 = con.prepareStatement(cmd);
-        st3.execute();
-
-        cmd = "create table if not exists transactions\n(\n" +
+        con.prepareStatement(sql).execute();
+        sql = "create table if not exists transactions\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint transactions_pk\n" +
                 "            primary key autoincrement,\n" +
@@ -88,9 +83,7 @@ public final class SharedDb {
                 "    title       TEXT,\n" +
                 "    description text,\n" +
                 "    amount      TEXT default '0' not null);";
-        PreparedStatement st4 = con.prepareStatement(cmd);
-        st4.execute();
-
+        con.prepareStatement(sql).execute();
         con.close();
     }
 

@@ -27,11 +27,8 @@ public class TopPlayerList implements Listener {
         if (!event.getLines()[0].toLowerCase().equals("[topplayers]")) return;
 
         event.setLine(0, PlayerManagement.scoreboardSignText);
-        List<String> topPlayerNames = getTopPlayers(Arrays
-                .asList(Bukkit.getOfflinePlayers()));
-
-        // remove duplicates
-        List<String> topPlayers = topPlayerNames.stream()
+        List<String> topPlayers = getTopPlayers(Arrays
+                .asList(Bukkit.getOfflinePlayers())).stream()
                 .distinct().collect(Collectors.toList());
 
         for (int i = 0, size = topPlayers.size(); i < size; i++) {

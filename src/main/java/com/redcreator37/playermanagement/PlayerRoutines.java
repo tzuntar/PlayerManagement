@@ -200,7 +200,6 @@ public final class PlayerRoutines {
 
             amount = paycheck.doubleValue();
         } else return;
-
         PlayerManagement.eco.depositPlayer(player, amount);
 
         if ((int) amount < 1) return;    // don't display on small / negative values
@@ -330,8 +329,7 @@ public final class PlayerRoutines {
      * @return value or "N/A" if null/empty
      */
     static String getValueOrEmpty(String value) {
-        return value == null || value.trim().equals("")
-                ? "N/A" : value;
+        return value == null || value.trim().equals("") ? "N/A" : value;
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.redcreator37.playermanagement.DataModels;
 
+import java.util.Objects;
+
 /**
  * Represents an in-game job
  */
@@ -58,4 +60,19 @@ public class Job {
     public String toString() {
         return this.name;
     }
+
+    /**
+     * Provides hash code functionality
+     *
+     * @return the hash code for this Job instance
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = (37 * result) + getId();
+        result = (37 * result) + Objects.hashCode(getName());
+        result = (37 * result) + Objects.hashCode(getDescription());
+        return result;
+    }
+
 }

@@ -4,6 +4,7 @@ import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Represents an in-game company
@@ -76,7 +77,7 @@ public class Company {
      * @param id          the database id
      * @param name        the name
      * @param description the description
-     * @param balance       the amount of money the company has associated
+     * @param balance     the amount of money the company has associated
      *                    with it
      * @param employees   the number of employees
      * @param owner       the username of the owner
@@ -155,6 +156,25 @@ public class Company {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    /**
+     * Provides hash code functionality
+     *
+     * @return the hash code for this Company instance
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = (37 * result) + getId();
+        result = (37 * result) + Objects.hashCode(getName());
+        result = (37 * result) + Objects.hashCode(getDescription());
+        result = (37 * result) + Objects.hashCode(getBalance());
+        result = (37 * result) + Objects.hashCode(getEmployees());
+        result = (37 * result) + Objects.hashCode(getOwner());
+        result = (37 * result) + Objects.hashCode(getEstablishedDate());
+        result = (37 * result) + Objects.hashCode(getPaycheck());
+        return result;
     }
 
 }

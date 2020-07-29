@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -140,6 +141,23 @@ public class Transaction {
             pages.add(sb.toString());
         }
         PlayerCard.openBook(p, pages, "N/A", "N/A");
+    }
+
+    /**
+     * Provides hash code functionality
+     *
+     * @return the hash code for this Transaction instance
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = (37 * result) + getId();
+        result = (37 * result) + getCompanyId();
+        result = (37 * result) + Objects.hashCode(getDirection());
+        result = (37 * result) + Objects.hashCode(getTitle());
+        result = (37 * result) + Objects.hashCode(getDescription());
+        result = (37 * result) + Objects.hashCode(getAmount());
+        return result;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.redcreator37.playermanagement.DataModels;
 
+import java.util.Objects;
+
 /**
  * Represents a Minecraft player on the server
  */
@@ -132,6 +134,26 @@ public class ServerPlayer {
     @Override
     public String toString() {
         return this.username;
+    }
+
+    /**
+     * Provides hash code functionality
+     *
+     * @return the hash code for this ServerPlayer instance
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = (37 * result) + getId();
+        result = (37 * result) + Objects.hashCode(getUsername());
+        result = (37 * result) + Objects.hashCode(getUuid());
+        result = (37 * result) + Objects.hashCode(getName());
+        result = (37 * result) + Objects.hashCode(getJoinDate());
+        result = (37 * result) + Objects.hashCode(getJob());
+        result = (37 * result) + Objects.hashCode(getCompany());
+        result = (37 * result) + Objects.hashCode(getNotes());
+        result = (37 * result) + getPunishments();
+        return result;
     }
 
 }

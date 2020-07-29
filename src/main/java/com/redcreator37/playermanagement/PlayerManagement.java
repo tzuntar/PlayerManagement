@@ -84,13 +84,16 @@ public final class PlayerManagement extends JavaPlugin {
 
     /**
      * Contains the data for all jobs on the server
+     * The key is the job name, the value is the matching Job object
      */
-    public static List<Job> jobs = null;
+    public static Map<String, Job> jobs = null;
 
     /**
      * Contains the data for all companies on the server
+     * The key is the company name, the value is the matching Company
+     * object
      */
-    public static List<Company> companies = null;
+    public static Map<String, Company> companies = null;
 
     /**
      * Contains all transactions on the server
@@ -328,8 +331,8 @@ public final class PlayerManagement extends JavaPlugin {
                 JobDb.insertJob(new Job(4097, "N/A", "N/A"), databasePath);
 
                 players = new HashMap<>();
-                jobs = new ArrayList<>();
-                companies = new ArrayList<>();
+                jobs = new HashMap<>();
+                companies = new HashMap<>();
                 transactions = new ArrayList<>();
 
                 getLogger().info("Created an empty database");
@@ -368,14 +371,15 @@ public final class PlayerManagement extends JavaPlugin {
                             PlayerRoutines.autoEconomyPlayer(player,
                                     players, companies, autoEcoDefaultAmount,
                                     autoEcoDefaultThreshold));
-                    try {
-                        for (Company c : companies)
-                            CompanyDb.updateCompany(c, databasePath);
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().severe(prefix + ChatColor.GOLD
-                                + "Error while updating the playerdata: " + ChatColor.RED
-                                + ex.getMessage());
-                    }
+                    companies.forEach((s, company) -> {
+                        try {
+                            CompanyDb.updateCompany(company, databasePath);
+                        } catch (SQLException e) {
+                            Bukkit.getLogger().severe(prefix + ChatColor.GOLD
+                                    + "Error while updating the playerdata: "
+                                    + ChatColor.RED + e.getMessage());
+                        }
+                    });
                 }), 1, autoEcoTimeSeconds * 20);
     }
 

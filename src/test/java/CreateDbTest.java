@@ -35,8 +35,8 @@ public class CreateDbTest {
             Assert.fail("Could not delete the existing " + db);
 
         List<Transaction> transactions;
-        List<Company> companies;
-        List<Job> jobs;
+        Map<String, Company> companies;
+        Map<String, Job> jobs;
         Map<String, ServerPlayer> players;
 
         try {
@@ -44,8 +44,8 @@ public class CreateDbTest {
             // insert a blank job using a bogus id
             JobDb.insertJob(new Job(4097, "N/A", "N/A"), db);
             players = new HashMap<>();
-            jobs = new ArrayList<>();
-            companies = new ArrayList<>();
+            jobs = new HashMap<>();
+            companies = new HashMap<>();
             transactions = new ArrayList<>();
             System.out.println("Created an empty database");
         } catch (SQLException e) {

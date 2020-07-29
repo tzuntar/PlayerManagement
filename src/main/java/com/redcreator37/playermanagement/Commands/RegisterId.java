@@ -1,10 +1,8 @@
 package com.redcreator37.playermanagement.Commands;
 
-import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.CompanyDb;
-import com.redcreator37.playermanagement.Database.JobDb;
 import com.redcreator37.playermanagement.Database.PlayerDb;
+import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -56,9 +54,8 @@ public class RegisterId implements CommandExecutor {
         target.setName(displayName.toString());
         target.setJoinDate(PlayerRoutines
                 .getCurrentDate(PlayerManagement.dateFormat));
-        target.setJob(JobDb.getJobFromString(PlayerManagement.jobs, "N/A"));
-        target.setCompany(CompanyDb
-                .getCompanyFromString(PlayerManagement.companies, "N/A"));
+        target.setJob(PlayerManagement.jobs.get("N/A"));
+        target.setCompany(PlayerManagement.companies.get("N/A"));
         target.setNotes("");
 
         try {

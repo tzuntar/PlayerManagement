@@ -10,8 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Company-related database routines
@@ -56,9 +56,9 @@ public final class CompanyDb {
      * @return the company list
      * @throws SQLException on error
      */
-    public static List<Company> getAllCompanies(String db) throws SQLException {
+    public static Map<String, Company> getAllCompanies(String db) throws SQLException {
         String cmd = "SELECT * FROM companies";
-        List<Company> companies = new ArrayList<>();
+        Map<String, Company> companies = new HashMap<>();
         Connection con = SharedDb.connect(db);
         Statement st = con.createStatement();
         ResultSet set = st.executeQuery(cmd);
@@ -73,7 +73,7 @@ public final class CompanyDb {
                     set.getString("owner"),
                     set.getString("established"),
                     set.getString("paycheck"));
-            companies.add(c);
+            companies.put(c.getName(), c);
         }
 
         con.close();
@@ -104,19 +104,6 @@ public final class CompanyDb {
         String cmd = "UPDATE companies SET name = ?, description = ?, money = ?," +
                 " employees = ?, owner = ?, established = ?, paycheck = ? WHERE id = ?";
         runCompanySqlUpdate(cmd, c, db, true);
-    }
-
-    /**
-     * Returns the Company object with the matching name
-     *
-     * @param companies the list of all companies
-     * @param entered   the entered string
-     * @return the matching Company object, or null if the
-     * company with this name wasn't found
-     */
-    public static Company getCompanyFromString(List<Company> companies, String entered) {
-        return companies.stream().filter(c -> c.getName().equals(entered))
-                .findFirst().orElse(null);
     }
 
     /**

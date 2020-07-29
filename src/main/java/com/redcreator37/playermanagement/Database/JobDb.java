@@ -7,8 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Job-related database routines
@@ -47,9 +47,9 @@ public final class JobDb {
      * @return the job list
      * @throws SQLException on error
      */
-    public static List<Job> getAllJobs(String database) throws SQLException {
+    public static Map<String, Job> getAllJobs(String database) throws SQLException {
         String cmd = "SELECT * FROM jobs";
-        List<Job> jobs = new ArrayList<>();
+        Map<String, Job> jobs = new HashMap<>();
         Connection con = SharedDb.connect(database);
         Statement st = con.createStatement();
         ResultSet set = st.executeQuery(cmd);
@@ -59,7 +59,7 @@ public final class JobDb {
             Job j = new Job(set.getInt("id"),
                     set.getString("name"),
                     set.getString("description"));
-            jobs.add(j);
+            jobs.put(j.getName(), j);
         }
 
         con.close();
@@ -91,19 +91,6 @@ public final class JobDb {
         PreparedStatement st = con.prepareStatement(cmd);
         st.executeUpdate();
         con.close();
-    }
-
-    /**
-     * Returns the Job object with the matching name
-     *
-     * @param jobs    the list of all jobs
-     * @param entered the entered string
-     * @return the matching Job object, or null if the
-     * job with this name wasn't found
-     */
-    public static Job getJobFromString(List<Job> jobs, String entered) {
-        return jobs.stream().filter(job -> job.getName().equals(entered))
-                .findFirst().orElse(null);
     }
 
 }

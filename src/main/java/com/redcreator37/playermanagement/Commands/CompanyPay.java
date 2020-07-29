@@ -17,7 +17,12 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
-import static com.redcreator37.playermanagement.PlayerManagement.*;
+import static com.redcreator37.playermanagement.PlayerManagement.companies;
+import static com.redcreator37.playermanagement.PlayerManagement.databasePath;
+import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
+import static com.redcreator37.playermanagement.PlayerManagement.players;
+import static com.redcreator37.playermanagement.PlayerManagement.prefix;
+import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 
 /**
  * A simple /pay command for companies
@@ -47,8 +52,8 @@ public class CompanyPay implements CommandExecutor {
             return true;
 
         // attempt to look up both companies
-        Company source = CompanyDb.getCompanyFromString(companies, args[0]);
-        Company target = CompanyDb.getCompanyFromString(companies, args[1]);
+        Company source = companies.get(args[0]),
+                target = companies.get(args[1]);
         if (source == null || target == null) {
             p.sendMessage(prefix + ChatColor.GOLD + "Unknown company name!");
             return true;

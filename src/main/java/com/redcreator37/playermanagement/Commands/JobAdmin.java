@@ -45,7 +45,7 @@ public class JobAdmin implements CommandExecutor {
                 JobDb.insertJob(new Job(4097, args[1], jobDesc.toString()),
                         PlayerManagement.databasePath);
             } else if (args[0].equals("delete")) {
-                Job j = JobDb.getJobFromString(PlayerManagement.jobs, args[1]);
+                Job j = PlayerManagement.jobs.get(args[1]);
                 if (j == null) {
                     p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                             + "Unknown job " + ChatColor.GREEN + args[1]);

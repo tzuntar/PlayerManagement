@@ -141,7 +141,7 @@ public final class PlayerRoutines {
      *                     additional money
      */
     static void autoEconomyPlayer(Player player, Map<String, ServerPlayer> players,
-                                  List<Company> companies, double defAmount,
+                                  Map<String, Company> companies, double defAmount,
                                   double defThreshold) {
         ServerPlayer target = getPlayerFromUsername(players, player.getName());
         if (target == null || Objects.requireNonNull(PlayerManagement.ess)
@@ -185,10 +185,7 @@ public final class PlayerRoutines {
                     return;
                 }
             } else {
-                Company company = companies.stream().filter(c -> c
-                        .getName().equals(targetCompany.getName()))
-                        .findFirst().orElse(null);
-
+                Company company = companies.get(targetCompany.getName());
                 if (company == null) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                             + "Unknown company: " + ChatColor.GREEN + targetCompany);
@@ -196,14 +193,9 @@ public final class PlayerRoutines {
                 }
 
                 // attempt to update the database Company object
-                for (int i = 0; i < companies.size(); i++) {
-                    Company c = companies.get(i);
-                    if (c.getName().equals(company.getName())) {
-                        c.setBalance(c.getBalance().subtract(paycheck));
-                        companies.set(i, c);
-                        break;
-                    }
-                }
+                // TODO: make sure this works properly!
+                companies.get(company.getName()).setBalance(company
+                        .getBalance().subtract(paycheck));
             }
 
             amount = paycheck.doubleValue();

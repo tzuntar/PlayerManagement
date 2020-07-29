@@ -73,10 +73,8 @@ public final class PlayerDb {
                     set.getString("uuid"));
             p.setName(set.getString("name"));
             p.setJoinDate(set.getString("join_date"));
-            p.setJob(JobDb.getJobFromString(PlayerManagement.jobs,
-                    set.getString("job")));
-            p.setCompany(CompanyDb.getCompanyFromString(
-                    PlayerManagement.companies, set.getString("company")));
+            p.setJob(PlayerManagement.jobs.get(set.getString("job")));
+            p.setCompany(PlayerManagement.companies.get(set.getString("company")));
             p.setNotes(set.getString("notes"));
             p.setPunishments(set.getInt("punishments"));
             players.put(p.getUuid(), p);

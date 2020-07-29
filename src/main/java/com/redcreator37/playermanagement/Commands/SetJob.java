@@ -2,7 +2,6 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.JobDb;
 import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -46,7 +45,7 @@ public class SetJob implements CommandExecutor {
         if (PlayerRoutines.checkPlayerNonExistent(p, target, targetPlayerName))
             return true;
 
-        Job newJob = JobDb.getJobFromString(PlayerManagement.jobs, args[0]);
+        Job newJob = PlayerManagement.jobs.get(args[0]);
         if (newJob == null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Unknown job: " + ChatColor.GREEN + args[0]

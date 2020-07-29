@@ -46,8 +46,7 @@ public class SetCompany implements CommandExecutor {
         if (PlayerRoutines.checkPlayerNonExistent(p, target, targetPlayerName))
             return true;
 
-        Company newCompany = CompanyDb.getCompanyFromString(PlayerManagement
-                .companies, args[0]);
+        Company newCompany = PlayerManagement.companies.get(args[0]);
         if (newCompany == null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Unknown company: " + ChatColor.GREEN + args[0]

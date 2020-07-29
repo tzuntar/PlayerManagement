@@ -35,11 +35,8 @@ public class EstablishCompany implements CommandExecutor {
             return true;
         }
 
-        Company test = CompanyDb.getCompanyFromString(PlayerManagement
-                .companies, args[0]);
-        if (test != null) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Already exists!");
+        if (PlayerManagement.companies.get(args[0]) != null) {
+            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Already exists!");
             return true;
         }
 

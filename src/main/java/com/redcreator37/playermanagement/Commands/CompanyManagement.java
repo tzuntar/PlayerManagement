@@ -68,7 +68,7 @@ public class CompanyManagement implements CommandExecutor {
         }
 
         // try to get the company from the database
-        Company company = CompanyDb.getCompanyFromString(companies, companyName);
+        Company company = companies.get(companyName);
         if (company == null) {
             p.sendMessage(prefix + ChatColor.GOLD
                     + "Unknown company: " + ChatColor.GREEN + companyName);

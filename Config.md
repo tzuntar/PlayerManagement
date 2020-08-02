@@ -1,6 +1,6 @@
 # Configuration File Values
 
-The following is the structure of the config file as of PlayerManagement 1.5:
+The following is the structure of the config file as of PlayerManagement 1.6:
 
 ```yaml
 General:
@@ -53,7 +53,7 @@ PlayerList:
   - '§4YouTube:   §r§f§nlink§r      §r§8: :      §9Discord:   §r§f§nlink§r             '
   - |2-
 
-    §8§oPowered by PlayerManagement v1.3 by RedCreator37
+    §8§oPowered by PlayerManagement v1.6 by RedCreator37
   # you can remove these 3 lines ^^^
   Display:                      # formatting used for players of each rank in the playerlist
     Generic: §8[ §f{playername} §8]
@@ -67,7 +67,7 @@ PlayerList:
     Admins: §cAdmins
 ```
 
-These are the `{placeholders}` supported as of PlayerManagement 1.5:
+These are the `{placeholders}` supported as of PlayerManagement 1.6:
 
 ```yaml
 {playercount}     # the number of online players

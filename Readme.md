@@ -1,4 +1,4 @@
-# PlayerManagement 1.5
+# PlayerManagement 1.6
 
 PlayerManagement is a server-side Bukkit plugin for handling player data and events. It's originally been written for use on RP (role-play) servers, in an attempt to provide (somewhat) realistic economy.
 

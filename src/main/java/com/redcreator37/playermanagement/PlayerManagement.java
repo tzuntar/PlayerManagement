@@ -199,7 +199,7 @@ public final class PlayerManagement extends JavaPlugin {
             "§7§oStatistics are updated every 5 min",
             "§8--------------------------------------------",
             "§4YouTube:   §r§f§nlink§r      §r§8: :      §9Discord:   §r§f§nlink§r             ",
-            "\n§8§oPowered by PlayerManagement v1.3 by RedCreator37"
+            "\n§8§oPowered by PlayerManagement v1.6 by RedCreator37"
     };
     public static String genericPlayerEntry = "§8[ §f{playername} §8]";
     public static String memberPlayerEntry = "§8[ §a{playername} §8]";

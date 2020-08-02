@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
-import static com.redcreator37.playermanagement.PlayerManagement.databasePath;
+import static com.redcreator37.playermanagement.PlayerManagement.database;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
@@ -89,20 +89,20 @@ public class CompanyPay implements CommandExecutor {
         source.setBalance(source.getBalance().subtract(amount));
         TransactionDb.addTransactionAsync(p, new Transaction(4097,
                 source.getId(), "->", "Pay " + formattedAmount,
-                "Pay " + formattedAmount + " to " + target, amount), databasePath);
+                "Pay " + formattedAmount + " to " + target, amount), database);
 
         // add to the target
         target.setBalance(target.getBalance().add(amount));
         TransactionDb.addTransactionAsync(p, new Transaction(4097,
                 target.getId(), "<-", "Receive " + formattedAmount,
-                "Receive " + formattedAmount + " from " + source, amount), databasePath);
+                "Receive " + formattedAmount + " from " + source, amount), database);
 
         // update and re-read the data
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
             CompanyDb.updateCompanyData(p, source);
             CompanyDb.updateCompanyData(p, target);
             try {
-                transactions = TransactionDb.getAllTransactions(databasePath);
+                transactions = TransactionDb.getAllTransactions(database);
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
                         + "Error while saving transaction data: "

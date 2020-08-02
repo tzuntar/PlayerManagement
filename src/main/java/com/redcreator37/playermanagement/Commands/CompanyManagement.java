@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
-import static com.redcreator37.playermanagement.PlayerManagement.databasePath;
+import static com.redcreator37.playermanagement.PlayerManagement.database;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
@@ -118,7 +118,7 @@ public class CompanyManagement implements CommandExecutor {
                 TransactionDb.addTransactionAsync(p, new Transaction(4097,
                         company.getId(), "<-", "Deposit $"
                         + amount, "Deposit $" + amount
-                        + " from the player " + target, amount), databasePath);
+                        + " from the player " + target, amount), database);
                 break;
             case "withdraw":
                 company.setBalance(company.getBalance().subtract(amount));
@@ -129,7 +129,7 @@ public class CompanyManagement implements CommandExecutor {
                 TransactionDb.addTransactionAsync(p, new Transaction(4097,
                         company.getId(), "->", "Withdraw $"
                         + amount, "Withdraw $" + amount
-                        + " to the player " + target, amount), databasePath);
+                        + " to the player " + target, amount), database);
                 break;
             case "setdesc":
                 StringBuilder desc = new StringBuilder();
@@ -162,7 +162,7 @@ public class CompanyManagement implements CommandExecutor {
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
             CompanyDb.updateCompanyData(p, company);
             try {
-                transactions = TransactionDb.getAllTransactions(databasePath);
+                transactions = TransactionDb.getAllTransactions(database);
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
                         + "Error while saving transaction data: "

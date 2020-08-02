@@ -13,6 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -68,9 +69,9 @@ public class SetCompany implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
-                String dbPath = PlayerManagement.databasePath;
-                PlayerDb.updatePlayer(target, dbPath);
-                PlayerManagement.players = PlayerDb.getAllPlayers(dbPath);
+                Connection db = PlayerManagement.database;
+                PlayerDb.updatePlayer(target, db);
+                PlayerManagement.players = PlayerDb.getAllPlayers(db);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + " is now a part of the company "
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
@@ -79,9 +80,9 @@ public class SetCompany implements CommandExecutor {
                 if (!prevCompany.getName().equals("N/A"))
                     prevCompany.setEmployees(prevCompany.getEmployees() - 1);
 
-                CompanyDb.updateCompany(newCompany, dbPath);
-                CompanyDb.updateCompany(prevCompany, dbPath);
-                PlayerManagement.companies = CompanyDb.getAllCompanies(dbPath);
+                CompanyDb.updateCompany(newCompany, db);
+                CompanyDb.updateCompany(prevCompany, db);
+                PlayerManagement.companies = CompanyDb.getAllCompanies(db);
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Error while updating the playerdata: " + ChatColor.RED

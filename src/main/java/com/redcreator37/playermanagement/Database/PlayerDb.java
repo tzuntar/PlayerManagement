@@ -28,12 +28,11 @@ public final class PlayerDb {
      * @param sql    the SQL command. Example: <code>INSERT INTO
      *               contacts (name, surname) VALUES (?, ?)</code>
      * @param player the player object to get the data from
-     * @param db     database path
+     * @param db     the database connection
      * @throws SQLException on error
      */
-    private static void runPlayerSqlUpdate(String sql, ServerPlayer player, String db, boolean update) throws SQLException {
-        Connection con = SharedDb.connect(db);
-        PreparedStatement st = con.prepareStatement(sql);
+    private static void runPlayerSqlUpdate(String sql, ServerPlayer player, Connection db, boolean update) throws SQLException {
+        PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, player.getUsername());
         st.setString(2, player.getUuid());
@@ -47,22 +46,20 @@ public final class PlayerDb {
         st.setInt(8, player.getPunishments());
         if (update) st.setInt(9, player.getId());
         st.executeUpdate();
-        con.close();
     }
 
     /**
      * Runs the specified SQL query to return the list of
      * server players in the database
      *
-     * @param sql      sql query to run
-     * @param database database path
+     * @param sql sql query to run
+     * @param db  the database connection
      * @return the list of players in the database
      * @throws SQLException on error
      */
-    private static Map<String, ServerPlayer> commonPlayerQuery(String sql, String database) throws SQLException {
+    private static Map<String, ServerPlayer> commonPlayerQuery(String sql, Connection db) throws SQLException {
         Map<String, ServerPlayer> players = new HashMap<>();
-        Connection con = SharedDb.connect(database);
-        Statement st = con.createStatement();
+        Statement st = db.createStatement();
         st.closeOnCompletion();
         ResultSet set = st.executeQuery(sql);
 
@@ -79,20 +76,18 @@ public final class PlayerDb {
             p.setPunishments(set.getInt("punishments"));
             players.put(p.getUuid(), p);
         }
-
         set.close();
-        con.close();
         return players;
     }
 
     /**
      * Returns the list of all server players
      *
-     * @param db database path
+     * @param db the database connection
      * @return the player list
      * @throws SQLException on error
      */
-    public static Map<String, ServerPlayer> getAllPlayers(String db) throws SQLException {
+    public static Map<String, ServerPlayer> getAllPlayers(Connection db) throws SQLException {
         String cmd = "SELECT players.* FROM players INNER JOIN jobs ON jobs.name = players.job" +
                 " INNER JOIN companies ON companies.name = players.company;";
         return commonPlayerQuery(cmd, db);
@@ -102,11 +97,11 @@ public final class PlayerDb {
      * Returns the list of all server players, use only when
      * registering new players
      *
-     * @param db database path
+     * @param db the database connection
      * @return the player list
      * @throws SQLException on error
      */
-    public static Map<String, ServerPlayer> getAllNewlyRegistered(String db) throws SQLException {
+    public static Map<String, ServerPlayer> getAllNewlyRegistered(Connection db) throws SQLException {
         String cmd = "SELECT * FROM players";
         return commonPlayerQuery(cmd, db);
     }
@@ -115,10 +110,10 @@ public final class PlayerDb {
      * Adds another player to the database
      *
      * @param player the ServerPlayer object to be inserted
-     * @param db     database path
+     * @param db     the database connection
      * @throws SQLException on error
      */
-    public static void insertPlayer(ServerPlayer player, String db) throws SQLException {
+    public static void insertPlayer(ServerPlayer player, Connection db) throws SQLException {
         String cmd = "INSERT INTO players(username, uuid, name, join_date," +
                 "job, company, notes, punishments) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         runPlayerSqlUpdate(cmd, player, db, false);
@@ -128,10 +123,10 @@ public final class PlayerDb {
      * Updates the data of an existing player in the database
      *
      * @param player the ServerPlayer object to be updated
-     * @param db     database path
+     * @param db     the database connection
      * @throws SQLException on error
      */
-    public static void updatePlayer(ServerPlayer player, String db) throws SQLException {
+    public static void updatePlayer(ServerPlayer player, Connection db) throws SQLException {
         String cmd = "UPDATE players SET username = ?, uuid = ?, name = ?," +
                 "join_date = ?, job = ?, company = ?, notes = ?, punishments = ? " +
                 "WHERE ID = ?";
@@ -142,15 +137,12 @@ public final class PlayerDb {
      * Deletes the player with the specified id from the database
      *
      * @param id player id
-     * @param db database path
+     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void removePlayer(int id, String db) throws SQLException {
+    public static void removePlayer(int id, Connection db) throws SQLException {
         String cmd = "DELETE FROM players WHERE id = " + id + ";";
-        Connection con = SharedDb.connect(db);
-        PreparedStatement st = con.prepareStatement(cmd);
-        st.executeUpdate();
-        con.close();
+        db.prepareStatement(cmd).executeUpdate();
     }
 
 }

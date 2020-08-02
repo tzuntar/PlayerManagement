@@ -31,6 +31,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +68,12 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * The database to use to store the player data
      */
-    public static String databasePath = "PlayerData.db";
+    private static String databasePath = "PlayerData.db";
+
+    /**
+     * The database connection to use for all operations
+     */
+    public static Connection database = null;
 
     /**
      * The date format to be used, <strong>must</strong>
@@ -323,12 +329,18 @@ public final class PlayerManagement extends JavaPlugin {
      */
     private void setUpDatabase() {
         boolean success = true;
+        try {
+            database = SharedDb.connect(databasePath);
+        } catch (SQLException e) {
+            success = false;
+        }
+
         if (!new File(databasePath).exists()) // database not found, create a new one
             try {
-                SharedDb.createDatabaseTables(databasePath);
+                SharedDb.createDatabaseTables(database);
                 // just insert a blank player, job and company using a bogus id
-                CompanyDb.insertCompany(new Company(4097, "N/A", "N/A"), databasePath);
-                JobDb.insertJob(new Job(4097, "N/A", "N/A"), databasePath);
+                CompanyDb.insertCompany(new Company(4097, "N/A", "N/A"), database);
+                JobDb.insertJob(new Job(4097, "N/A", "N/A"), database);
 
                 players = new HashMap<>();
                 jobs = new HashMap<>();
@@ -343,10 +355,10 @@ public final class PlayerManagement extends JavaPlugin {
             }
 
         try {
-            jobs = JobDb.getAllJobs(databasePath);   // it has to be done in this exact order!
-            companies = CompanyDb.getAllCompanies(databasePath);
-            transactions = TransactionDb.getAllTransactions(databasePath);
-            players = PlayerDb.getAllPlayers(databasePath);
+            jobs = JobDb.getAllJobs(database);   // it has to be done in this exact order!
+            companies = CompanyDb.getAllCompanies(database);
+            transactions = TransactionDb.getAllTransactions(database);
+            players = PlayerDb.getAllPlayers(database);
             getLogger().info("Player database loaded successfully");
         } catch (SQLException e) {
             getLogger().severe("Error while reading from the database: "
@@ -373,7 +385,7 @@ public final class PlayerManagement extends JavaPlugin {
                                     autoEcoDefaultThreshold));
                     companies.forEach((s, company) -> {
                         try {
-                            CompanyDb.updateCompany(company, databasePath);
+                            CompanyDb.updateCompany(company, database);
                         } catch (SQLException e) {
                             Bukkit.getLogger().severe(prefix + ChatColor.GOLD
                                     + "Error while updating the playerdata: "

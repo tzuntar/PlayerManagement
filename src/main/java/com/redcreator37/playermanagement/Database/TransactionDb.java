@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,12 +31,11 @@ public final class TransactionDb {
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
      * @param t   the Transaction object to get the data from
-     * @param db  database path
+     * @param db  the database connection
      * @throws SQLException on error
      */
-    private static void runTransactionSqlUpdate(String sql, Transaction t, String db) throws SQLException {
-        Connection con = SharedDb.connect(db);
-        PreparedStatement st = con.prepareStatement(sql);
+    private static void runTransactionSqlUpdate(String sql, Transaction t, Connection db) throws SQLException {
+        PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setInt(1, t.getCompanyId());
         st.setString(2, t.getDirection());
@@ -45,22 +43,19 @@ public final class TransactionDb {
         st.setString(4, t.getDescription());
         st.setString(5, t.getAmount().toString());
         st.executeUpdate();
-        con.close();
     }
 
     /**
      * Returns the list of all transactions in the database
      *
-     * @param db database path
+     * @param db the database connection
      * @return the transaction list
      * @throws SQLException on error
      */
-    public static List<Transaction> getAllTransactions(String db) throws SQLException {
+    public static List<Transaction> getAllTransactions(Connection db) throws SQLException {
         String cmd = "SELECT * FROM transactions";
         List<Transaction> transactions = new ArrayList<>();
-        Connection con = SharedDb.connect(db);
-        Statement st = con.createStatement();
-        ResultSet set = st.executeQuery(cmd);
+        ResultSet set = db.createStatement().executeQuery(cmd);
 
         // loop through the records
         while (set.next()) {
@@ -72,8 +67,6 @@ public final class TransactionDb {
                     new BigDecimal(set.getString("amount")));
             transactions.add(t);
         }
-
-        con.close();
         return transactions;
     }
 
@@ -81,10 +74,10 @@ public final class TransactionDb {
      * Adds another transaction to the database
      *
      * @param t  the Transaction object to be inserted
-     * @param db database path
+     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void insertTransaction(Transaction t, String db) throws SQLException {
+    public static void insertTransaction(Transaction t, Connection db) throws SQLException {
         String cmd = "INSERT INTO transactions(companyId, direction, title," +
                 "description, amount) VALUES(?, ?, ?, ?, ?)";
         runTransactionSqlUpdate(cmd, t, db);
@@ -93,15 +86,15 @@ public final class TransactionDb {
     /**
      * Adds a transaction in the background
      *
-     * @param p        the player
-     * @param t        the transaction
-     * @param database the database path
+     * @param p  the player
+     * @param t  the transaction
+     * @param db the database connection
      */
-    public static void addTransactionAsync(Player p, Transaction t, String database) {
+    public static void addTransactionAsync(Player p, Transaction t, Connection db) {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                insertTransaction(t, database);
+                insertTransaction(t, db);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Transaction data saved.");
             } catch (SQLException e) {

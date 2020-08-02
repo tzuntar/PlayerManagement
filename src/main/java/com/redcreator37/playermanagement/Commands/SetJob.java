@@ -57,9 +57,9 @@ public class SetJob implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
-                PlayerDb.updatePlayer(target, PlayerManagement.databasePath);
+                PlayerDb.updatePlayer(target, PlayerManagement.database);
                 PlayerManagement.players = PlayerDb
-                        .getAllPlayers(PlayerManagement.databasePath);
+                        .getAllPlayers(PlayerManagement.database);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + " is now employed as " + ChatColor.GREEN
                         + newJob + ChatColor.GOLD + ".");

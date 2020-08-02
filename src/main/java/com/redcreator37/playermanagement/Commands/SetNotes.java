@@ -51,9 +51,9 @@ public class SetNotes implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the notes and update the player list
-                PlayerDb.updatePlayer(target, PlayerManagement.databasePath);
+                PlayerDb.updatePlayer(target, PlayerManagement.database);
                 PlayerManagement.players = PlayerDb
-                        .getAllPlayers(PlayerManagement.databasePath);
+                        .getAllPlayers(PlayerManagement.database);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Notes updated.");
             } catch (SQLException e) {

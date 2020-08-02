@@ -59,9 +59,9 @@ public class RegisterId implements CommandExecutor {
         target.setNotes("");
 
         try {
-            PlayerDb.insertPlayer(target, PlayerManagement.databasePath);
+            PlayerDb.insertPlayer(target, PlayerManagement.database);
             PlayerManagement.players = PlayerDb // reload from the database
-                    .getAllNewlyRegistered(PlayerManagement.databasePath);
+                    .getAllNewlyRegistered(PlayerManagement.database);
 
             ServerPlayer registeredPlayer = PlayerRoutines  // re-read the player list
                     .getPlayerFromUsername(PlayerManagement.players, p.getName());

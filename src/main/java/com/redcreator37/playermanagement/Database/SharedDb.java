@@ -2,7 +2,6 @@ package com.redcreator37.playermanagement.Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -22,7 +21,7 @@ public final class SharedDb {
      * @param database database path
      * @throws SQLException on error
      */
-    static Connection connect(String database) throws SQLException {
+    public static Connection connect(String database) throws SQLException {
         Connection con = DriverManager.getConnection("jdbc:sqlite:" + database);
         con.setAutoCommit(true);
         return con;
@@ -31,11 +30,10 @@ public final class SharedDb {
     /**
      * Create possibly nonexistent database tables
      *
-     * @param database database path
+     * @param db the database connection to use
      * @throws SQLException on error
      */
-    public static void createDatabaseTables(String database) throws SQLException {
-        Connection con = connect(database);
+    public static void createDatabaseTables(Connection db) throws SQLException {
         String sql = "create table if not exists players\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint players_pk\n" +
@@ -52,13 +50,13 @@ public final class SharedDb {
                 "            references companies (name),\n" +
                 "    notes       text default '',\n" +
                 "    punishments int  default 0 not null\n);";
-        con.prepareStatement(sql).execute();
+        db.prepareStatement(sql).execute();
         sql = "create table if not exists jobs\n(\n" +
                 "    id          integer not null\n" +
                 "        primary key autoincrement,\n" +
                 "    name        text    not null,\n" +
                 "    description text default ''\n);";
-        con.prepareStatement(sql).execute();
+        db.prepareStatement(sql).execute();
         sql = "create table if not exists companies\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint companies_pk\n" +
@@ -72,7 +70,7 @@ public final class SharedDb {
                 "            references players (username),\n" +
                 "    established text    default '',\n" +
                 "    paycheck    text    default '10'\n);";
-        con.prepareStatement(sql).execute();
+        db.prepareStatement(sql).execute();
         sql = "create table if not exists transactions\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint transactions_pk\n" +
@@ -83,8 +81,7 @@ public final class SharedDb {
                 "    title       TEXT,\n" +
                 "    description text,\n" +
                 "    amount      TEXT default '0' not null);";
-        con.prepareStatement(sql).execute();
-        con.close();
+        db.prepareStatement(sql).execute();
     }
 
 }

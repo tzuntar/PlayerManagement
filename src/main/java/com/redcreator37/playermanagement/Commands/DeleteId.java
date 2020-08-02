@@ -42,9 +42,9 @@ public class DeleteId implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                PlayerDb.removePlayer(target.getId(), PlayerManagement.databasePath);
+                PlayerDb.removePlayer(target.getId(), PlayerManagement.database);
                 PlayerManagement.players = PlayerDb // reload from the database
-                        .getAllPlayers(PlayerManagement.databasePath);
+                        .getAllPlayers(PlayerManagement.database);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "The player " + ChatColor.GREEN + target.getUsername()
                         + ChatColor.GOLD + " has been successfully unregistered.");

@@ -55,7 +55,6 @@ public class LowerRank implements CommandExecutor {
                             + " is not online, money will not be taken!");
                 }
 
-                // increase the count
                 target.setPunishments(target.getPunishments() + 1);
 
                 if (args.length > 1) {  // if there's a reason specified
@@ -84,9 +83,8 @@ public class LowerRank implements CommandExecutor {
                             + ChatColor.GOLD + " has been punished.");
                 }
 
-                PlayerDb.updatePlayer(target, PlayerManagement.databasePath);
-                PlayerManagement.players = PlayerDb
-                        .getAllPlayers(PlayerManagement.databasePath);
+                PlayerDb.updatePlayer(target, PlayerManagement.database);
+                PlayerManagement.players = PlayerDb.getAllPlayers(PlayerManagement.database);
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Error while modifying the playerdata: " + ChatColor.RED

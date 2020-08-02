@@ -55,9 +55,9 @@ public class EstablishCompany implements CommandExecutor {
                 newCompany.setBalance(new BigDecimal(PlayerManagement
                         .companyEstablishPrice / 2));
 
-                CompanyDb.insertCompany(newCompany, PlayerManagement.databasePath);
+                CompanyDb.insertCompany(newCompany, PlayerManagement.database);
                 PlayerManagement.companies = CompanyDb
-                        .getAllCompanies(PlayerManagement.databasePath);
+                        .getAllCompanies(PlayerManagement.database);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Company registration successful!");
             } catch (SQLException e) {

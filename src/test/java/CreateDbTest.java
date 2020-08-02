@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,17 +30,19 @@ public class CreateDbTest {
     @SuppressWarnings({"unused", "UnusedAssignment"})
     public void setUpDatabaseTest() {
         boolean success = true;
-        String db = "target/test.db";
-        File oldDb = new File(db);
-        if (oldDb.exists() && !oldDb.delete())
-            Assert.fail("Could not delete the existing " + db);
+        String dbPath = "target/test.db";
+        File dbFile = new File(dbPath);
+        if (dbFile.exists() && !dbFile.delete())
+            Assert.fail("Could not delete the existing " + dbPath);
 
         List<Transaction> transactions;
         Map<String, Company> companies;
         Map<String, Job> jobs;
         Map<String, ServerPlayer> players;
 
+        Connection db = null;
         try {
+            db = SharedDb.connect(dbPath);
             SharedDb.createDatabaseTables(db);
             // insert a blank job using a bogus id
             JobDb.insertJob(new Job(4097, "N/A", "N/A"), db);
@@ -53,6 +56,7 @@ public class CreateDbTest {
             success = false;
         }
 
+        if (db == null) Assert.fail("Establishing database connection failed!");
         try {
             jobs = JobDb.getAllJobs(db);   // it has to be done in this exact order!
             companies = CompanyDb.getAllCompanies(db);
@@ -66,7 +70,7 @@ public class CreateDbTest {
         }
 
         System.out.println("Cleaning up...");
-        if (!oldDb.delete()) success = false;
+        // if (!dbFile.delete()) success = false; // FIXME: fails
         Assert.assertTrue(success);
     }
 

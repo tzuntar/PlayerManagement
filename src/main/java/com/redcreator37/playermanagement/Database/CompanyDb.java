@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,12 +29,11 @@ public final class CompanyDb {
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
      * @param c   the Company object to get the data from
-     * @param db  database path
+     * @param db  the database connection
      * @throws SQLException on error
      */
-    private static void runCompanySqlUpdate(String sql, Company c, String db, boolean update) throws SQLException {
-        Connection con = SharedDb.connect(db);
-        PreparedStatement st = con.prepareStatement(sql);
+    private static void runCompanySqlUpdate(String sql, Company c, Connection db, boolean update) throws SQLException {
+        PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, c.getName());
         st.setString(2, c.getDescription());
@@ -46,22 +44,19 @@ public final class CompanyDb {
         st.setString(7, c.getPaycheck().toString());
         if (update) st.setInt(8, c.getId());
         st.executeUpdate();
-        con.close();
     }
 
     /**
      * Returns the list of all companies in the database
      *
-     * @param db database path
+     * @param db the database connection
      * @return the company list
      * @throws SQLException on error
      */
-    public static Map<String, Company> getAllCompanies(String db) throws SQLException {
+    public static Map<String, Company> getAllCompanies(Connection db) throws SQLException {
         String cmd = "SELECT * FROM companies";
         Map<String, Company> companies = new HashMap<>();
-        Connection con = SharedDb.connect(db);
-        Statement st = con.createStatement();
-        ResultSet set = st.executeQuery(cmd);
+        ResultSet set = db.createStatement().executeQuery(cmd);
 
         // loop through the records
         while (set.next()) {
@@ -75,8 +70,6 @@ public final class CompanyDb {
                     set.getString("paycheck"));
             companies.put(c.getName(), c);
         }
-
-        con.close();
         return companies;
     }
 
@@ -84,10 +77,10 @@ public final class CompanyDb {
      * Adds another company to the database
      *
      * @param c  the Company object to be inserted
-     * @param db database path
+     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void insertCompany(Company c, String db) throws SQLException {
+    public static void insertCompany(Company c, Connection db) throws SQLException {
         String cmd = "INSERT INTO companies(name, description, money," +
                 " employees, owner, established, paycheck) VALUES(?, ?, ?, ?, ?, ?, ?)";
         runCompanySqlUpdate(cmd, c, db, false);
@@ -97,10 +90,10 @@ public final class CompanyDb {
      * Updates the data of an existing company in the database
      *
      * @param c  the Company object to be updated
-     * @param db database path
+     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void updateCompany(Company c, String db) throws SQLException {
+    public static void updateCompany(Company c, Connection db) throws SQLException {
         String cmd = "UPDATE companies SET name = ?, description = ?, money = ?," +
                 " employees = ?, owner = ?, established = ?, paycheck = ? WHERE id = ?";
         runCompanySqlUpdate(cmd, c, db, true);
@@ -114,8 +107,8 @@ public final class CompanyDb {
      */
     public static void updateCompanyData(Player player, Company company) {
         try {
-            updateCompany(company, PlayerManagement.databasePath);
-            PlayerManagement.companies = getAllCompanies(PlayerManagement.databasePath);
+            updateCompany(company, PlayerManagement.database);
+            PlayerManagement.companies = getAllCompanies(PlayerManagement.database);
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Company data saved.");
         } catch (SQLException ex) {

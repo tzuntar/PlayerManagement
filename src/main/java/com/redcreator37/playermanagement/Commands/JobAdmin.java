@@ -43,7 +43,7 @@ public class JobAdmin implements CommandExecutor {
                     jobDesc.append(arg).append(" ");
 
                 JobDb.insertJob(new Job(4097, args[1], jobDesc.toString()),
-                        PlayerManagement.databasePath);
+                        PlayerManagement.database);
             } else if (args[0].equals("delete")) {
                 Job j = PlayerManagement.jobs.get(args[1]);
                 if (j == null) {
@@ -51,11 +51,11 @@ public class JobAdmin implements CommandExecutor {
                             + "Unknown job " + ChatColor.GREEN + args[1]);
                     return true;
                 }
-                JobDb.removeJob(j.getId(), PlayerManagement.databasePath);
+                JobDb.removeJob(j.getId(), PlayerManagement.database);
             }
 
             // update the job list to reflect the changes
-            PlayerManagement.jobs = JobDb.getAllJobs(PlayerManagement.databasePath);
+            PlayerManagement.jobs = JobDb.getAllJobs(PlayerManagement.database);
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Job data saved.");
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD

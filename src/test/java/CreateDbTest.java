@@ -29,7 +29,6 @@ public class CreateDbTest {
     @Test
     @SuppressWarnings({"unused", "UnusedAssignment"})
     public void setUpDatabaseTest() {
-        boolean success = true;
         String dbPath = "target/test.db";
         File dbFile = new File(dbPath);
         if (dbFile.exists() && !dbFile.delete())
@@ -40,38 +39,41 @@ public class CreateDbTest {
         Map<String, Job> jobs;
         Map<String, ServerPlayer> players;
 
-        Connection db = null;
+        JobDb jobDb = null;
+        CompanyDb companyDb = null;
+        TransactionDb transactionDb = null;
+        PlayerDb playerDb = null;
         try {
-            db = SharedDb.connect(dbPath);
-            SharedDb.createDatabaseTables(db);
+            Connection db = SharedDb.connect(dbPath);
+            SharedDb.createTables(db);
+            jobDb = new JobDb(db);
+            companyDb = new CompanyDb(db);
+            transactionDb = new TransactionDb(db);
+            playerDb = new PlayerDb(db);
             // insert a blank job using a bogus id
-            JobDb.insertJob(new Job(4097, "N/A", "N/A"), db);
+            jobDb.insert(new Job(4097, "N/A", "N/A"));
             players = new HashMap<>();
             jobs = new HashMap<>();
             companies = new HashMap<>();
             transactions = new ArrayList<>();
             System.out.println("Created an empty database");
         } catch (SQLException e) {
-            System.out.println("Error while creating the database: " + e.getMessage());
-            success = false;
+            Assert.fail("Creating the database failed: " + e.getMessage());
         }
 
-        if (db == null) Assert.fail("Establishing database connection failed!");
         try {
-            jobs = JobDb.getAllJobs(db);   // it has to be done in this exact order!
-            companies = CompanyDb.getAllCompanies(db);
-            transactions = TransactionDb.getAllTransactions(db);
-            players = PlayerDb.getAllPlayers(db);
+            jobs = jobDb.getAll();   // it has to be done in this exact order!
+            companies = companyDb.getAll();
+            transactions = transactionDb.getAll();
+            players = playerDb.getAll();
             System.out.println("Player database loaded successfully");
         } catch (SQLException e) {
-            System.out.println("Error while reading from the database: "
-                    + e.getMessage());
-            success = false;
+            Assert.fail("Error while reading from the database: " + e.getMessage());
         }
 
         System.out.println("Cleaning up...");
         // if (!dbFile.delete()) success = false; // FIXME: fails
-        Assert.assertTrue(success);
+        Assert.assertTrue(true);    // already passed at this point
     }
 
 }

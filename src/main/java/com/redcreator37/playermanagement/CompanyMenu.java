@@ -2,8 +2,6 @@ package com.redcreator37.playermanagement;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Transaction;
-import com.redcreator37.playermanagement.Database.CompanyDb;
-import com.redcreator37.playermanagement.Database.TransactionDb;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.redcreator37.playermanagement.PlayerManagement.database;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
@@ -165,24 +162,24 @@ public class CompanyMenu implements Listener {
                     company.setBalance(company.getBalance().add(new BigDecimal(10)));
                     player.sendMessage(prefix + "§a$10§6 has been taken from your account.");
 
-                    TransactionDb.addTransactionAsync(player, new Transaction(4097,
+                    PlayerManagement.transactionDb.addAsync(player, new Transaction(4097,
                             company.getId(), "<-", "Deposit $10",
                             "Deposit $10 from the player "
-                                    + player.getName(), new BigDecimal(10)), database);
+                                    + player.getName(), new BigDecimal(10)));
                 } else if (clickedItem.contains("Withdraw")) {
                     company.setBalance(company.getBalance().subtract(new BigDecimal(10)));
                     eco.depositPlayer(player, 10);
                     player.sendMessage(prefix + "§a$10§6 has been added to your account.");
 
-                    TransactionDb.addTransactionAsync(player, new Transaction(4097,
+                    PlayerManagement.transactionDb.addAsync(player, new Transaction(4097,
                             company.getId(), "->", "Withdraw $10",
                             "Withdraw $10 from the player "
-                                    + player.getName(), new BigDecimal(10)), database);
+                                    + player.getName(), new BigDecimal(10)));
                 }
         }
 
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class),
-                () -> CompanyDb.updateCompanyData(player, company));
+                () -> PlayerManagement.companyDb.updateByPlayer(player, company));
     }
 
 }

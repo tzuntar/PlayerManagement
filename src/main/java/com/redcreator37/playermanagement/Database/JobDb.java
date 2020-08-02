@@ -12,12 +12,15 @@ import java.util.Map;
 /**
  * Job-related database routines
  */
-public final class JobDb {
+public class JobDb extends SharedDb<Job, Map<String, Job>> {
 
     /**
-     * Noninstantiable
+     * Constructs a new JobDb instance
+     *
+     * @param db the database connection
      */
-    private JobDb() {
+    public JobDb(Connection db) {
+        super(db);
     }
 
     /**
@@ -25,11 +28,11 @@ public final class JobDb {
      *
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
-     * @param job the Job object to get the data from
-     * @param db  the database connection
-     * @throws SQLException on error
+     * @param job the Job object to get the data froms
+     * @throws SQLException on errors
      */
-    private static void runJobSqlUpdate(String sql, Job job, Connection db) throws SQLException {
+    @Override
+    public void runSqlUpdate(String sql, Job job, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, job.getName());
@@ -38,13 +41,26 @@ public final class JobDb {
     }
 
     /**
-     * Returns the list of all jobs in the database
+     * Runs this sql query and returns the list of found objects in
+     * the database
      *
-     * @param db the database connection
-     * @return the job list
-     * @throws SQLException on error
+     * @param sql the query to run
+     * @return the list of objects in the database
+     * @implNote not implemented
      */
-    public static Map<String, Job> getAllJobs(Connection db) throws SQLException {
+    @Override
+    Map<String, Job> commonQuery(String sql) {
+        return null;
+    }
+
+    /**
+     * Returns the map of all jobs in the database
+     *
+     * @return the job map
+     * @throws SQLException on errors
+     */
+    @Override
+    public Map<String, Job> getAll() throws SQLException {
         String cmd = "SELECT * FROM jobs";
         Map<String, Job> jobs = new HashMap<>();
         ResultSet set = db.createStatement().executeQuery(cmd);
@@ -60,25 +76,34 @@ public final class JobDb {
     }
 
     /**
-     * Adds another job to the database
+     * Inserts this job into the database
      *
      * @param job the Job object to be inserted
-     * @param db  the database connection
      * @throws SQLException on error
      */
-    public static void insertJob(Job job, Connection db) throws SQLException {
+    @Override
+    public void insert(Job job) throws SQLException {
         String cmd = "INSERT INTO jobs(name, description) VALUES(?, ?)";
-        runJobSqlUpdate(cmd, job, db);
+        runSqlUpdate(cmd, job, false);
+    }
+
+    /**
+     * Updates the data of an existing object in the database
+     *
+     * @param job the object to update
+     * @implNote not implemented
+     */
+    @Override
+    public void update(Job job) {
     }
 
     /**
      * Deletes the job with the specified id from the database
      *
      * @param id job id
-     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void removeJob(int id, Connection db) throws SQLException {
+    public void remove(int id) throws SQLException {
         String cmd = "DELETE FROM jobs WHERE id = " + id + ";";
         db.prepareStatement(cmd).executeUpdate();
     }

@@ -2,8 +2,6 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.CompanyDb;
-import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -13,7 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -69,9 +66,8 @@ public class SetCompany implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
-                Connection db = PlayerManagement.database;
-                PlayerDb.updatePlayer(target, db);
-                PlayerManagement.players = PlayerDb.getAllPlayers(db);
+                PlayerManagement.playerDb.update(target);
+                PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + " is now a part of the company "
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
@@ -80,9 +76,9 @@ public class SetCompany implements CommandExecutor {
                 if (!prevCompany.getName().equals("N/A"))
                     prevCompany.setEmployees(prevCompany.getEmployees() - 1);
 
-                CompanyDb.updateCompany(newCompany, db);
-                CompanyDb.updateCompany(prevCompany, db);
-                PlayerManagement.companies = CompanyDb.getAllCompanies(db);
+                PlayerManagement.companyDb.update(newCompany);
+                PlayerManagement.companyDb.update(prevCompany);
+                PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Error while updating the playerdata: " + ChatColor.RED

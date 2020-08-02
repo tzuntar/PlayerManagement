@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -42,9 +41,9 @@ public class DeleteId implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                PlayerDb.removePlayer(target.getId(), PlayerManagement.database);
-                PlayerManagement.players = PlayerDb // reload from the database
-                        .getAllPlayers(PlayerManagement.database);
+                PlayerManagement.playerDb.remove(target.getId());
+                // reload from the database
+                PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "The player " + ChatColor.GREEN + target.getUsername()
                         + ChatColor.GOLD + " has been successfully unregistered.");

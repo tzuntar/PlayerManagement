@@ -3,8 +3,6 @@ package com.redcreator37.playermanagement.Commands;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
-import com.redcreator37.playermanagement.Database.CompanyDb;
-import com.redcreator37.playermanagement.Database.TransactionDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -18,11 +16,9 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
-import static com.redcreator37.playermanagement.PlayerManagement.database;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
-import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 
 /**
  * A simple /pay command for companies
@@ -87,22 +83,22 @@ public class CompanyPay implements CommandExecutor {
 
         // withdraw the amount from the source
         source.setBalance(source.getBalance().subtract(amount));
-        TransactionDb.addTransactionAsync(p, new Transaction(4097,
+        PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
                 source.getId(), "->", "Pay " + formattedAmount,
-                "Pay " + formattedAmount + " to " + target, amount), database);
+                "Pay " + formattedAmount + " to " + target, amount));
 
         // add to the target
         target.setBalance(target.getBalance().add(amount));
-        TransactionDb.addTransactionAsync(p, new Transaction(4097,
+        PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
                 target.getId(), "<-", "Receive " + formattedAmount,
-                "Receive " + formattedAmount + " from " + source, amount), database);
+                "Receive " + formattedAmount + " from " + source, amount));
 
         // update and re-read the data
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
-            CompanyDb.updateCompanyData(p, source);
-            CompanyDb.updateCompanyData(p, target);
+            PlayerManagement.companyDb.updateByPlayer(p, source);
+            PlayerManagement.companyDb.updateByPlayer(p, target);
             try {
-                transactions = TransactionDb.getAllTransactions(database);
+                PlayerManagement.transactions = PlayerManagement.transactionDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
                         + "Error while saving transaction data: "

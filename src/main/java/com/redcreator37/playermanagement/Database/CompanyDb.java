@@ -15,12 +15,15 @@ import java.util.Map;
 /**
  * Company-related database routines
  */
-public final class CompanyDb {
+public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
 
     /**
-     * Noninstantiable
+     * Constructs a new CompanyDb instance
+     *
+     * @param db the database connection
      */
-    private CompanyDb() {
+    public CompanyDb(Connection db) {
+        super(db);
     }
 
     /**
@@ -29,10 +32,10 @@ public final class CompanyDb {
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
      * @param c   the Company object to get the data from
-     * @param db  the database connection
      * @throws SQLException on error
      */
-    private static void runCompanySqlUpdate(String sql, Company c, Connection db, boolean update) throws SQLException {
+    @Override
+    public void runSqlUpdate(String sql, Company c, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, c.getName());
@@ -47,13 +50,26 @@ public final class CompanyDb {
     }
 
     /**
+     * Runs this sql query and returns the list of found objects in
+     * the database
+     *
+     * @param sql the query to run
+     * @return the list of objects in the database
+     * @implNote not implemented!
+     */
+    @Override
+    Map<String, Company> commonQuery(String sql) {
+        return null; // TODO: implement
+    }
+
+    /**
      * Returns the list of all companies in the database
      *
-     * @param db the database connection
      * @return the company list
      * @throws SQLException on error
      */
-    public static Map<String, Company> getAllCompanies(Connection db) throws SQLException {
+    @Override
+    public Map<String, Company> getAll() throws SQLException {
         String cmd = "SELECT * FROM companies";
         Map<String, Company> companies = new HashMap<>();
         ResultSet set = db.createStatement().executeQuery(cmd);
@@ -77,26 +93,26 @@ public final class CompanyDb {
      * Adds another company to the database
      *
      * @param c  the Company object to be inserted
-     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void insertCompany(Company c, Connection db) throws SQLException {
+    @Override
+    public void insert(Company c) throws SQLException {
         String cmd = "INSERT INTO companies(name, description, money," +
                 " employees, owner, established, paycheck) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        runCompanySqlUpdate(cmd, c, db, false);
+        runSqlUpdate(cmd, c, false);
     }
 
     /**
      * Updates the data of an existing company in the database
      *
      * @param c  the Company object to be updated
-     * @param db the database connection
      * @throws SQLException on error
      */
-    public static void updateCompany(Company c, Connection db) throws SQLException {
+    @Override
+    public void update(Company c) throws SQLException {
         String cmd = "UPDATE companies SET name = ?, description = ?, money = ?," +
                 " employees = ?, owner = ?, established = ?, paycheck = ? WHERE id = ?";
-        runCompanySqlUpdate(cmd, c, db, true);
+        runSqlUpdate(cmd, c, true);
     }
 
     /**
@@ -105,10 +121,10 @@ public final class CompanyDb {
      * @param player  the player that'll see any output
      * @param company the company to update
      */
-    public static void updateCompanyData(Player player, Company company) {
+    public void updateByPlayer(Player player, Company company) {
         try {
-            updateCompany(company, PlayerManagement.database);
-            PlayerManagement.companies = getAllCompanies(PlayerManagement.database);
+            update(company);
+            PlayerManagement.companies = getAll();
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Company data saved.");
         } catch (SQLException ex) {

@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -83,8 +82,8 @@ public class LowerRank implements CommandExecutor {
                             + ChatColor.GOLD + " has been punished.");
                 }
 
-                PlayerDb.updatePlayer(target, PlayerManagement.database);
-                PlayerManagement.players = PlayerDb.getAllPlayers(PlayerManagement.database);
+                PlayerManagement.playerDb.update(target);
+                PlayerManagement.players = PlayerManagement.playerDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Error while modifying the playerdata: " + ChatColor.RED

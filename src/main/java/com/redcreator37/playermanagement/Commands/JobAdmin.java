@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Job;
-import com.redcreator37.playermanagement.Database.JobDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -42,8 +41,7 @@ public class JobAdmin implements CommandExecutor {
                 for (String arg : Arrays.copyOfRange(args, 1, args.length))
                     jobDesc.append(arg).append(" ");
 
-                JobDb.insertJob(new Job(4097, args[1], jobDesc.toString()),
-                        PlayerManagement.database);
+                PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc.toString()));
             } else if (args[0].equals("delete")) {
                 Job j = PlayerManagement.jobs.get(args[1]);
                 if (j == null) {
@@ -51,11 +49,11 @@ public class JobAdmin implements CommandExecutor {
                             + "Unknown job " + ChatColor.GREEN + args[1]);
                     return true;
                 }
-                JobDb.removeJob(j.getId(), PlayerManagement.database);
+                PlayerManagement.jobDb.remove(j.getId());
             }
 
             // update the job list to reflect the changes
-            PlayerManagement.jobs = JobDb.getAllJobs(PlayerManagement.database);
+            PlayerManagement.jobs = PlayerManagement.jobDb.getAll();
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Job data saved.");
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD

@@ -4,8 +4,6 @@ import com.redcreator37.playermanagement.CompanyMenu;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
-import com.redcreator37.playermanagement.Database.CompanyDb;
-import com.redcreator37.playermanagement.Database.TransactionDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -20,12 +18,10 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
-import static com.redcreator37.playermanagement.PlayerManagement.database;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
-import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 
 /**
  * Opens the in-game company management UI or changes the values
@@ -115,10 +111,10 @@ public class CompanyManagement implements CommandExecutor {
                 p.sendMessage(prefix + "§a$" + amount
                         + " §6has been taken from your account.");
 
-                TransactionDb.addTransactionAsync(p, new Transaction(4097,
+                PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
                         company.getId(), "<-", "Deposit $"
                         + amount, "Deposit $" + amount
-                        + " from the player " + target, amount), database);
+                        + " from the player " + target, amount));
                 break;
             case "withdraw":
                 company.setBalance(company.getBalance().subtract(amount));
@@ -126,10 +122,10 @@ public class CompanyManagement implements CommandExecutor {
                 p.sendMessage(prefix + "§a$" + amount
                         + " §6has been added to your account.");
 
-                TransactionDb.addTransactionAsync(p, new Transaction(4097,
+                PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
                         company.getId(), "->", "Withdraw $"
                         + amount, "Withdraw $" + amount
-                        + " to the player " + target, amount), database);
+                        + " to the player " + target, amount));
                 break;
             case "setdesc":
                 StringBuilder desc = new StringBuilder();
@@ -160,9 +156,9 @@ public class CompanyManagement implements CommandExecutor {
             return true;    // no changes made, don't update the db
 
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
-            CompanyDb.updateCompanyData(p, company);
+            PlayerManagement.companyDb.updateByPlayer(p, company);
             try {
-                transactions = TransactionDb.getAllTransactions(database);
+                PlayerManagement.transactions = PlayerManagement.transactionDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
                         + "Error while saving transaction data: "

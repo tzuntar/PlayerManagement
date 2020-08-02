@@ -2,7 +2,6 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -57,9 +56,8 @@ public class SetJob implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
-                PlayerDb.updatePlayer(target, PlayerManagement.database);
-                PlayerManagement.players = PlayerDb
-                        .getAllPlayers(PlayerManagement.database);
+                PlayerManagement.playerDb.update(target);
+                PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + " is now employed as " + ChatColor.GREEN
                         + newJob + ChatColor.GOLD + ".");

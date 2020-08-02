@@ -17,12 +17,15 @@ import java.util.List;
 /**
  * Transaction-related database routines
  */
-public final class TransactionDb {
+public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
 
     /**
-     * Noninstantiable
+     * Constructs a new TransactionDb instance
+     *
+     * @param db the database connection
      */
-    private TransactionDb() {
+    public TransactionDb(Connection db) {
+        super(db);
     }
 
     /**
@@ -31,10 +34,10 @@ public final class TransactionDb {
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
      * @param t   the Transaction object to get the data from
-     * @param db  the database connection
      * @throws SQLException on error
      */
-    private static void runTransactionSqlUpdate(String sql, Transaction t, Connection db) throws SQLException {
+    @Override
+    public void runSqlUpdate(String sql, Transaction t, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setInt(1, t.getCompanyId());
@@ -46,13 +49,26 @@ public final class TransactionDb {
     }
 
     /**
+     * Runs this sql query and returns the list of found objects in
+     * the database
+     *
+     * @param sql the query to run
+     * @return the list of objects in the database
+     * @implNote not implemented
+     */
+    @Override
+    List<Transaction> commonQuery(String sql) {
+        return null;
+    }
+
+    /**
      * Returns the list of all transactions in the database
      *
-     * @param db the database connection
      * @return the transaction list
      * @throws SQLException on error
      */
-    public static List<Transaction> getAllTransactions(Connection db) throws SQLException {
+    @Override
+    public List<Transaction> getAll() throws SQLException {
         String cmd = "SELECT * FROM transactions";
         List<Transaction> transactions = new ArrayList<>();
         ResultSet set = db.createStatement().executeQuery(cmd);
@@ -73,35 +89,43 @@ public final class TransactionDb {
     /**
      * Adds another transaction to the database
      *
-     * @param t  the Transaction object to be inserted
-     * @param db the database connection
+     * @param t the Transaction object to be inserted
      * @throws SQLException on error
      */
-    public static void insertTransaction(Transaction t, Connection db) throws SQLException {
+    @Override
+    public void insert(Transaction t) throws SQLException {
         String cmd = "INSERT INTO transactions(companyId, direction, title," +
                 "description, amount) VALUES(?, ?, ?, ?, ?)";
-        runTransactionSqlUpdate(cmd, t, db);
+        runSqlUpdate(cmd, t, false);
+    }
+
+    /**
+     * Updates the data of an existing object in the database
+     *
+     * @param transaction the object to updates
+     * @implNote not implemented
+     */
+    @Override
+    public void update(Transaction transaction) {
     }
 
     /**
      * Adds a transaction in the background
      *
-     * @param p  the player
-     * @param t  the transaction
-     * @param db the database connection
+     * @param p the player
+     * @param t the transaction
      */
-    public static void addTransactionAsync(Player p, Transaction t, Connection db) {
+    public void addAsync(Player p, Transaction t) {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                insertTransaction(t, db);
+                insert(t);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Transaction data saved.");
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Error while saving transaction" +
-                        " data: " + ChatColor.RED
-                        + e.getMessage());
+                        " data: " + ChatColor.RED + e.getMessage());
             }
         });
     }

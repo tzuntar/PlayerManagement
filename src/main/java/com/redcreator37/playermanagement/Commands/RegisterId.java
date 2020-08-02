@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -59,9 +58,9 @@ public class RegisterId implements CommandExecutor {
         target.setNotes("");
 
         try {
-            PlayerDb.insertPlayer(target, PlayerManagement.database);
-            PlayerManagement.players = PlayerDb // reload from the database
-                    .getAllNewlyRegistered(PlayerManagement.database);
+            PlayerManagement.playerDb.insert(target);
+            // reload from the database
+            PlayerManagement.players = PlayerManagement.playerDb.getNewlyRegistered();
 
             ServerPlayer registeredPlayer = PlayerRoutines  // re-read the player list
                     .getPlayerFromUsername(PlayerManagement.players, p.getName());

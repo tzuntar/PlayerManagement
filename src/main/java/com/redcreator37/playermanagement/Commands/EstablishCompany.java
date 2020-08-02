@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Company;
-import com.redcreator37.playermanagement.Database.CompanyDb;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -55,9 +54,8 @@ public class EstablishCompany implements CommandExecutor {
                 newCompany.setBalance(new BigDecimal(PlayerManagement
                         .companyEstablishPrice / 2));
 
-                CompanyDb.insertCompany(newCompany, PlayerManagement.database);
-                PlayerManagement.companies = CompanyDb
-                        .getAllCompanies(PlayerManagement.database);
+                PlayerManagement.companyDb.insert(newCompany);
+                PlayerManagement.companies = PlayerManagement.companyDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Company registration successful!");
             } catch (SQLException e) {

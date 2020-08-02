@@ -7,12 +7,17 @@ import java.sql.SQLException;
 /**
  * Common database routines
  */
-public final class SharedDb {
+public abstract class SharedDb<T, R> {
+
+    final Connection db;
 
     /**
-     * Noninstantiable
+     * Constructs a new SharedDb instance
+     *
+     * @param db the database connection
      */
-    private SharedDb() {
+    public SharedDb(Connection db) {
+        this.db = db;
     }
 
     /**
@@ -28,12 +33,58 @@ public final class SharedDb {
     }
 
     /**
+     * Executes this sql update query
+     *
+     * @param sql    the SQL command. Example: <code>INSERT INTO
+     *               contacts(name, surname) VALUES(?,?)</code>
+     * @param t      the object containing the data
+     * @param update controls whether to run an update or an insert
+     *               operation
+     * @throws SQLException on errors
+     */
+    public abstract void runSqlUpdate(String sql, T t, boolean update) throws SQLException;
+
+    /**
+     * Runs this sql query and returns the list of found objects in
+     * the database
+     *
+     * @param sql the query to run
+     * @return the list of objects in the database
+     * @throws SQLException on errors
+     */
+    abstract R commonQuery(String sql) throws SQLException;
+
+    /**
+     * Returns the list of all objects in the database
+     *
+     * @return the list of objects
+     * @throws SQLException on errors
+     */
+    public abstract R getAll() throws SQLException;
+
+    /**
+     * Inserts this object into the database
+     *
+     * @param t the object to insert
+     * @throws SQLException on errors
+     */
+    public abstract void insert(T t) throws SQLException;
+
+    /**
+     * Updates the data of an existing object in the database
+     *
+     * @param t the object to update
+     * @throws SQLException on errors
+     */
+    public abstract void update(T t) throws SQLException;
+
+    /**
      * Create possibly nonexistent database tables
      *
      * @param db the database connection to use
      * @throws SQLException on error
      */
-    public static void createDatabaseTables(Connection db) throws SQLException {
+    public static void createTables(Connection db) throws SQLException {
         String sql = "create table if not exists players\n(\n" +
                 "    id          integer not null\n" +
                 "        constraint players_pk\n" +

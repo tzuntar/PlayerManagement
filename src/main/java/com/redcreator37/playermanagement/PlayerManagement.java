@@ -51,8 +51,8 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * Any in-game console output will get prefixed by this
      */
-    public static String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "Server"
-            + ChatColor.DARK_GRAY + "] ";
+    public static String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.BLUE
+            + "Server" + ChatColor.DARK_GRAY + "] ";
 
     /**
      * The currently loaded Essentials plugin object
@@ -186,6 +186,9 @@ public final class PlayerManagement extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        try {
+            database.close();
+        } catch (SQLException ignored) { }
     }
 
     // all other settings

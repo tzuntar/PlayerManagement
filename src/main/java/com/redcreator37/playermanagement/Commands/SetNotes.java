@@ -23,7 +23,7 @@ public class SetNotes implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player p = PlayerRoutines.getPlayerFromSender(sender);
+        Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
         if (args.length < 2) {  // wrong usage
@@ -33,13 +33,13 @@ public class SetNotes implements CommandExecutor {
         }
 
         ServerPlayer target = PlayerRoutines
-                .getPlayerFromUsername(PlayerManagement.players, args[0]);
+                .playerFromUsername(PlayerManagement.players, args[0]);
         if (PlayerRoutines.checkPlayerNonExistent(p, target, p.getName()))
             return true;
 
         String requiredPermission = target.getUsername().equals(p.getName()) ?
                 "management.user" : "management.admin";
-        if (!PlayerRoutines.checkPlayerPermissions(p, requiredPermission))
+        if (!PlayerRoutines.checkPlayerPermission(p, requiredPermission))
             return true;
 
         StringBuilder notes = new StringBuilder();

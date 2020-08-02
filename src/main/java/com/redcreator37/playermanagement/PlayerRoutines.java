@@ -42,7 +42,7 @@ public final class PlayerRoutines {
      * player with this username wasn't found
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public static ServerPlayer getPlayerFromUsername(Map<String, ServerPlayer> players, String username) {
+    public static ServerPlayer playerFromUsername(Map<String, ServerPlayer> players, String username) {
         return players.get(Arrays.stream(Bukkit
                 .getOfflinePlayers()).filter(pl -> Objects
                 .equals(pl.getName(), username))
@@ -75,7 +75,7 @@ public final class PlayerRoutines {
      * @param permission the permission to check
      * @return true if the user has the specified permission, else otherwise
      */
-    public static boolean checkPlayerPermissions(Player player, String permission) {
+    public static boolean checkPlayerPermission(Player player, String permission) {
         if (!player.hasPermission(permission)) {
             player.sendMessage(PlayerManagement.prefix
                     + ChatColor.GOLD + "You do not have sufficient" +
@@ -106,7 +106,7 @@ public final class PlayerRoutines {
      * @param sender the CommandSender object
      * @return the matching player or null
      */
-    public static Player getPlayerFromSender(CommandSender sender) {
+    public static Player playerFromSender(CommandSender sender) {
         Player p;
         try {   // make sure it's actually a player
             p = (Player) sender;
@@ -143,7 +143,7 @@ public final class PlayerRoutines {
     static void autoEconomyPlayer(Player player, Map<String, ServerPlayer> players,
                                   Map<String, Company> companies, double defAmount,
                                   double defThreshold) {
-        ServerPlayer target = getPlayerFromUsername(players, player.getName());
+        ServerPlayer target = playerFromUsername(players, player.getName());
         if (target == null || Objects.requireNonNull(PlayerManagement.ess)
                 .getUser(player).isAfk())   // unknown player or AFK
             return;
@@ -164,7 +164,7 @@ public final class PlayerRoutines {
                 OfflinePlayer ownerPl;
                 try {
                     ownerPl = Bukkit.getOfflinePlayer(UUID.fromString(
-                            getPlayerFromUsername(PlayerManagement.players,
+                            playerFromUsername(PlayerManagement.players,
                                     targetCompany.getOwner()).getUuid()));
                 } catch (NullPointerException e) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.RED

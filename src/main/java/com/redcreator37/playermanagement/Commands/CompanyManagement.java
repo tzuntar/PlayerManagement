@@ -35,10 +35,10 @@ public class CompanyManagement implements CommandExecutor {
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player p = PlayerRoutines.getPlayerFromSender(sender);
+        Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
-        if (!PlayerRoutines.checkPlayerPermissions(p, "management.company"))
+        if (!PlayerRoutines.checkPlayerPermission(p, "management.company"))
             return true;
 
         if (args.length == 2 && !args[1].matches("info|transactions")) {
@@ -49,7 +49,7 @@ public class CompanyManagement implements CommandExecutor {
         }
 
         ServerPlayer target = PlayerRoutines
-                .getPlayerFromUsername(players, p.getName());
+                .playerFromUsername(players, p.getName());
         if (PlayerRoutines.checkPlayerNonExistent(p, target, p.getName()))
             return true;
 
@@ -136,7 +136,7 @@ public class CompanyManagement implements CommandExecutor {
                 break;
             case "setowner":
                 ServerPlayer newOwner = PlayerRoutines
-                        .getPlayerFromUsername(players, args[2]);
+                        .playerFromUsername(players, args[2]);
                 if (PlayerRoutines.checkPlayerNonExistent(p, newOwner, args[2]))
                     return true;
 
@@ -158,7 +158,8 @@ public class CompanyManagement implements CommandExecutor {
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
             PlayerManagement.companyDb.updateByPlayer(p, company);
             try {
-                PlayerManagement.transactions = PlayerManagement.transactionDb.getAll();
+                PlayerManagement.transactions = PlayerManagement
+                        .transactionDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
                         + "Error while saving transaction data: "

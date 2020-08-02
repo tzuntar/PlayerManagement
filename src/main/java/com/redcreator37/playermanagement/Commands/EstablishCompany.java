@@ -23,9 +23,9 @@ public class EstablishCompany implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player p = PlayerRoutines.getPlayerFromSender(sender);
+        Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null || !PlayerRoutines
-                .checkPlayerPermissions(p, "management.company.establish"))
+                .checkPlayerPermission(p, "management.company.establish"))
             return true;
 
         if (args.length < 1) {

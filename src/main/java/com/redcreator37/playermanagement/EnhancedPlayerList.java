@@ -70,7 +70,7 @@ public class EnhancedPlayerList implements Listener {
                 String company = "N/A";
                 if (s.contains("{playercompany}")) {    // for performance reasons
                     ServerPlayer target = PlayerRoutines
-                            .getPlayerFromUsername(PlayerManagement.players, p.getName());
+                            .playerFromUsername(PlayerManagement.players, p.getName());
                     if (target != null)
                         company = target.getCompany().getName();
                 }

@@ -25,9 +25,9 @@ public class LowerRank implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player p = PlayerRoutines.getPlayerFromSender(sender);
+        Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null || !PlayerRoutines
-                .checkPlayerPermissions(p, "management.admin"))
+                .checkPlayerPermission(p, "management.admin"))
             return true;
 
         if (args.length < 1) {
@@ -37,7 +37,7 @@ public class LowerRank implements CommandExecutor {
         }
 
         ServerPlayer target = PlayerRoutines
-                .getPlayerFromUsername(PlayerManagement.players, args[0]);
+                .playerFromUsername(PlayerManagement.players, args[0]);
         if (PlayerRoutines.checkPlayerNonExistent(p, target, args[0]))
             return true;
 

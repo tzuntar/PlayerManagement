@@ -20,10 +20,10 @@ public class PlayerAdmin implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player p = PlayerRoutines.getPlayerFromSender(sender);
+        Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
-        if (!PlayerRoutines.checkPlayerPermissions(p, "management.admin"))
+        if (!PlayerRoutines.checkPlayerPermission(p, "management.admin"))
             return true;
 
         p.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");

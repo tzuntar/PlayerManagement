@@ -23,7 +23,7 @@ public class SetJob implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player p = PlayerRoutines.getPlayerFromSender(sender);
+        Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
         if (args.length < 1) {
@@ -34,12 +34,12 @@ public class SetJob implements CommandExecutor {
 
         String requiredPermission = args.length == 1
                 ? "management.user" : "management.admin";
-        if (!PlayerRoutines.checkPlayerPermissions(p, requiredPermission))
+        if (!PlayerRoutines.checkPlayerPermission(p, requiredPermission))
             return true;
 
         String targetPlayerName = args.length == 1 ? p.getName() : args[1];
         ServerPlayer target = PlayerRoutines
-                .getPlayerFromUsername(PlayerManagement.players, targetPlayerName);
+                .playerFromUsername(PlayerManagement.players, targetPlayerName);
 
         if (PlayerRoutines.checkPlayerNonExistent(p, target, targetPlayerName))
             return true;

@@ -106,13 +106,24 @@ public final class PlayerManagement extends JavaPlugin {
      */
     public static List<Transaction> transactions = null;
 
-    // TEMP: document!
+    /**
+     * Provides access to the player database
+     */
     public static PlayerDb playerDb = null;
 
+    /**
+     * Provides access to the job database
+     */
     public static JobDb jobDb = null;
 
+    /**
+     * Provides access to the company database
+     */
     public static CompanyDb companyDb = null;
 
+    /**
+     * Provides access to the transaction database
+     */
     public static TransactionDb transactionDb = null;
 
     /**
@@ -340,13 +351,19 @@ public final class PlayerManagement extends JavaPlugin {
         boolean success = true;
         try {
             database = SharedDb.connect(databasePath);
-            playerDb = new PlayerDb(database);
-            jobDb = new JobDb(database);
-            companyDb = new CompanyDb(database);
-            transactionDb = new TransactionDb(database);
         } catch (SQLException e) {
             success = false;
         }
+
+        playerDb = new PlayerDb(database);
+        jobDb = new JobDb(database);
+        companyDb = new CompanyDb(database);
+        transactionDb = new TransactionDb(database);
+
+        players = new HashMap<>();
+        jobs = new HashMap<>();
+        companies = new HashMap<>();
+        transactions = new ArrayList<>();
 
         if (!new File(databasePath).exists()) // database not found, create a new one
             try {
@@ -354,12 +371,6 @@ public final class PlayerManagement extends JavaPlugin {
                 // just insert a blank player, job and company using a bogus id
                 companyDb.insert(new Company(4097, "N/A", "N/A"));
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
-
-                players = new HashMap<>();
-                jobs = new HashMap<>();
-                companies = new HashMap<>();
-                transactions = new ArrayList<>();
-
                 getLogger().info("Created an empty database");
             } catch (SQLException e) {
                 getLogger().severe("Error while creating the database: "

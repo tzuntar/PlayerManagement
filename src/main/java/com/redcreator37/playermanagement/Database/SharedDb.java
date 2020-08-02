@@ -6,6 +6,10 @@ import java.sql.SQLException;
 
 /**
  * Common database routines
+ *
+ * @param <T> the type of the data to operate on
+ * @param <R> the result that'll be returned by data retrieval
+ *            methods (used to allow different return values than maps)
  */
 public abstract class SharedDb<T, R> {
 

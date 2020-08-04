@@ -34,7 +34,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * @throws SQLException on errors
      */
     @Override
-    public void runSqlUpdate(String sql, ServerPlayer player, boolean update) throws SQLException {
+    void runSqlUpdate(String sql, ServerPlayer player, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, player.getUsername());

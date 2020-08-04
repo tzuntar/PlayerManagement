@@ -46,7 +46,7 @@ public abstract class SharedDb<T, R> {
      *               operation
      * @throws SQLException on errors
      */
-    public abstract void runSqlUpdate(String sql, T t, boolean update) throws SQLException;
+    abstract void runSqlUpdate(String sql, T t, boolean update) throws SQLException;
 
     /**
      * Runs this sql query and returns the list of found objects in

@@ -32,7 +32,7 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
      * @throws SQLException on errors
      */
     @Override
-    public void runSqlUpdate(String sql, Job job, boolean update) throws SQLException {
+    void runSqlUpdate(String sql, Job job, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, job.getName());

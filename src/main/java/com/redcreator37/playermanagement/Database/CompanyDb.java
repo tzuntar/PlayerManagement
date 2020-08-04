@@ -35,7 +35,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
      * @throws SQLException on error
      */
     @Override
-    public void runSqlUpdate(String sql, Company c, boolean update) throws SQLException {
+    void runSqlUpdate(String sql, Company c, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, c.getName());

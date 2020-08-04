@@ -37,7 +37,7 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
      * @throws SQLException on error
      */
     @Override
-    public void runSqlUpdate(String sql, Transaction t, boolean update) throws SQLException {
+    void runSqlUpdate(String sql, Transaction t, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setInt(1, t.getCompanyId());
@@ -107,6 +107,7 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
      */
     @Override
     public void update(Transaction transaction) {
+        // TODO: implement!
     }
 
     /**

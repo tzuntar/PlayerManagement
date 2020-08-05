@@ -42,9 +42,9 @@ public class CompanyManagement implements CommandExecutor {
             return true;
 
         if (args.length == 2 && !args[1].matches("info|transactions")) {
-            p.sendMessage(prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/company [name] [info|increase|decrease" +
-                    "deposit|withdraw|setdesc|setowner|transactions] [args]");
+            String[] arguments = {"name", "increase|decrease|deposit|withdraw" +
+                    "|setdesc|setowner|transactions", "args"};
+            p.sendMessage(prefix + CommandHelper.parseCommandUsage("company", arguments));
             return true;
         }
 

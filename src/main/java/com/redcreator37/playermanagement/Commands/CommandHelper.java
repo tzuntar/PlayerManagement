@@ -1,0 +1,73 @@
+package com.redcreator37.playermanagement.Commands;
+
+import org.bukkit.ChatColor;
+
+/**
+ * Contains helper methods for command handler classes
+ */
+public final class CommandHelper {
+
+    /**
+     * Non-instantiable
+     */
+    private CommandHelper() {
+    }
+
+    /**
+     * Returns the formatted command usage help for this command
+     *
+     * @param cmd          the command (without the <code>/</code>)
+     * @param argumentList the list of arguments, separate sub-arguments
+     *                     with vertical bars (<code>|</code>). Prefix
+     *                     non-optional arguments with an asterisk.
+     *                     Example: for /ping name [hello|hello1|hello2]
+     *                     <code>{"*name", "hello|hello1|hello2"}</code>
+     * @return the formatted string
+     */
+    static String parseCommandUsage(String cmd, String[] argumentList) {
+        StringBuilder usage = new StringBuilder();
+        usage.append(ChatColor.DARK_GRAY).append(ChatColor.GOLD).append("Usage: ")
+                .append(ChatColor.GREEN).append("/").append(cmd).append(" ");
+        for (String s : argumentList) {
+            String[] args = s.split("\\|");
+            if (s.charAt(0) == '*')
+                usage.append(formatRequiredArgs(args)).append(" ");
+            else usage.append(formatOptionalArgs(args)).append(" ");
+        }
+        return usage.toString();
+    }
+
+    /**
+     * Returns the formatted list of optional command arguments
+     *
+     * @param arguments the command arguments to format
+     * @return the formatted string
+     */
+    private static String formatOptionalArgs(String[] arguments) {
+        StringBuilder result = new StringBuilder();
+        result.append(ChatColor.DARK_GRAY).append("[");
+        for (String a : arguments)
+            result.append(ChatColor.AQUA).append(a).append(ChatColor.DARK_GRAY).append("|");
+        result.deleteCharAt(result.length() - 1);
+        result.append(ChatColor.DARK_GRAY).append("]");
+        return result.toString();
+    }
+
+    /**
+     * Returns the formatted list of required command arguments
+     *
+     * @param arguments the command arguments to format
+     * @return the formatted string
+     */
+    private static String formatRequiredArgs(String[] arguments) {
+        StringBuilder result = new StringBuilder();
+        result.append(ChatColor.DARK_GRAY).append("[");
+        for (String a : arguments)
+            result.append(ChatColor.RED).append(a.substring(1))
+                    .append(ChatColor.DARK_GRAY).append("|");
+        result.deleteCharAt(result.length() - 1);
+        result.append(ChatColor.DARK_GRAY).append("]");
+        return result.toString();
+    }
+
+}

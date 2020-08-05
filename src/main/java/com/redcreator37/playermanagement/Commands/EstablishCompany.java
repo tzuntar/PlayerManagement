@@ -31,6 +31,8 @@ public class EstablishCompany implements CommandExecutor {
         if (args.length < 1) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
                     + ChatColor.GREEN + "/establish company_name");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("establish", new String[]{"*company_name"}));
             return true;
         }
 

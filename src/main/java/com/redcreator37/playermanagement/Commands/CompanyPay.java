@@ -37,8 +37,8 @@ public class CompanyPay implements CommandExecutor {
             return true;
 
         if (args.length < 3) {
-            p.sendMessage(prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/cpay [from] [to] [amount]");
+            p.sendMessage(prefix + CommandHelper.parseCommandUsage("cpay",
+                    new String[]{"from", "to", "amount"}));
             return true;
         }
 

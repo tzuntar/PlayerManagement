@@ -28,8 +28,8 @@ public class DeleteId implements CommandExecutor {
             return true;
 
         if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/deleteid player_name");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("deleteid", new String[]{"*player_name"}));
             return true;
         }
 

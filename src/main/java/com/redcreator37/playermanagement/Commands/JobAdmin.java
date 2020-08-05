@@ -29,8 +29,9 @@ public class JobAdmin implements CommandExecutor {
             return true;
 
         if (args.length < 2) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/jobadmin [add|remove] job_name [Job Description]");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("jobadmin", new String[]{"add|remove",
+                            "*job_name", "Job Description"}));
             return true;
         }
 

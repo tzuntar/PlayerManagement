@@ -28,8 +28,8 @@ public class RegisterId implements CommandExecutor {
             return true;
 
         if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/registerid Real Name");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("registerid", new String[]{"Real Name"}));
             return true;
         }
 

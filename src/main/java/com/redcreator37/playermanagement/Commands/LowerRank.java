@@ -31,8 +31,8 @@ public class LowerRank implements CommandExecutor {
             return true;
 
         if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/punish player_name [Reason]");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("punish", new String[]{"*player_name", "Reason"}));
             return true;
         }
 

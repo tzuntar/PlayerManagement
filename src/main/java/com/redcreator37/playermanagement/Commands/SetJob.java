@@ -27,8 +27,8 @@ public class SetJob implements CommandExecutor {
         if (p == null) return true;
 
         if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/setjob job_name [player_name]");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("setjob", new String[]{"*job_name", "player_name"}));
             return true;
         }
 

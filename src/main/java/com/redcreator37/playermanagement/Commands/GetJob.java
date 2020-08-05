@@ -25,8 +25,8 @@ public class GetJob implements CommandExecutor {
             return true;
 
         if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/getjob player_name");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("getjob", new String[]{"*player_name"}));
             return true;
         }
 

@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 /**
  * Contains helper methods for command handler classes
  */
-public final class CommandHelper {
+final class CommandHelper {
 
     /**
      * Non-instantiable

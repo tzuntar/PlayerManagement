@@ -27,8 +27,8 @@ public class SetCompany implements CommandExecutor {
         if (p == null) return true;
 
         if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/setcompany company_name [player_name]");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("setcompany", new String[]{"*company_name", "player_name"}));
             return true;
         }
 

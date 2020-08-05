@@ -27,8 +27,8 @@ public class SetNotes implements CommandExecutor {
         if (p == null) return true;
 
         if (args.length < 2) {  // wrong usage
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Usage: "
-                    + ChatColor.GREEN + "/setnotes player_name Any Notes To Set");
+            p.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("setnotes", new String[]{"*player_name", "Any notes..."}));
             return true;
         }
 

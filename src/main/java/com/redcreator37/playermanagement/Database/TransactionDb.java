@@ -102,11 +102,11 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
     /**
      * Updates the data of an existing object in the database
      *
-     * @param transaction the object to updates
+     * @param t the object to updates
      * @implNote not implemented
      */
     @Override
-    public void update(Transaction transaction) {
+    public void update(Transaction t) {
         // TODO: implement!
     }
 

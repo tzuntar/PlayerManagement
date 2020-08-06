@@ -175,13 +175,13 @@ public final class PlayerRoutines {
                 if (owner.canAfford(paycheck)) {
                     PlayerManagement.eco.withdrawPlayer(ownerPl, paycheck.doubleValue());
                     owner.addMail("WARNING! Money was taken from your account because" +
-                            " your company could not afford to pay the paychecks!");
+                            " your company could not afford to pay the wages!");
                 } else {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
                             + targetCompany + ChatColor.GOLD
-                            + " cannot afford to pay your paycheck!");
-                    owner.addMail("WARNING! Your company could not afford the" +
-                            " paycheck for the player " + player.getName() + "!");
+                            + " cannot afford to pay your wage!");
+                    owner.addMail("WARNING! Your was unable to pay the wage for" +
+                            " the player " + player.getName() + "!");
                     return;
                 }
             } else {

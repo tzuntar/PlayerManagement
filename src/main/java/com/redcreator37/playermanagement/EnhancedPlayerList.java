@@ -92,7 +92,6 @@ public class EnhancedPlayerList implements Listener {
                         .replace("{playergamemode}", p.getGameMode().toString().toLowerCase()))
                         .append('\n');
             }
-
         return builder.toString();
     }
 

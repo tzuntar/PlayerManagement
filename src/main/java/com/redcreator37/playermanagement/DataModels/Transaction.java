@@ -151,12 +151,12 @@ public class Transaction {
     @Override
     public int hashCode() {
         int result = 17;
-        result = (37 * result) + getId();
-        result = (37 * result) + getCompanyId();
-        result = (37 * result) + Objects.hashCode(getDirection());
-        result = (37 * result) + Objects.hashCode(getTitle());
-        result = (37 * result) + Objects.hashCode(getDescription());
-        result = (37 * result) + Objects.hashCode(getAmount());
+        result *= 37 + getId();
+        result *= 37 + getCompanyId();
+        result *= 37 + Objects.hashCode(getDirection());
+        result *= 37 + Objects.hashCode(getTitle());
+        result *= 37 + Objects.hashCode(getDescription());
+        result *= 37 + Objects.hashCode(getAmount());
         return result;
     }
 

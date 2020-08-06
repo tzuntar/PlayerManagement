@@ -32,12 +32,12 @@ public class CompanyMenu implements Listener {
     private final Inventory inventory;
 
     /**
-     * The player currently using the inventory
+     * The player that is currently using the inventory
      */
     private Player player;
 
     /**
-     * Represents the company the player is managing
+     * The company the player is managing
      */
     private final Company company;
 
@@ -132,8 +132,7 @@ public class CompanyMenu implements Listener {
         if (e.isCancelled()) Bukkit.getScheduler().scheduleSyncDelayedTask(
                 getPlugin(PlayerManagement.class), () -> {
                     try {
-                        processCommand(e.getCurrentItem().getItemMeta()
-                                .getDisplayName());
+                        processCommand(e.getCurrentItem().getItemMeta().getDisplayName());
                         e.setCurrentItem(null);
                         player.closeInventory();
                     } catch (NullPointerException ignored) { }

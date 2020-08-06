@@ -166,14 +166,14 @@ public class Company {
     @Override
     public int hashCode() {
         int result = 17;
-        result = (37 * result) + getId();
-        result = (37 * result) + Objects.hashCode(getName());
-        result = (37 * result) + Objects.hashCode(getDescription());
-        result = (37 * result) + Objects.hashCode(getBalance());
-        result = (37 * result) + Objects.hashCode(getEmployees());
-        result = (37 * result) + Objects.hashCode(getOwner());
-        result = (37 * result) + Objects.hashCode(getEstablishedDate());
-        result = (37 * result) + Objects.hashCode(getPaycheck());
+        result *= 37 + getId();
+        result *= 37 + Objects.hashCode(getName());
+        result *= 37 + Objects.hashCode(getDescription());
+        result *= 37 + Objects.hashCode(getBalance());
+        result *= 37 + Objects.hashCode(getEmployees());
+        result *= 37 + Objects.hashCode(getOwner());
+        result *= 37 + Objects.hashCode(getEstablishedDate());
+        result *= 37 + Objects.hashCode(getPaycheck());
         return result;
     }
 

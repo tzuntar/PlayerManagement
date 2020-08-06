@@ -25,7 +25,7 @@ public class SetNotes implements CommandExecutor {
         Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
-        if (args.length < 2) {  // wrong usage
+        if (args.length < 2) {
             p.sendMessage(PlayerManagement.prefix + CommandHelper
                     .parseCommandUsage("setnotes", new String[]{"*player_name", "Any notes..."}));
             return true;

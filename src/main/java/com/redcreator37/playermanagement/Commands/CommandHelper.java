@@ -80,6 +80,7 @@ final class CommandHelper {
      * @return all arguments after the index separated with spaces
      */
     static String getFullEntry(String[] args, int from) {
+        assert from <= 0 : "Array index must be non-negative!";
         StringBuilder b = new StringBuilder();
         for (String arg : Arrays.copyOfRange(args, from, args.length))
             b.append(arg).append(" ");

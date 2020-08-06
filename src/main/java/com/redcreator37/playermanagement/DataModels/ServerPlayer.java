@@ -144,15 +144,16 @@ public class ServerPlayer {
     @Override
     public int hashCode() {
         int result = 17;
-        result = (37 * result) + getId();
-        result = (37 * result) + Objects.hashCode(getUsername());
-        result = (37 * result) + Objects.hashCode(getUuid());
-        result = (37 * result) + Objects.hashCode(getName());
-        result = (37 * result) + Objects.hashCode(getJoinDate());
-        result = (37 * result) + Objects.hashCode(getJob());
-        result = (37 * result) + Objects.hashCode(getCompany());
-        result = (37 * result) + Objects.hashCode(getNotes());
-        result = (37 * result) + getPunishments();
+        result *= 37 + getId();
+        result *= 37 + Objects.hashCode(getUsername());
+        result *= 37 + Objects.hashCode(getUuid());
+        result *= 37 + Objects.hashCode(getName());
+        result *= 37 + Objects.hashCode(getJoinDate());
+        result *= 37 + Objects.hashCode(getJob());
+        result *= 37 + Objects.hashCode(getCompany());
+        result *= 37 + Objects.hashCode(getNotes());
+        result *= 37 + getPunishments();
+        result *= 37 + getPunishments();
         return result;
     }
 

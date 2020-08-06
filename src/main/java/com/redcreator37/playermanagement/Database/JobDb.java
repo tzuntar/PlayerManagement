@@ -37,6 +37,7 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
         st.closeOnCompletion();
         st.setString(1, job.getName());
         st.setString(2, job.getDescription());
+        if (update) st.setInt(3, job.getId());
         st.executeUpdate();
     }
 
@@ -91,10 +92,11 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
      * Updates the data of an existing object in the database
      *
      * @param job the object to update
-     * @implNote not implemented
      */
     @Override
-    public void update(Job job) {
+    public void update(Job job) throws SQLException {
+        String cmd = "UPDATE jobs SET name = ?, description = ? WHERE id = ?";
+        runSqlUpdate(cmd, job, true);
     }
 
     /**

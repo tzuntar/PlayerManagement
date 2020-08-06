@@ -131,7 +131,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
     public void update(ServerPlayer player) throws SQLException {
         String cmd = "UPDATE players SET username = ?, uuid = ?, name = ?," +
                 "join_date = ?, job = ?, company = ?, notes = ?, punishments = ? " +
-                "WHERE ID = ?";
+                "WHERE id = ?";
         runSqlUpdate(cmd, player, true);
     }
 

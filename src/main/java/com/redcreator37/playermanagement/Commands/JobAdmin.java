@@ -28,29 +28,49 @@ public class JobAdmin implements CommandExecutor {
         if (!PlayerRoutines.checkPlayerPermission(p, "management.admin"))
             return true;
 
-        if (args.length < 2) {
+        if (args.length < 2 || args.length < 3 && args[0].matches("add|update")) {
             p.sendMessage(PlayerManagement.prefix + CommandHelper
-                    .parseCommandUsage("jobadmin", new String[]{"add|remove",
+                    .parseCommandUsage("jobadmin", new String[]{"add|update|remove",
                             "*job_name", "Job Description"}));
             return true;
         }
 
         try {
-            if (args[0].equals("add")) {
-                // get the job description
-                StringBuilder jobDesc = new StringBuilder();
-                for (String arg : Arrays.copyOfRange(args, 1, args.length))
-                    jobDesc.append(arg).append(" ");
+            switch (args[0]) {
+                case "add": {
+                    // get the job description
+                    StringBuilder jobDesc = new StringBuilder();
+                    for (String arg : Arrays.copyOfRange(args, 1, args.length))
+                        jobDesc.append(arg).append(" ");
 
-                PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc.toString()));
-            } else if (args[0].equals("remove")) {
-                Job j = PlayerManagement.jobs.get(args[1]);
-                if (j == null) {
-                    p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + "Unknown job " + ChatColor.GREEN + args[1]);
-                    return true;
+                    PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc.toString()));
+                    break;
                 }
-                PlayerManagement.jobDb.remove(j.getId());
+                case "remove": {
+                    Job j = PlayerManagement.jobs.get(args[1]);
+                    if (j == null) {
+                        p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                                + "Unknown job " + ChatColor.GREEN + args[1]);
+                        return true;
+                    }
+                    PlayerManagement.jobDb.remove(j.getId());
+                    break;
+                }
+                case "update": {
+                    Job j = PlayerManagement.jobs.get(args[1]);
+                    if (j == null) {
+                        p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                                + "Unknown job " + ChatColor.GREEN + args[1]);
+                        return true;
+                    }
+                    StringBuilder jobDesc = new StringBuilder();
+                    for (String arg : Arrays.copyOfRange(args, 1, args.length))
+                        jobDesc.append(arg).append(" ");
+
+                    j.setDescription(jobDesc.toString());
+                    PlayerManagement.jobDb.update(j);
+                    break;
+                }
             }
 
             // update the job list to reflect the changes

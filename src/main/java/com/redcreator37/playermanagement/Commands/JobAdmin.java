@@ -40,7 +40,7 @@ public class JobAdmin implements CommandExecutor {
                 case "add": {
                     // get the job description
                     StringBuilder jobDesc = new StringBuilder();
-                    for (String arg : Arrays.copyOfRange(args, 1, args.length))
+                    for (String arg : Arrays.copyOfRange(args, 2, args.length))
                         jobDesc.append(arg).append(" ");
 
                     PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc.toString()));
@@ -64,7 +64,7 @@ public class JobAdmin implements CommandExecutor {
                         return true;
                     }
                     StringBuilder jobDesc = new StringBuilder();
-                    for (String arg : Arrays.copyOfRange(args, 1, args.length))
+                    for (String arg : Arrays.copyOfRange(args, 2, args.length))
                         jobDesc.append(arg).append(" ");
 
                     j.setDescription(jobDesc.toString());

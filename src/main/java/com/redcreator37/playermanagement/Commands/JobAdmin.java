@@ -43,7 +43,7 @@ public class JobAdmin implements CommandExecutor {
                     jobDesc.append(arg).append(" ");
 
                 PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc.toString()));
-            } else if (args[0].equals("delete")) {
+            } else if (args[0].equals("remove")) {
                 Job j = PlayerManagement.jobs.get(args[1]);
                 if (j == null) {
                     p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD

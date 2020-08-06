@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
@@ -128,10 +127,7 @@ public class CompanyManagement implements CommandExecutor {
                         + " to the player " + target, amount));
                 break;
             case "setdesc":
-                StringBuilder desc = new StringBuilder();
-                for (String arg : Arrays.copyOfRange(args, 2, args.length))
-                    desc.append(arg).append(" ");
-                company.setDescription(desc.toString());
+                company.setDescription(CommandHelper.getFullEntry(args, 2));
                 p.sendMessage(prefix + "§6Description set.");
                 break;
             case "setowner":

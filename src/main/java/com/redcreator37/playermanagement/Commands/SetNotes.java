@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 
 /**
  * Sets the player's notes
@@ -42,11 +41,7 @@ public class SetNotes implements CommandExecutor {
         if (!PlayerRoutines.checkPlayerPermission(p, requiredPermission))
             return true;
 
-        StringBuilder notes = new StringBuilder();
-        for (String arg : Arrays.copyOfRange(args, 1, args.length))
-            notes.append(arg).append(" ");
-
-        target.setNotes(notes.toString());
+        target.setNotes(CommandHelper.getFullEntry(args, 1));
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the notes and update the player list

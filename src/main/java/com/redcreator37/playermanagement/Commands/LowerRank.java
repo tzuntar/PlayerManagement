@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -57,14 +56,12 @@ public class LowerRank implements CommandExecutor {
                 target.setPunishments(target.getPunishments() + 1);
 
                 if (args.length > 1) {  // if there's a reason specified
-                    StringBuilder reason = new StringBuilder();
-                    for (String arg : Arrays.copyOfRange(args, 1, args.length))
-                        reason.append(arg).append(" ");
+                    String reason = CommandHelper.getFullEntry(args, 1);
                     try {   // tell them if they're online, otherwise ignore it
                         Objects.requireNonNull(p.getServer().getPlayer(target
                                 .getUsername())).sendMessage(PlayerManagement
                                 .prefix + ChatColor.GOLD + "You have been punished: "
-                                + ChatColor.GREEN + reason.toString());
+                                + ChatColor.GREEN + reason);
                     } catch (NullPointerException ignored) {}
                 }
 

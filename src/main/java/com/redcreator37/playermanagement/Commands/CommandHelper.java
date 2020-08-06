@@ -2,6 +2,8 @@ package com.redcreator37.playermanagement.Commands;
 
 import org.bukkit.ChatColor;
 
+import java.util.Arrays;
+
 /**
  * Contains helper methods for command handler classes
  */
@@ -68,6 +70,20 @@ final class CommandHelper {
         result.deleteCharAt(result.length() - 1);
         result.append(ChatColor.DARK_GRAY).append("]");
         return result.toString();
+    }
+
+    /**
+     * Returns all arguments after this index in one string
+     *
+     * @param args the full array with command arguments
+     * @param from the index after which to start parsing
+     * @return all arguments after the index separated with spaces
+     */
+    static String getFullEntry(String[] args, int from) {
+        StringBuilder b = new StringBuilder();
+        for (String arg : Arrays.copyOfRange(args, from, args.length))
+            b.append(arg).append(" ");
+        return b.toString();
     }
 
 }

@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 
 /**
  * Manages the job database
@@ -37,16 +36,11 @@ public class JobAdmin implements CommandExecutor {
 
         try {
             switch (args[0]) {
-                case "add": {
-                    // get the job description
-                    StringBuilder jobDesc = new StringBuilder();
-                    for (String arg : Arrays.copyOfRange(args, 2, args.length))
-                        jobDesc.append(arg).append(" ");
-
-                    PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc.toString()));
+                case "add":
+                    String jobDesc = CommandHelper.getFullEntry(args, 2);
+                    PlayerManagement.jobDb.insert(new Job(4097, args[1], jobDesc));
                     break;
-                }
-                case "remove": {
+                case "remove":
                     Job j = PlayerManagement.jobs.get(args[1]);
                     if (j == null) {
                         p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
@@ -55,22 +49,16 @@ public class JobAdmin implements CommandExecutor {
                     }
                     PlayerManagement.jobDb.remove(j.getId());
                     break;
-                }
-                case "update": {
-                    Job j = PlayerManagement.jobs.get(args[1]);
-                    if (j == null) {
+                case "update":
+                    Job job = PlayerManagement.jobs.get(args[1]);
+                    if (job == null) {
                         p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                                 + "Unknown job " + ChatColor.GREEN + args[1]);
                         return true;
                     }
-                    StringBuilder jobDesc = new StringBuilder();
-                    for (String arg : Arrays.copyOfRange(args, 2, args.length))
-                        jobDesc.append(arg).append(" ");
-
-                    j.setDescription(jobDesc.toString());
-                    PlayerManagement.jobDb.update(j);
+                    job.setDescription(CommandHelper.getFullEntry(args, 2));
+                    PlayerManagement.jobDb.update(job);
                     break;
-                }
             }
 
             // update the job list to reflect the changes

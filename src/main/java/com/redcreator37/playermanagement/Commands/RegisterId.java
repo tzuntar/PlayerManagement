@@ -44,13 +44,10 @@ public class RegisterId implements CommandExecutor {
         // their inventory should not be full because we're going
         // to give them an ID card after registration
         if (PlayerRoutines.checkInventoryFull(p)) return true;
-
-        StringBuilder displayName = new StringBuilder();
-        for (String arg : args) displayName.append(arg).append(" ");    // construct a new ServerPlayer
         ServerPlayer target = new ServerPlayer(4097, p.getName(),   // using a dummy id
                 p.getUniqueId().toString());
 
-        target.setName(displayName.toString());
+        target.setName(CommandHelper.getFullEntry(args, 0));
         target.setJoinDate(PlayerRoutines
                 .getCurrentDate(PlayerManagement.dateFormat));
         target.setJob(PlayerManagement.jobs.get("N/A"));

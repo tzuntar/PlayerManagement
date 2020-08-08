@@ -49,7 +49,7 @@ public class Company {
     /**
      * The amount of money the players can earn
      */
-    private BigDecimal paycheck;
+    private BigDecimal wage;
 
     /**
      * Company constructor - <strong>use this one only when
@@ -65,7 +65,7 @@ public class Company {
         this.description = "";
         this.owner = owner;
         this.balance = new BigDecimal(0);
-        this.paycheck = new BigDecimal(10);
+        this.wage = new BigDecimal(10);
         this.employees = 0;
         this.established = PlayerRoutines
                 .getCurrentDate(PlayerManagement.dateFormat);
@@ -82,10 +82,10 @@ public class Company {
      * @param employees   the number of employees
      * @param owner       the username of the owner
      * @param established the date of establishment
-     * @param paycheck    the amount of money the players can earn
+     * @param wage        the amount of money the players can earn
      */
     public Company(int id, String name, String description, String balance,
-                   int employees, String owner, String established, String paycheck) {
+                   int employees, String owner, String established, String wage) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -93,7 +93,7 @@ public class Company {
         this.employees = employees;
         this.owner = owner;
         this.established = established;
-        this.paycheck = new BigDecimal(paycheck);
+        this.wage = new BigDecimal(wage);
     }
 
     public int getId() {
@@ -124,8 +124,8 @@ public class Company {
         return established;
     }
 
-    public BigDecimal getPaycheck() {
-        return paycheck;
+    public BigDecimal getWage() {
+        return wage;
     }
 
     public void setDescription(String description) {
@@ -144,8 +144,16 @@ public class Company {
         this.owner = owner;
     }
 
-    public void setPaycheck(BigDecimal paycheck) {
-        this.paycheck = paycheck;
+    /**
+     * Sets the wage for this company
+     *
+     * @param wage the new wage
+     * @throws IllegalArgumentException if the wage is negative
+     */
+    public void setWage(BigDecimal wage) {
+        if (wage.intValue() < 0)
+            throw new IllegalArgumentException("Wage cannot be negative!");
+        this.wage = wage;
     }
 
     /**
@@ -173,7 +181,7 @@ public class Company {
         result *= 37 + Objects.hashCode(getEmployees());
         result *= 37 + Objects.hashCode(getOwner());
         result *= 37 + Objects.hashCode(getEstablishedDate());
-        result *= 37 + Objects.hashCode(getPaycheck());
+        result *= 37 + Objects.hashCode(getWage());
         return result;
     }
 

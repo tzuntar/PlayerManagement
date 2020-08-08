@@ -76,7 +76,7 @@ public class CompanyMenu implements Listener {
                         "§bDescription: §f" + company.getDescription(),
                         "§6Balance: §f" + formatDecimal(company.getBalance()),
                         "§6Employees: §f" + company.getEmployees(),
-                        "§6Salary: §f" + formatDecimal(company.getPaycheck()),
+                        "§6Salary: §f" + formatDecimal(company.getWage()),
                         "§6Owner: §f" + company.getOwner(),
                         "§6Established: §f" + company.getEstablishedDate()
                 }, 0);
@@ -147,13 +147,17 @@ public class CompanyMenu implements Listener {
             case "Close":
                 player.closeInventory();
                 break;
-            case "Increase salary":
-                company.setPaycheck(company.getPaycheck().add(new BigDecimal(10)));
-                player.sendMessage(prefix + "§6The salary has been increased by §a$10§6.");
+            case "Increase the wages":
+                company.setWage(company.getWage().add(new BigDecimal(10)));
+                player.sendMessage(prefix + "§6The wages have been increased by §a$10§6.");
                 break;
-            case "Decrease salary":
-                company.setPaycheck(company.getPaycheck().subtract(new BigDecimal(10)));
-                player.sendMessage(prefix + "§6The salary has been decreased by §a$10§6.");
+            case "Decrease the wages":
+                try {
+                    company.setWage(company.getWage().subtract(new BigDecimal(10)));
+                    player.sendMessage(prefix + "§6The wages have been decreased by §a$10§6.");
+                } catch (IllegalArgumentException e) {
+                    player.sendMessage(prefix + "§6The wage cannot be negative!");
+                }
                 break;
             default:
                 if (clickedItem.contains("Deposit")) {

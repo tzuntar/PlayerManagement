@@ -154,8 +154,8 @@ public final class PlayerRoutines {
             amount = calculateAmount(defThreshold, defAmount,
                     PlayerManagement.eco.getBalance(player));
         } else if (!targetCompany.getName().equals("N/A")) {  // the player is employed, find the company
-            BigDecimal paycheck = targetCompany.getPaycheck();
-            if (targetCompany.getBalance().doubleValue() < paycheck.doubleValue()) {
+            BigDecimal wage = targetCompany.getWage();
+            if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
                 // get the owner player handle
                 User owner = PlayerManagement.ess
                         .getOfflineUser(targetCompany.getOwner());
@@ -172,8 +172,8 @@ public final class PlayerRoutines {
                     return; // failsafe in case an invalid player is specified in the db
                 }
 
-                if (owner.canAfford(paycheck)) {
-                    PlayerManagement.eco.withdrawPlayer(ownerPl, paycheck.doubleValue());
+                if (owner.canAfford(wage)) {
+                    PlayerManagement.eco.withdrawPlayer(ownerPl, wage.doubleValue());
                     owner.addMail("WARNING! Money was taken from your account because" +
                             " your company could not afford to pay the wages!");
                 } else {
@@ -195,10 +195,10 @@ public final class PlayerRoutines {
                 // attempt to update the database Company object
                 // TODO: make sure this works properly!
                 companies.get(company.getName()).setBalance(company
-                        .getBalance().subtract(paycheck));
+                        .getBalance().subtract(wage));
             }
 
-            amount = paycheck.doubleValue();
+            amount = wage.doubleValue();
         } else return;
         PlayerManagement.eco.depositPlayer(player, amount);
 
@@ -250,7 +250,7 @@ public final class PlayerRoutines {
      */
     public static void displayCompanyInfo(Player p, Company c) {
         List<String> pages = new ArrayList<>();
-        BigDecimal afterPayments = c.getBalance().subtract(c.getPaycheck()
+        BigDecimal afterPayments = c.getBalance().subtract(c.getWage()
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
 
         List<ServerPlayer> employees = new ArrayList<>();
@@ -265,7 +265,7 @@ public final class PlayerRoutines {
                 + "\n\n§0§lBalance: §r§1" + formatDecimal(c.getBalance())
                 + "\n\n§0§lEmployees: §r§1" + c.getEmployees());
         pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                + "\n\n§0§lSalary: §r§1" + formatDecimal(c.getPaycheck())
+                + "\n\n§0§lSalary: §r§1" + formatDecimal(c.getWage())
                 + "\n§rPaid every §1" + PlayerManagement
                 .autoEcoTimeSeconds / 60 + "§r min."
                 + "\n\n§0Balance after payments: §r§1" + formatDecimal(afterPayments)

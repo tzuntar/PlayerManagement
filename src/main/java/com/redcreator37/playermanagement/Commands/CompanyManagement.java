@@ -95,14 +95,18 @@ public class CompanyManagement implements CommandExecutor {
                 PlayerRoutines.displayCompanyInfo(p, company);
                 break;
             case "increase":
-                company.setPaycheck(company.getPaycheck().add(amount));
-                p.sendMessage(prefix + "§6The salary has been increased by §a$"
+                company.setWage(company.getWage().add(amount));
+                p.sendMessage(prefix + "§6The wages have been increased by §a$"
                         + amount + "§6.");
                 break;
             case "decrease":
-                company.setPaycheck(company.getPaycheck().subtract(amount));
-                p.sendMessage(prefix + "§6The salary has been decreased by §a$"
-                        + amount + "§6.");
+                try {
+                    company.setWage(company.getWage().subtract(amount));
+                    p.sendMessage(prefix + "§6The wages have been decreased by §a$"
+                            + amount + "§6.");
+                } catch (IllegalArgumentException e) {
+                    p.sendMessage(prefix + "§6The wage cannot be negative!");
+                }
                 break;
             case "deposit":
                 eco.withdrawPlayer(p, amount.doubleValue());

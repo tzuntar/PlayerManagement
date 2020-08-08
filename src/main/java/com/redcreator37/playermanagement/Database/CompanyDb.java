@@ -44,7 +44,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         st.setInt(4, c.getEmployees());
         st.setString(5, c.getOwner());
         st.setString(6, c.getEstablishedDate());
-        st.setString(7, c.getPaycheck().toString());
+        st.setString(7, c.getWage().toString());
         if (update) st.setInt(8, c.getId());
         st.executeUpdate();
     }

@@ -28,6 +28,7 @@ public abstract class SharedDb<T, R> {
      * Attempts to connect to the specified database
      *
      * @param database database path
+     * @return the open database connection
      * @throws SQLException on error
      */
     public static Connection connect(String database) throws SQLException {

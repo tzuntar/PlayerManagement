@@ -334,6 +334,8 @@ public final class PlayerManagement extends JavaPlugin {
 
     /**
      * Detects and enables the Vault plugin
+     *
+     * @return true if connecting to the plugin was successful
      */
     private boolean setUpEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null)

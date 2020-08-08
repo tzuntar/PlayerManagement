@@ -17,6 +17,8 @@ public class EnhancedPlayerList implements Listener {
 
     /**
      * Initially sets the player list for the player on join
+     *
+     * @param event the player join event
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) {

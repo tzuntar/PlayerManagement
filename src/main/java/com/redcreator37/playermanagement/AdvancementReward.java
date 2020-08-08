@@ -19,6 +19,8 @@ public class AdvancementReward implements Listener {
 
     /**
      * Handles the advancement done event
+     *
+     * @param event the advancement done event
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {

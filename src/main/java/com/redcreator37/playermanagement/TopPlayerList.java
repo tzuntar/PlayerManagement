@@ -21,6 +21,8 @@ public class TopPlayerList implements Listener {
 
     /**
      * Handles the sign text change event
+     *
+     * @param event the sign change event
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void eventSignChanged(SignChangeEvent event) {

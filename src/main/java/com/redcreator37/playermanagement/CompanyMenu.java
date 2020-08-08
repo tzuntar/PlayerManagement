@@ -97,8 +97,16 @@ public class CompanyMenu implements Listener {
 
     /**
      * Creates a new GUI item
+     *
+     * @param type    the item type to insert
+     * @param caption the display title of the item
+     * @param amount  the amount of the items on the stack of
+     *                the same type
+     * @param lore    the additional description text
+     * @param slot    the inventory slot (must be valid!)
      */
     public void newItem(Material type, String caption, int amount, String[] lore, int slot) {
+        assert slot <= inventory.getSize();
         ItemStack item = new ItemStack(type);
         ItemMeta meta = item.getItemMeta();
 
@@ -112,6 +120,8 @@ public class CompanyMenu implements Listener {
 
     /**
      * Handles the event when an item is clicked
+     *
+     * @param e the inventory click event
      */
     @EventHandler
     public void onInventoryItemClick(final InventoryClickEvent e) {
@@ -141,6 +151,8 @@ public class CompanyMenu implements Listener {
 
     /**
      * Processes commands attached to the menu items
+     *
+     * @param clickedItem the display name of the clicked item
      */
     public void processCommand(String clickedItem) {
         switch (clickedItem) {

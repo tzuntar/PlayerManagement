@@ -30,6 +30,8 @@ public class PlayerCard implements Listener {
 
     /**
      * Handles all right-click events
+     *
+     * @param event the player interact event
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerUse(PlayerInteractEvent event) {
@@ -83,12 +85,13 @@ public class PlayerCard implements Listener {
     /**
      * Returns a formatted graph based on these values
      *
-     * @param level the value, <strong>must be <= max</strong>
+     * @param level the value, <strong>must be &lt;= max</strong>
      * @param max   the max value for reference
      * @return the color formatted string
      */
     @SuppressWarnings("SameParameterValue")
     private static String getBarGraph(double level, double max) {
+        assert level <= max;
         StringBuilder graph = new StringBuilder((int) max * 2);
         String lvl = "§2";
         if (level / max < 0.50) lvl = "§6";

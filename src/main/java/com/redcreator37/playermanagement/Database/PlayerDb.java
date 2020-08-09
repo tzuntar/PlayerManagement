@@ -135,13 +135,14 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
     }
 
     /**
-     * Deletes the player with the specified id from the database
+     * Removes this player from the database
      *
-     * @param id player id
+     * @param player the player to remove
      * @throws SQLException on errors
      */
-    public void remove(int id) throws SQLException {
-        String cmd = "DELETE FROM players WHERE id = " + id + ";";
+    @Override
+    public void remove(ServerPlayer player) throws SQLException {
+        String cmd = "DELETE FROM players WHERE id = " + player.getId() + ";";
         db.prepareStatement(cmd).executeUpdate();
     }
 

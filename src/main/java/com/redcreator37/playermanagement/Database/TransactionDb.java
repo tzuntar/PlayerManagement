@@ -113,6 +113,18 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
     }
 
     /**
+     * Removes this transaction from the database
+     *
+     * @param transaction the transaction to remove
+     * @throws SQLException on errors
+     */
+    @Override
+    public void remove(Transaction transaction) throws SQLException {
+        String cmd = "DELETE FROM transactions WHERE id = " + transaction.getId() + ";";
+        db.prepareStatement(cmd).executeUpdate();
+    }
+
+    /**
      * Adds a transaction in the background
      *
      * @param p the player

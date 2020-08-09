@@ -47,7 +47,7 @@ public class JobAdmin implements CommandExecutor {
                                 + "Unknown job " + ChatColor.GREEN + args[1]);
                         return true;
                     }
-                    PlayerManagement.jobDb.remove(j.getId());
+                    PlayerManagement.jobDb.remove(j);
                     break;
                 case "update":
                     Job job = PlayerManagement.jobs.get(args[1]);

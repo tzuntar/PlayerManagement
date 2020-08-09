@@ -119,6 +119,18 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     }
 
     /**
+     * Removes this company from the database
+     *
+     * @param company the company to remove
+     * @throws SQLException on errors
+     */
+    @Override
+    public void remove(Company company) throws SQLException {
+        String cmd = "DELETE FROM companies WHERE id = " + company.getId() + ";";
+        db.prepareStatement(cmd).executeUpdate();
+    }
+
+    /**
      * Updates the data for this company in the database
      *
      * @param player  the player that'll see any output

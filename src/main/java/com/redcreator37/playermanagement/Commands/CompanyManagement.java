@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
+import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
@@ -42,7 +43,7 @@ public class CompanyManagement implements CommandExecutor {
 
         if (args.length == 2 && !args[1].matches("info|transactions")) {
             String[] arguments = {"name", "increase|decrease|deposit|withdraw" +
-                    "|setdesc|setowner|transactions", "args"};
+                    "|setdesc|setowner|transactions|remove", "args"};
             p.sendMessage(prefix + CommandHelper.parseCommandUsage("company", arguments));
             return true;
         }
@@ -147,12 +148,21 @@ public class CompanyManagement implements CommandExecutor {
             case "transactions":
                 Transaction.listTransactions(p, company);
                 break;
+            case "remove":
+                try {
+                    companyDb.remove(company);
+                    companies = companyDb.getAll();
+                    p.sendMessage(prefix + "§Removed the company §a" + args[1]);
+                } catch (SQLException e) {
+                    p.sendMessage(prefix + "§6Error while saving company data: §4"
+                            + e.getMessage());
+                }
             default:
                 p.sendMessage(prefix + "§6Unknown command: §a" + args[1]);
                 return true;
         }
 
-        if (args[1].matches("info|transactions"))
+        if (args[1].matches("info|transactions|remove"))
             return true;    // no changes made, don't update the db
 
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {

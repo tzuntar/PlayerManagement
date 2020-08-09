@@ -103,13 +103,14 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
     }
 
     /**
-     * Deletes the job with the specified id from the database
+     * Removes this job from the database
      *
-     * @param id job id
+     * @param job the job to remove
      * @throws SQLException on errors
      */
-    public void remove(int id) throws SQLException {
-        String cmd = "DELETE FROM jobs WHERE id = " + id + ";";
+    @Override
+    public void remove(Job job) throws SQLException {
+        String cmd = "DELETE FROM jobs WHERE id = " + job.getId() + ";";
         db.prepareStatement(cmd).executeUpdate();
     }
 

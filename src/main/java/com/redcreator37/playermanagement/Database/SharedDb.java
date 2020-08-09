@@ -84,6 +84,14 @@ public abstract class SharedDb<T, R> {
     public abstract void update(T t) throws SQLException;
 
     /**
+     * Removes this object from the database
+     *
+     * @param t the object to remove
+     * @throws SQLException on errors
+     */
+    public abstract void remove(T t) throws SQLException;
+
+    /**
      * Create possibly nonexistent database tables
      *
      * @param db the database connection to use

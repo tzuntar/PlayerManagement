@@ -41,7 +41,7 @@ public class DeleteId implements CommandExecutor {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                PlayerManagement.playerDb.remove(target.getId());
+                PlayerManagement.playerDb.remove(target);
                 // reload from the database
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD

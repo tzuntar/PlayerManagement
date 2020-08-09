@@ -92,7 +92,7 @@ public final class PlayerRoutines {
      * @return true if the inventory is full, false otherwise
      */
     public static boolean checkInventoryFull(Player player) {
-        if (player.getInventory().firstEmpty() == -1) {  // make sure the inventory isn't full
+        if (player.getInventory().firstEmpty() == -1) {  // firstEmpty() returns -1 if it's full
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Inventory full!");
             return true;
@@ -107,15 +107,13 @@ public final class PlayerRoutines {
      * @return the matching player or null
      */
     public static Player playerFromSender(CommandSender sender) {
-        Player p;
-        try {   // make sure it's actually a player
-            p = (Player) sender;
-        } catch (Exception ex) {
+        assert sender != null;
+        if (!(sender instanceof Player)) {
             sender.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "This command can only be used by players!");
             return null;
         }
-        return p;
+        return (Player) sender;
     }
 
     /**

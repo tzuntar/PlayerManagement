@@ -22,8 +22,8 @@ final class CommandHelper {
      * @param argumentList the list of arguments, separate sub-arguments
      *                     with vertical bars (<code>|</code>). Prefix
      *                     non-optional arguments with an asterisk.
-     *                     Example: for /ping name [hello|hello1|hello2]
-     *                     <code>{"*name", "hello|hello1|hello2"}</code>
+     *                     Example: for <code>/ping name [hello|hello1|hello2]
+     *                     </code>: <code>{"*name", "hello|hello1|hello2"}</code>
      * @return the formatted string
      */
     static String parseCommandUsage(String cmd, String[] argumentList) {

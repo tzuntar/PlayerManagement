@@ -34,7 +34,7 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
      * @param t   the Transaction object to get the data from
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     void runSqlUpdate(String sql, Transaction t, boolean update) throws SQLException {
@@ -45,6 +45,7 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
         st.setString(3, t.getTitle());
         st.setString(4, t.getDescription());
         st.setString(5, t.getAmount().toString());
+        if (update) st.setInt(6, t.getId());
         st.executeUpdate();
     }
 
@@ -54,24 +55,12 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
      *
      * @param sql the query to run
      * @return the list of objects in the database
-     * @implNote not implemented
+     * @throws SQLException on errors
      */
     @Override
-    List<Transaction> commonQuery(String sql) {
-        return null;
-    }
-
-    /**
-     * Returns the list of all transactions in the database
-     *
-     * @return the transaction list
-     * @throws SQLException on error
-     */
-    @Override
-    public List<Transaction> getAll() throws SQLException {
-        String cmd = "SELECT * FROM transactions";
+    List<Transaction> commonQuery(String sql) throws SQLException {
         List<Transaction> transactions = new ArrayList<>();
-        ResultSet set = db.createStatement().executeQuery(cmd);
+        ResultSet set = db.createStatement().executeQuery(sql);
 
         // loop through the records
         while (set.next()) {
@@ -87,10 +76,21 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
     }
 
     /**
+     * Returns the list of all transactions in the database
+     *
+     * @return the transaction list
+     * @throws SQLException on errors
+     */
+    @Override
+    public List<Transaction> getAll() throws SQLException {
+        return commonQuery("SELECT * FROM transactions");
+    }
+
+    /**
      * Adds another transaction to the database
      *
      * @param t the Transaction object to be inserted
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     public void insert(Transaction t) throws SQLException {
@@ -103,11 +103,13 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
      * Updates the data of an existing object in the database
      *
      * @param t the object to updates
-     * @implNote not implemented
+     * @throws SQLException on errors
      */
     @Override
-    public void update(Transaction t) {
-        // TODO: implement!
+    public void update(Transaction t) throws SQLException {
+        String cmd = "UPDATE transactions SET companyId = ?, direction = ?," +
+                "title = ?, description = ?, amount = ? WHERE id = ?";
+        runSqlUpdate(cmd, t, true);
     }
 
     /**

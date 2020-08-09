@@ -29,7 +29,7 @@ public abstract class SharedDb<T, R> {
      *
      * @param database database path
      * @return the open database connection
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     public static Connection connect(String database) throws SQLException {
         Connection con = DriverManager.getConnection("jdbc:sqlite:" + database);
@@ -87,7 +87,7 @@ public abstract class SharedDb<T, R> {
      * Create possibly nonexistent database tables
      *
      * @param db the database connection to use
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     public static void createTables(Connection db) throws SQLException {
         String sql = "create table if not exists players\n(\n" +

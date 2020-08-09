@@ -57,7 +57,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      *
      * @param sql sql query to run
      * @return the list of players in the database
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     public Map<String, ServerPlayer> commonQuery(String sql) throws SQLException {
@@ -87,7 +87,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * Returns the list of all server players
      *
      * @return the player list
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     public Map<String, ServerPlayer> getAll() throws SQLException {
@@ -101,18 +101,17 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * registering new players
      *
      * @return the player list
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     public Map<String, ServerPlayer> getNewlyRegistered() throws SQLException {
-        String cmd = "SELECT * FROM players";
-        return commonQuery(cmd);
+        return commonQuery("SELECT * FROM players");
     }
 
     /**
      * Adds another player to the database
      *
      * @param player the ServerPlayer object to be inserted
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     public void insert(ServerPlayer player) throws SQLException {
@@ -125,7 +124,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * Updates the data of an existing player in the database
      *
      * @param player the ServerPlayer object to be updated
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     public void update(ServerPlayer player) throws SQLException {
@@ -139,7 +138,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * Deletes the player with the specified id from the database
      *
      * @param id player id
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     public void remove(int id) throws SQLException {
         String cmd = "DELETE FROM players WHERE id = " + id + ";";

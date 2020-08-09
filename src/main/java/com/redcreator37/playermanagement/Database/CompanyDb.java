@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
      * @param sql the SQL command. Example: <code>INSERT INTO
      *            contacts (name, surname) VALUES (?, ?)</code>
      * @param c   the Company object to get the data from
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     void runSqlUpdate(String sql, Company c, boolean update) throws SQLException {
@@ -55,24 +56,14 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
      *
      * @param sql the query to run
      * @return the list of objects in the database
-     * @implNote not implemented!
+     * @throws SQLException on errors
      */
     @Override
-    Map<String, Company> commonQuery(String sql) {
-        return null; // TODO: implement
-    }
-
-    /**
-     * Returns the list of all companies in the database
-     *
-     * @return the company list
-     * @throws SQLException on error
-     */
-    @Override
-    public Map<String, Company> getAll() throws SQLException {
-        String cmd = "SELECT * FROM companies";
+    Map<String, Company> commonQuery(String sql) throws SQLException {
         Map<String, Company> companies = new HashMap<>();
-        ResultSet set = db.createStatement().executeQuery(cmd);
+        Statement st = db.createStatement();
+        st.closeOnCompletion();
+        ResultSet set = st.executeQuery(sql);
 
         // loop through the records
         while (set.next()) {
@@ -86,14 +77,26 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
                     set.getString("paycheck"));
             companies.put(c.getName(), c);
         }
+        set.close();
         return companies;
+    }
+
+    /**
+     * Returns the list of all companies in the database
+     *
+     * @return the company list
+     * @throws SQLException on errors
+     */
+    @Override
+    public Map<String, Company> getAll() throws SQLException {
+        return commonQuery("SELECT * FROM companies");
     }
 
     /**
      * Adds another company to the database
      *
-     * @param c  the Company object to be inserted
-     * @throws SQLException on error
+     * @param c the Company object to be inserted
+     * @throws SQLException on errors
      */
     @Override
     public void insert(Company c) throws SQLException {
@@ -105,8 +108,8 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     /**
      * Updates the data of an existing company in the database
      *
-     * @param c  the Company object to be updated
-     * @throws SQLException on error
+     * @param c the Company object to be updated
+     * @throws SQLException on errors
      */
     @Override
     public void update(Company c) throws SQLException {

@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +48,24 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
      *
      * @param sql the query to run
      * @return the list of objects in the database
-     * @implNote not implemented
+     * @throws SQLException on errors
      */
     @Override
-    Map<String, Job> commonQuery(String sql) {
-        return null;
+    Map<String, Job> commonQuery(String sql) throws SQLException {
+        Map<String, Job> jobs = new HashMap<>();
+        Statement st = db.createStatement();
+        st.closeOnCompletion();
+        ResultSet set = st.executeQuery(sql);
+
+        // loop through the records
+        while (set.next()) {
+            Job j = new Job(set.getInt("id"),
+                    set.getString("name"),
+                    set.getString("description"));
+            jobs.put(j.getName(), j);
+        }
+        set.close();
+        return jobs;
     }
 
     /**
@@ -62,25 +76,14 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
      */
     @Override
     public Map<String, Job> getAll() throws SQLException {
-        String cmd = "SELECT * FROM jobs";
-        Map<String, Job> jobs = new HashMap<>();
-        ResultSet set = db.createStatement().executeQuery(cmd);
-
-        // loop through the records
-        while (set.next()) {
-            Job j = new Job(set.getInt("id"),
-                    set.getString("name"),
-                    set.getString("description"));
-            jobs.put(j.getName(), j);
-        }
-        return jobs;
+        return commonQuery("SELECT * FROM jobs");
     }
 
     /**
      * Inserts this job into the database
      *
      * @param job the Job object to be inserted
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     @Override
     public void insert(Job job) throws SQLException {
@@ -103,7 +106,7 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
      * Deletes the job with the specified id from the database
      *
      * @param id job id
-     * @throws SQLException on error
+     * @throws SQLException on errors
      */
     public void remove(int id) throws SQLException {
         String cmd = "DELETE FROM jobs WHERE id = " + id + ";";

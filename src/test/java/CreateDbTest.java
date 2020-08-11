@@ -43,8 +43,7 @@ public class CreateDbTest {
         CompanyDb companyDb = null;
         TransactionDb transactionDb = null;
         PlayerDb playerDb = null;
-        try {
-            Connection db = SharedDb.connect(dbPath);
+        try (Connection db = SharedDb.connect(dbPath)) {
             SharedDb.createTables(db);
             jobDb = new JobDb(db);
             companyDb = new CompanyDb(db);
@@ -57,22 +56,22 @@ public class CreateDbTest {
             companies = new HashMap<>();
             transactions = new ArrayList<>();
             System.out.println("Created an empty database");
+
+            try {
+                jobs = jobDb.getAll();   // it has to be done in this exact order!
+                companies = companyDb.getAll();
+                transactions = transactionDb.getAll();
+                players = playerDb.getAll();
+                System.out.println("Player database loaded successfully");
+            } catch (SQLException e) {
+                Assert.fail("Error while reading from the database: " + e.getMessage());
+            }
         } catch (SQLException e) {
             Assert.fail("Creating the database failed: " + e.getMessage());
         }
 
-        try {
-            jobs = jobDb.getAll();   // it has to be done in this exact order!
-            companies = companyDb.getAll();
-            transactions = transactionDb.getAll();
-            players = playerDb.getAll();
-            System.out.println("Player database loaded successfully");
-        } catch (SQLException e) {
-            Assert.fail("Error while reading from the database: " + e.getMessage());
-        }
-
         System.out.println("Cleaning up...");
-        // if (!dbFile.delete()) success = false; // FIXME: fails
+        if (!dbFile.delete()) Assert.fail("Deleting the database failed");
         Assert.assertTrue(true);    // already passed at this point
     }
 

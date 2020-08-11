@@ -27,13 +27,13 @@ final class CommandHelper {
      * @return the formatted string
      */
     static String parseCommandUsage(String cmd, String[] argumentList) {
-        StringBuilder usage = new StringBuilder();
-        usage.append("§6Usage: §a/").append(cmd).append(" ");
+        StringBuilder usage = new StringBuilder("§6Usage: §a/");
+        usage.append(cmd).append(" ");
         for (String s : argumentList) {
             String[] args = s.split("\\|");
-            if (s.charAt(0) == '*')
-                usage.append(formatRequiredArgs(args)).append(" ");
-            else usage.append(formatOptionalArgs(args)).append(" ");
+            usage.append(s.charAt(0) == '*'
+                    ? formatRequiredArgs(args)
+                    : formatOptionalArgs(args)).append(" ");
         }
         return usage.toString();
     }
@@ -48,8 +48,7 @@ final class CommandHelper {
         StringBuilder result = new StringBuilder("§8[");
         for (String a : arguments)
             result.append(ChatColor.AQUA).append(a).append("§8|");
-        result.deleteCharAt(result.length() - 1);
-        result.append("§8]");
+        result.deleteCharAt(result.length() - 1).append("§8]");
         return result.toString();
     }
 
@@ -63,8 +62,7 @@ final class CommandHelper {
         StringBuilder result = new StringBuilder("§8[");
         for (String a : arguments)
             result.append(ChatColor.RED).append(a.substring(1)).append("§8|");
-        result.deleteCharAt(result.length() - 1);
-        result.append("§8]");
+        result.deleteCharAt(result.length() - 1).append("§8]");
         return result.toString();
     }
 

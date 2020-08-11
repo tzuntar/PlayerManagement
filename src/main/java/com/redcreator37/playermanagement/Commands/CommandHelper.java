@@ -28,8 +28,7 @@ final class CommandHelper {
      */
     static String parseCommandUsage(String cmd, String[] argumentList) {
         StringBuilder usage = new StringBuilder();
-        usage.append(ChatColor.DARK_GRAY).append(ChatColor.GOLD).append("Usage: ")
-                .append(ChatColor.GREEN).append("/").append(cmd).append(" ");
+        usage.append("§6Usage: §a/").append(cmd).append(" ");
         for (String s : argumentList) {
             String[] args = s.split("\\|");
             if (s.charAt(0) == '*')
@@ -46,12 +45,11 @@ final class CommandHelper {
      * @return the formatted string
      */
     private static String formatOptionalArgs(String[] arguments) {
-        StringBuilder result = new StringBuilder();
-        result.append(ChatColor.DARK_GRAY).append("[");
+        StringBuilder result = new StringBuilder("§8[");
         for (String a : arguments)
-            result.append(ChatColor.AQUA).append(a).append(ChatColor.DARK_GRAY).append("|");
+            result.append(ChatColor.AQUA).append(a).append("§8|");
         result.deleteCharAt(result.length() - 1);
-        result.append(ChatColor.DARK_GRAY).append("]");
+        result.append("§8]");
         return result.toString();
     }
 
@@ -62,13 +60,11 @@ final class CommandHelper {
      * @return the formatted string
      */
     private static String formatRequiredArgs(String[] arguments) {
-        StringBuilder result = new StringBuilder();
-        result.append(ChatColor.DARK_GRAY).append("[");
+        StringBuilder result = new StringBuilder("§8[");
         for (String a : arguments)
-            result.append(ChatColor.RED).append(a.substring(1))
-                    .append(ChatColor.DARK_GRAY).append("|");
+            result.append(ChatColor.RED).append(a.substring(1)).append("§8|");
         result.deleteCharAt(result.length() - 1);
-        result.append(ChatColor.DARK_GRAY).append("]");
+        result.append("§8]");
         return result.toString();
     }
 

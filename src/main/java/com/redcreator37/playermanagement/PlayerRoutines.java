@@ -137,10 +137,9 @@ public final class PlayerRoutines {
         ServerPlayer target = PlayerManagement.players.get(player
                 .getUniqueId().toString());
         if (target == null || Objects.requireNonNull(PlayerManagement.ess)
-                .getUser(player).isAfk())   // unknown player or AFK
-            return;
-        double amount;
+                .getUser(player).isAfk()) return;   // unknown player or AFK
 
+        double amount;
         Company targetCompany = target.getCompany();
         if (targetCompany.getName().equals("N/A")) {  // the player isn't employed
             amount = calculateAmount(defThreshold, defAmount,
@@ -184,12 +183,10 @@ public final class PlayerRoutines {
                     return;
                 }
 
-                // attempt to update the database Company object
-                // TODO: make sure this works properly!
+                // update the database Company object
                 PlayerManagement.companies.get(company.getName()).setBalance(company
                         .getBalance().subtract(wage));
             }
-
             amount = wage.doubleValue();
         } else return;
         PlayerManagement.eco.depositPlayer(player, amount);
@@ -211,9 +208,9 @@ public final class PlayerRoutines {
      * was already reached
      */
     public static double calculateAmount(double threshold, double base, double balance) {
-        double intermediate = balance / threshold;
-        if (intermediate > 1) return 0;
-        return base * (1 - intermediate);
+        double d = balance / threshold;
+        if (d > 1) return 0;
+        return base * (1 - d);
     }
 
     /**

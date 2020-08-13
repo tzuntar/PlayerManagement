@@ -50,7 +50,7 @@ public class PlayerRoutinesTests {
      */
     @Test
     public void formatNegativeDecimalTest() {
-        Assert.assertEquals("($3.12)", PlayerRoutines
+        Assert.assertEquals("-$3.12", PlayerRoutines
                 .formatDecimal(BigDecimal.valueOf(-3.12333)));
     }
 

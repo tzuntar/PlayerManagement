@@ -134,11 +134,13 @@ public final class PlayerManagement extends JavaPlugin {
         if (!getServer().getPluginManager().isPluginEnabled("Essentials")) {
             getLogger().severe("ERROR: Essentials could not be detected!");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         if (!setUpEconomy()) {  // try to detect and enable Vault
             getLogger().severe("ERROR: Vault could not be detected!");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         // register commands
@@ -177,7 +179,12 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
-        setUpDatabase();
+        if (!setUpDatabase()) {
+            getLogger().severe("FATAL: Unable to establish" +
+                    " the database connection. Unloading the plugin...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         if (autoEcoEnabled && this.isEnabled()) setUpAutoEconomy();
     }
 
@@ -352,7 +359,7 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * Sets up the database connection
      */
-    private void setUpDatabase() {
+    private boolean setUpDatabase() {
         boolean success = true;
         boolean newDb = !new File(databasePath).exists();
         try {
@@ -394,12 +401,7 @@ public final class PlayerManagement extends JavaPlugin {
             getLogger().severe("Error while reading from the database: " + e.getMessage());
             success = false;
         }
-
-        if (!success) {
-            getLogger().severe("FATAL: Unable to establish" +
-                    " the database connection. Unloading the plugin...");
-            getServer().getPluginManager().disablePlugin(this);
-        }
+        return success;
     }
 
     /**

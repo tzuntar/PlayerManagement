@@ -135,7 +135,8 @@ public class CompanyManagement implements CommandExecutor {
                 p.sendMessage(prefix + "§6Description set.");
                 break;
             case "setowner":
-                ServerPlayer newOwner = players.get(PlayerRoutines.uuidFromUsername(players, args[2]));
+                ServerPlayer newOwner = players.get(PlayerRoutines
+                        .uuidFromUsername(players, args[2]));
                 if (PlayerRoutines.checkPlayerNonExistent(p, newOwner, args[2]))
                     return true;
 

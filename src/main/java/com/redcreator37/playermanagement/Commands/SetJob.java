@@ -37,10 +37,11 @@ public class SetJob implements CommandExecutor {
         if (!PlayerRoutines.checkPermission(p, requiredPermission))
             return true;
 
-        String targetPlayerName = args.length == 1 ? p.getName() : args[1];
-        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
-                .uuidFromUsername(PlayerManagement.players, targetPlayerName));
-        if (PlayerRoutines.checkPlayerNonExistent(p, target, targetPlayerName))
+        String targetName = args.length == 1 ? p.getName() : args[1];
+        ServerPlayer target = PlayerManagement.players.get(args.length == 1
+                ? p.getUniqueId().toString()
+                : PlayerRoutines.uuidFromUsername(PlayerManagement.players, targetName));
+        if (PlayerRoutines.checkPlayerNonExistent(p, target, targetName))
             return true;
 
         Job newJob = PlayerManagement.jobs.get(args[0]);

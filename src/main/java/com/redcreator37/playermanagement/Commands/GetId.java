@@ -57,8 +57,8 @@ public class GetId implements CommandExecutor {
         if (!PlayerRoutines.checkPermission(p, "management.admin"))
             return true;
 
-        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines.uuidFromUsername(PlayerManagement.players, args[0]));
-
+        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
+                .uuidFromUsername(PlayerManagement.players, args[0]));
         if (PlayerRoutines.checkPlayerNonExistent(p, target, args[0]))
             return true;
 

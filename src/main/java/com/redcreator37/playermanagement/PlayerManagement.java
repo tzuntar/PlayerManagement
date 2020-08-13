@@ -371,7 +371,7 @@ public final class PlayerManagement extends JavaPlugin {
         companies = new HashMap<>();
         transactions = new ArrayList<>();
 
-        if (newDb) // database not found, create a new one
+        if (newDb) // empty database
             try {
                 SharedDb.createTables(database);
                 // just insert a blank player, job and company using a bogus id

@@ -56,7 +56,7 @@ public class PlayerCard implements Listener {
      */
     private static void handlePlayerCardEvent(Player player, List<String> lore) {
         ServerPlayer target = PlayerManagement.players.get(lore.get(1));
-        if (target != null) displayCardData(player, target.getUuid());
+        if (target != null) displayCardData(player, target);
         else player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                 + "Invalid ID card!");
     }
@@ -106,18 +106,17 @@ public class PlayerCard implements Listener {
     /**
      * Displays the data for the provided UUID to this player
      *
-     * @param invoker    the player requesting the data
-     * @param playerUuid the UUID of the player to look up
+     * @param invoker the player requesting the data
+     * @param player  the player for which to look up the data
      */
-    public static void displayCardData(Player invoker, String playerUuid) {
-        ServerPlayer target = PlayerManagement.players.get(playerUuid);
-        if (target == null) {   // invalid uuid or invalid card
+    public static void displayCardData(Player invoker, ServerPlayer player) {
+        if (player == null) {   // invalid uuid or invalid card
             invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Invalid ID card!");
             return;
         }
 
-        OfflinePlayer offlinePl = Bukkit.getOfflinePlayer(UUID.fromString(playerUuid));
+        OfflinePlayer offlinePl = Bukkit.getOfflinePlayer(UUID.fromString(player.getUuid()));
         String balance = "N/A";
         try {
             balance = PlayerRoutines.formatDecimal(BigDecimal
@@ -125,20 +124,20 @@ public class PlayerCard implements Listener {
         } catch (RuntimeException ignored) {}
 
         Player p = offlinePl.getPlayer();
-        String job = PlayerRoutines.getValueOrEmpty(target.getJob().getName()),
-                company = PlayerRoutines.getValueOrEmpty(target.getCompany().getName());
+        String job = PlayerRoutines.getValueOrEmpty(player.getJob().getName()),
+                company = PlayerRoutines.getValueOrEmpty(player.getCompany().getName());
         List<String> pages = new ArrayList<>();
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
-                + "\n\n§0§lUsername: §r§1" + target
-                + "\n\n§0§lName: §r§1" + target.getName()
-                + "\n\n§0§lRegistration date: §r§1" + target.getJoinDate()
+                + "\n\n§0§lUsername: §r§1" + player
+                + "\n\n§0§lName: §r§1" + player.getName()
+                + "\n\n§0§lRegistration date: §r§1" + player.getJoinDate()
                 + "\n\n§0§lJob name: §r§1" + job);
 
         pages.add("§1§l ---< §9§lPLAYER §1§l>---"
                 + "\n\n§0§lCompany: §r§1" + company
-                + "\n\n§0§lNotes: §r§1§o" + PlayerRoutines.getValueOrEmpty(target.getNotes())
+                + "\n\n§0§lNotes: §r§1§o" + PlayerRoutines.getValueOrEmpty(player.getNotes())
                 + "\n\n§0§lMoney: §r§1" + balance
-                + "\n\n§0§lPunishments: §r§1" + formatPunishments(target));
+                + "\n\n§0§lPunishments: §r§1" + formatPunishments(player));
 
         if (p != null) {    // these are only available if the player is online
             String health = getBarGraph(p.getHealth(), 20);
@@ -173,19 +172,19 @@ public class PlayerCard implements Listener {
 
         if (!job.equals("N/A"))
             pages.add("§1§l ----< §5§lJOB §1§l>----"
-                    + "\n\n§0§lJob name: §r§1" + target.getJob()
-                    + "\n\n§0§lJob description: §r§1§o" + target.getJob().getDescription());
+                    + "\n\n§0§lJob name: §r§1" + player.getJob()
+                    + "\n\n§0§lJob description: §r§1§o" + player.getJob().getDescription());
 
         if (!company.equals("N/A")) {
             pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                    + "\n\n§0§lName: §r§1" + target.getCompany()
-                    + "\n\n§0§lDescription: §r§1§o" + target.getCompany().getDescription()
-                    + "\n\n§0§lOwner: §r§1" + target.getCompany().getOwner());
+                    + "\n\n§0§lName: §r§1" + player.getCompany()
+                    + "\n\n§0§lDescription: §r§1§o" + player.getCompany().getDescription()
+                    + "\n\n§0§lOwner: §r§1" + player.getCompany().getOwner());
             pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                    + "\n\n§0§lEmployees: §r§1" + target.getCompany().getEmployees()
-                    + "\n\n§0§lEstablished: §r§1" + target.getCompany().getEstablishedDate()
+                    + "\n\n§0§lEmployees: §r§1" + player.getCompany().getEmployees()
+                    + "\n\n§0§lEstablished: §r§1" + player.getCompany().getEstablishedDate()
                     + "\n\n§0§lSalary: §r§1" + PlayerRoutines
-                    .formatDecimal(target.getCompany().getWage())
+                    .formatDecimal(player.getCompany().getWage())
                     + "\n§rPaid every §1" + PlayerManagement
                     .autoEcoTimeSeconds / 60 + "§r min.");
         }

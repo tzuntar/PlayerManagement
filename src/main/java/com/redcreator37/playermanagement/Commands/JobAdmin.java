@@ -20,11 +20,11 @@ public class JobAdmin implements CommandExecutor {
      * Main command process
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
-        if (!PlayerRoutines.checkPlayerPermission(p, "management.admin"))
+        if (!PlayerRoutines.checkPermission(p, "management.admin"))
             return true;
 
         if (args.length < 2 || args.length < 3 && args[0].matches("add|update")) {

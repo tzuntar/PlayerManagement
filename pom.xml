@@ -6,12 +6,12 @@
 
     <groupId>com.redcreator37</groupId>
     <artifactId>PlayerManagement</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
     <packaging>jar</packaging>
 
     <name>PlayerManagement</name>
 
-    <description>A plugin that extends native Essentials playerdata handling capabilities</description>
+    <description>A plugin that extends native playerdata handling capabilities</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

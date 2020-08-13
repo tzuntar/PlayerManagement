@@ -21,16 +21,15 @@ public class GetId implements CommandExecutor {
      * Main command process
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
         if (args.length < 1) {  // if there are no elements specified, just give the player a new card
-            if (!PlayerRoutines.checkPlayerPermission(p, "management.user"))
+            if (!PlayerRoutines.checkPermission(p, "management.user"))
                 return true;
 
-            ServerPlayer target = PlayerRoutines
-                    .playerFromUsername(PlayerManagement.players, p.getName());
+            ServerPlayer target = PlayerManagement.players.get(p.getUniqueId().toString());
             if (PlayerRoutines.checkPlayerNonExistent(p, target, p.getName()))
                 return true;
 
@@ -55,16 +54,15 @@ public class GetId implements CommandExecutor {
         }
 
         // if it came so far, we can assume that args.length >= 1
-        if (!PlayerRoutines.checkPlayerPermission(p, "management.admin"))
+        if (!PlayerRoutines.checkPermission(p, "management.admin"))
             return true;
 
-        ServerPlayer target = PlayerRoutines
-                .playerFromUsername(PlayerManagement.players, args[0]);
+        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines.uuidFromUsername(PlayerManagement.players, args[0]));
 
         if (PlayerRoutines.checkPlayerNonExistent(p, target, args[0]))
             return true;
 
-        PlayerCard.displayCardData(p, target.getUuid());
+        PlayerCard.displayCardData(p, target);
         return true;
     }
 }

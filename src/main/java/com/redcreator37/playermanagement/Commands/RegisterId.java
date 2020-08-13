@@ -21,10 +21,9 @@ public class RegisterId implements CommandExecutor {
      * Main command process
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null || !PlayerRoutines
-                .checkPlayerPermission(p, "management.user"))
+        if (p == null || !PlayerRoutines.checkPermission(p, "management.user"))
             return true;
 
         if (args.length < 1) {
@@ -33,8 +32,7 @@ public class RegisterId implements CommandExecutor {
             return true;
         }
 
-        ServerPlayer test = PlayerRoutines
-                .playerFromUsername(PlayerManagement.players, p.getName());
+        ServerPlayer test = PlayerManagement.players.get(p.getUniqueId().toString());
         if (test != null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + "Already registered!");
@@ -59,8 +57,8 @@ public class RegisterId implements CommandExecutor {
             // reload from the database
             PlayerManagement.players = PlayerManagement.playerDb.getNewlyRegistered();
 
-            ServerPlayer registeredPlayer = PlayerRoutines  // re-read the player list
-                    .playerFromUsername(PlayerManagement.players, p.getName());
+            ServerPlayer registeredPlayer = PlayerManagement.players
+                    .get(p.getUniqueId().toString());
             if (registeredPlayer == null) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + "Failed to give the ID card!");

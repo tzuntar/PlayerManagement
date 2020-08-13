@@ -178,7 +178,7 @@ public final class PlayerManagement extends JavaPlugin {
 
         loadConfig();
         setUpDatabase();
-        if (autoEcoEnabled) setUpAutoEconomy();
+        if (autoEcoEnabled && this.isEnabled()) setUpAutoEconomy();
     }
 
     /**
@@ -354,6 +354,7 @@ public final class PlayerManagement extends JavaPlugin {
      */
     private void setUpDatabase() {
         boolean success = true;
+        boolean newDb = !new File(databasePath).exists();
         try {
             database = SharedDb.connect(databasePath);
         } catch (SQLException e) {
@@ -370,16 +371,16 @@ public final class PlayerManagement extends JavaPlugin {
         companies = new HashMap<>();
         transactions = new ArrayList<>();
 
-        if (!new File(databasePath).exists()) // database not found, create a new one
+        if (newDb) // database not found, create a new one
             try {
                 SharedDb.createTables(database);
                 // just insert a blank player, job and company using a bogus id
-                companyDb.insert(new Company(4097, "N/A", "N/A"));
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
+                companyDb.insert(new Company(4097, "N/A", "N/A"));
+                playerDb.insert(new ServerPlayer(4097, "N/A", "N/A"));
                 getLogger().info("Created an empty database");
             } catch (SQLException e) {
-                getLogger().severe("Error while creating the database: "
-                        + e.getMessage());
+                getLogger().severe("Error while creating the database: " + e.getMessage());
                 success = false;
             }
 
@@ -390,8 +391,7 @@ public final class PlayerManagement extends JavaPlugin {
             players = playerDb.getAll();
             getLogger().info("Player database loaded successfully");
         } catch (SQLException e) {
-            getLogger().severe("Error while reading from the database: "
-                    + e.getMessage());
+            getLogger().severe("Error while reading from the database: " + e.getMessage());
             success = false;
         }
 
@@ -410,7 +410,7 @@ public final class PlayerManagement extends JavaPlugin {
                 .runTask(this, () -> {
                     Bukkit.getOnlinePlayers().forEach(player ->
                             PlayerRoutines.autoEconomyPlayer(player,
-                                    players, companies, autoEcoDefaultAmount,
+                                    autoEcoDefaultAmount,
                                     autoEcoDefaultThreshold));
                     companies.forEach((s, company) -> {
                         try {

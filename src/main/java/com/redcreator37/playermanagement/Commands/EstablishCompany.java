@@ -22,10 +22,10 @@ public class EstablishCompany implements CommandExecutor {
      * Main command process
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null || !PlayerRoutines
-                .checkPlayerPermission(p, "management.company.establish"))
+                .checkPermission(p, "management.company.establish"))
             return true;
 
         if (args.length < 1) {

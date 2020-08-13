@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -33,20 +32,18 @@ public final class PlayerRoutines {
     }
 
     /**
-     * Returns the ServerPlayer object with the matching username
-     * from the player list
+     * Returns the UUID of the ServerPlayer with the matching username
      *
      * @param players  the player list to get the player from
      * @param username the entered username
-     * @return the matching ServerPlayer object, or null if the
+     * @return the matching UUID string, or null if the
      * player with this username wasn't found
      */
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public static ServerPlayer playerFromUsername(Map<String, ServerPlayer> players, String username) {
-        return players.get(Arrays.stream(Bukkit
-                .getOfflinePlayers()).filter(pl -> Objects
-                .equals(pl.getName(), username))
-                .findFirst().get().getUniqueId().toString());
+    public static String uuidFromUsername(Map<String, ServerPlayer> players, String username) {
+        return players.entrySet().stream()
+                .filter(entry -> Objects.equals(entry.getValue().getUsername(), username))
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
     }
 
     /**
@@ -69,13 +66,13 @@ public final class PlayerRoutines {
     }
 
     /**
-     * Checks if the player has sufficient permissions
+     * Checks if this player has sufficient permissions
      *
      * @param player     the target player
      * @param permission the permission to check
      * @return true if the user has the specified permission, else otherwise
      */
-    public static boolean checkPlayerPermission(Player player, String permission) {
+    public static boolean checkPermission(Player player, String permission) {
         if (!player.hasPermission(permission)) {
             player.sendMessage(PlayerManagement.prefix
                     + ChatColor.GOLD + "You do not have sufficient" +
@@ -131,17 +128,14 @@ public final class PlayerRoutines {
      * Adds money to this player
      *
      * @param player       the player
-     * @param players      the list of all ServerPlayers
-     * @param companies    the list of all Companies
      * @param defAmount    the default amount
      * @param defThreshold the default threshold after which the
      *                     player will no longer receive any
      *                     additional money
      */
-    static void autoEconomyPlayer(Player player, Map<String, ServerPlayer> players,
-                                  Map<String, Company> companies, double defAmount,
-                                  double defThreshold) {
-        ServerPlayer target = playerFromUsername(players, player.getName());
+    static void autoEconomyPlayer(Player player, double defAmount, double defThreshold) {
+        ServerPlayer target = PlayerManagement.players.get(player
+                .getUniqueId().toString());
         if (target == null || Objects.requireNonNull(PlayerManagement.ess)
                 .getUser(player).isAfk())   // unknown player or AFK
             return;
@@ -162,8 +156,8 @@ public final class PlayerRoutines {
                 OfflinePlayer ownerPl;
                 try {
                     ownerPl = Bukkit.getOfflinePlayer(UUID.fromString(
-                            playerFromUsername(PlayerManagement.players,
-                                    targetCompany.getOwner()).getUuid()));
+                            uuidFromUsername(PlayerManagement.players,
+                                    targetCompany.getOwner())));
                 } catch (NullPointerException e) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.RED
                             + "ERROR: Company owner specified in the database is not valid!");
@@ -183,7 +177,7 @@ public final class PlayerRoutines {
                     return;
                 }
             } else {
-                Company company = companies.get(targetCompany.getName());
+                Company company = PlayerManagement.companies.get(targetCompany.getName());
                 if (company == null) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                             + "Unknown company: " + ChatColor.GREEN + targetCompany);
@@ -192,7 +186,7 @@ public final class PlayerRoutines {
 
                 // attempt to update the database Company object
                 // TODO: make sure this works properly!
-                companies.get(company.getName()).setBalance(company
+                PlayerManagement.companies.get(company.getName()).setBalance(company
                         .getBalance().subtract(wage));
             }
 

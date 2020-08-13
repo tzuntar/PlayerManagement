@@ -1,5 +1,6 @@
 package com.redcreator37.playermanagement.Database;
 
+import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 
@@ -44,7 +45,8 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
         String job = "";    // because of a possible null pointer
         if (player.getJob() != null) job = player.getJob().getName();
         st.setString(5, job);
-        st.setString(6, player.getCompany().getName());
+        Company c = player.getCompany();
+        st.setString(6, c == null ? "N/A" : c.getName());
         st.setString(7, player.getNotes());
         st.setInt(8, player.getPunishments());
         if (update) st.setInt(9, player.getId());

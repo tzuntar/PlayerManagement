@@ -29,11 +29,11 @@ public class CompanyPay implements CommandExecutor {
      * Main command process
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
-        if (!PlayerRoutines.checkPlayerPermission(p, "management.company"))
+        if (!PlayerRoutines.checkPermission(p, "management.company"))
             return true;
 
         if (args.length < 3) {
@@ -42,8 +42,7 @@ public class CompanyPay implements CommandExecutor {
             return true;
         }
 
-        ServerPlayer serverPlayer = PlayerRoutines
-                .playerFromUsername(players, p.getName());
+        ServerPlayer serverPlayer = players.get(p.getUniqueId().toString());
         if (PlayerRoutines.checkPlayerNonExistent(p, serverPlayer, p.getName()))
             return true;
 

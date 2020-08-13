@@ -25,8 +25,8 @@ public class AdvancementReward implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
         Player p = event.getPlayer();
-        ServerPlayer target = PlayerRoutines.playerFromUsername(PlayerManagement
-                .players, event.getPlayer().getName());
+        ServerPlayer target = PlayerManagement.players.get(event.getPlayer()
+                .getUniqueId().toString());
         if (target == null) return;
 
         Bukkit.getScheduler().runTask(PlayerManagement.getPlugin(PlayerManagement.class), () -> {

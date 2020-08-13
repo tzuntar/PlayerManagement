@@ -18,10 +18,9 @@ public class GetJob implements CommandExecutor {
      * Main command process
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null || !PlayerRoutines
-                .checkPlayerPermission(p, "management.user"))
+        if (p == null || !PlayerRoutines.checkPermission(p, "management.user"))
             return true;
 
         if (args.length < 1) {
@@ -30,8 +29,8 @@ public class GetJob implements CommandExecutor {
             return true;
         }
 
-        ServerPlayer target = PlayerRoutines
-                .playerFromUsername(PlayerManagement.players, args[0]);
+        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
+                .uuidFromUsername(PlayerManagement.players, args[0]));
         if (PlayerRoutines.checkPlayerNonExistent(p, target, args[0]))
             return true;
 

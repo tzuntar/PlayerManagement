@@ -34,11 +34,11 @@ public class CompanyManagement implements CommandExecutor {
      */
     @SuppressWarnings("ConstantConditions")
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = PlayerRoutines.playerFromSender(sender);
         if (p == null) return true;
 
-        if (!PlayerRoutines.checkPlayerPermission(p, "management.company"))
+        if (!PlayerRoutines.checkPermission(p, "management.company"))
             return true;
 
         if (args.length == 2 && !args[1].matches("info|transactions")) {
@@ -48,8 +48,7 @@ public class CompanyManagement implements CommandExecutor {
             return true;
         }
 
-        ServerPlayer target = PlayerRoutines
-                .playerFromUsername(players, p.getName());
+        ServerPlayer target = players.get(p.getUniqueId().toString());
         if (PlayerRoutines.checkPlayerNonExistent(p, target, p.getName()))
             return true;
 
@@ -136,8 +135,7 @@ public class CompanyManagement implements CommandExecutor {
                 p.sendMessage(prefix + "§6Description set.");
                 break;
             case "setowner":
-                ServerPlayer newOwner = PlayerRoutines
-                        .playerFromUsername(players, args[2]);
+                ServerPlayer newOwner = players.get(PlayerRoutines.uuidFromUsername(players, args[2]));
                 if (PlayerRoutines.checkPlayerNonExistent(p, newOwner, args[2]))
                     return true;
 

@@ -13,14 +13,9 @@ public class ServerPlayer {
     private final int id;
 
     /**
-     * In-game player name
+     * Player's username/uuid combination tag
      */
-    private final String username;
-
-    /**
-     * Unique Minecraft player id
-     */
-    private final String uuid;
+    private final PlayerTag tag;
 
     /**
      * Player real-world name (or anything else they set
@@ -62,8 +57,7 @@ public class ServerPlayer {
      */
     public ServerPlayer(int id, String username, String uuid) {
         this.id = id;
-        this.username = username;
-        this.uuid = uuid;
+        this.tag = new PlayerTag(username, uuid);
     }
 
     public int getPunishments() {
@@ -115,11 +109,11 @@ public class ServerPlayer {
     }
 
     public String getUuid() {
-        return uuid;
+        return tag.getUuid();
     }
 
     public String getUsername() {
-        return username;
+        return tag.getUsername();
     }
 
     public int getId() {
@@ -133,7 +127,7 @@ public class ServerPlayer {
      */
     @Override
     public String toString() {
-        return this.username;
+        return this.tag.getUsername();
     }
 
     /**

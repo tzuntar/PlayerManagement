@@ -37,9 +37,9 @@ public class Company {
     private int employees;
 
     /**
-     * The username of the owner
+     * The username/uuid tag of the company owner
      */
-    private String owner;
+    private PlayerTag owner;
 
     /**
      * The date of company establishment
@@ -57,13 +57,11 @@ public class Company {
      *
      * @param id    the database id
      * @param name  the name
-     * @param owner the username of the owner
      */
-    public Company(int id, String name, String owner) {
+    public Company(int id, String name) {
         this.id = id;
         this.name = name;
         this.description = "";
-        this.owner = owner;
         this.balance = new BigDecimal(0);
         this.wage = new BigDecimal(10);
         this.employees = 0;
@@ -80,12 +78,12 @@ public class Company {
      * @param balance     the amount of money the company has associated
      *                    with it
      * @param employees   the number of employees
-     * @param owner       the username of the owner
+     * @param owner       the owner player
      * @param established the date of establishment
      * @param wage        the amount of money the players can earn
      */
     public Company(int id, String name, String description, String balance,
-                   int employees, String owner, String established, String wage) {
+                   int employees, PlayerTag owner, String established, String wage) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -116,7 +114,7 @@ public class Company {
         return employees;
     }
 
-    public String getOwner() {
+    public PlayerTag getOwner() {
         return owner;
     }
 
@@ -140,7 +138,7 @@ public class Company {
         this.employees = employees;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(PlayerTag owner) {
         this.owner = owner;
     }
 

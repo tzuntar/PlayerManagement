@@ -1,7 +1,9 @@
 package com.redcreator37.playermanagement.Database;
 
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.PlayerManagement;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -12,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Company-related database routines
@@ -43,7 +46,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         st.setString(2, c.getDescription());
         st.setString(3, c.getBalance().toString());
         st.setInt(4, c.getEmployees());
-        st.setString(5, c.getOwner());
+        st.setString(5, c.getOwner().getUuid());
         st.setString(6, c.getEstablishedDate());
         st.setString(7, c.getWage().toString());
         if (update) st.setInt(8, c.getId());
@@ -67,12 +70,14 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
 
         // loop through the records
         while (set.next()) {
+            String uuid = set.getString("owner");
             Company c = new Company(set.getInt("id"),
                     set.getString("name"),
                     set.getString("description"),
                     set.getString("money"),
                     set.getInt("employees"),
-                    set.getString("owner"),
+                    new PlayerTag(Bukkit.getOfflinePlayer(UUID
+                            .fromString(uuid)).getName(), uuid),
                     set.getString("established"),
                     set.getString("paycheck"));
             companies.put(c.getName(), c);

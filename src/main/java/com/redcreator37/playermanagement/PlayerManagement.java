@@ -383,7 +383,7 @@ public final class PlayerManagement extends JavaPlugin {
                 SharedDb.createTables(database);
                 // just insert a blank player, job and company using a bogus id
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
-                companyDb.insert(new Company(4097, "N/A", "N/A"));
+                companyDb.insert(new Company(4097, "N/A"));
                 playerDb.insert(new ServerPlayer(4097, "N/A", "N/A"));
                 getLogger().info("Created an empty database");
             } catch (SQLException e) {

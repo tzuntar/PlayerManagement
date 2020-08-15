@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -45,7 +46,8 @@ public class EstablishCompany implements CommandExecutor {
             return true;
         }
 
-        Company newCompany = new Company(4097, args[0], p.getName());
+        Company newCompany = new Company(4097, args[0]);
+        newCompany.setOwner(new PlayerTag(p.getName(), p.getUniqueId().toString()));
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {

@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.CompanyMenu;
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
 import com.redcreator37.playermanagement.PlayerManagement;
@@ -71,8 +72,8 @@ public class CompanyManagement implements CommandExecutor {
         }
 
         // check the ownership
-        if (!company.getOwner().equals(p.getName()) && !p
-                .hasPermission("management.admin")) {
+        if (!company.getOwner().getUsername().equals(p.getName())
+                && !p.hasPermission("management.admin")) {
             p.sendMessage(prefix + ChatColor.GOLD
                     + "You can only manage your own company!");
             return true;
@@ -140,7 +141,7 @@ public class CompanyManagement implements CommandExecutor {
                 if (PlayerRoutines.checkPlayerNonExistent(p, newOwner, args[2]))
                     return true;
 
-                company.setOwner(newOwner.getUsername());
+                company.setOwner(new PlayerTag(newOwner.getUsername(), newOwner.getUuid()));
                 p.sendMessage(prefix + "§6The ownership has been transferred to §a"
                         + newOwner.getUsername());
                 break;

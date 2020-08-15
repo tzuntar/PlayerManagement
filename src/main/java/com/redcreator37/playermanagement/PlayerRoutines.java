@@ -116,7 +116,7 @@ public final class PlayerRoutines {
     /**
      * Returns the current date in a string
      *
-     * @param dateFormat the date format (ex. yyyy-MM-dd)
+     * @param dateFormat the date format (ex. <code>yyyy-MM-dd</code>)
      * @return the current date in the specified format
      */
     public static String getCurrentDate(String dateFormat) {
@@ -149,14 +149,13 @@ public final class PlayerRoutines {
             if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
                 // get the owner player handle
                 User owner = PlayerManagement.ess
-                        .getOfflineUser(targetCompany.getOwner());
+                        .getOfflineUser(targetCompany.getOwner().getUuid());
 
                 // get the OfflinePlayer object from the UUID
                 OfflinePlayer ownerPl;
                 try {
-                    ownerPl = Bukkit.getOfflinePlayer(UUID.fromString(
-                            uuidFromUsername(PlayerManagement.players,
-                                    targetCompany.getOwner())));
+                    ownerPl = Bukkit.getOfflinePlayer(UUID
+                            .fromString(targetCompany.getOwner().getUuid()));
                 } catch (NullPointerException e) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.RED
                             + "ERROR: Company owner specified in the database is not valid!");

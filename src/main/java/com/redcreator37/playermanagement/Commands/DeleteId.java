@@ -1,5 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
+import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * Unregisters the player from the database
@@ -37,6 +39,21 @@ public class DeleteId implements CommandExecutor {
                 .uuidFromUsername(PlayerManagement.players, args[0]));
         if (PlayerRoutines.checkPlayerNonExistent(p, target, args[0]))
             return true;
+
+        try {
+            Map<String, Company> ownedCompanies = PlayerManagement.companyDb
+                    .getCompaniesByOwner(target.getUuid());
+            if (ownedCompanies.size() > 0) {
+                p.sendMessage(PlayerManagement.prefix + ChatColor.RED
+                        + "You still own one or more companies. Transfer their " +
+                        "ownership before the account!");
+                return true;
+            }
+        } catch (SQLException e) {
+            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + "Error while retrieving data from the database: "
+                    + ChatColor.RED + e.getMessage());
+        }
 
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {

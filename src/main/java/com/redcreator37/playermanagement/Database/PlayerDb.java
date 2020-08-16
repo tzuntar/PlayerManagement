@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Database;
 
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 
@@ -71,8 +72,8 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
         // loop through the records
         while (set.next()) {
             ServerPlayer p = new ServerPlayer(set.getInt("id"),
-                    set.getString("username"),
-                    set.getString("uuid"));
+                    new PlayerTag(set.getString("username"),
+                            set.getString("uuid")));
             p.setName(set.getString("name"));
             p.setJoinDate(set.getString("join_date"));
             p.setJob(PlayerManagement.jobs.get(set.getString("job")));

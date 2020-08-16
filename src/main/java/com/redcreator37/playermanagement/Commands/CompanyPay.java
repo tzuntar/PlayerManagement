@@ -55,7 +55,7 @@ public class CompanyPay implements CommandExecutor {
         }
 
         // check the ownership
-        if (!source.getOwner().equals(p.getName()) && !p
+        if (!source.getOwner().getUsername().equals(p.getName()) && !p
                 .hasPermission("management.admin")) {
             p.sendMessage(prefix + ChatColor.GOLD
                     + "You can only manage your own company!");

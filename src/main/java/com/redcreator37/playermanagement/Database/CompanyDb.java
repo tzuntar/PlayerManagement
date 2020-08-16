@@ -98,6 +98,18 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     }
 
     /**
+     * Returns the list of companies owned by the player with
+     * this UUID
+     *
+     * @param uuid the owner's UUID
+     * @return the list of matching companies
+     * @throws SQLException on errors
+     */
+    public Map<String, Company> getCompaniesByOwner(String uuid) throws SQLException {
+        return commonQuery("SELECT * FROM companies WHERE owner = '" + uuid + "'");
+    }
+
+    /**
      * Adds another company to the database
      *
      * @param c the Company object to be inserted

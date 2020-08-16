@@ -1,5 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
@@ -42,8 +43,8 @@ public class RegisterId implements CommandExecutor {
         // their inventory should not be full because we're going
         // to give them an ID card after registration
         if (PlayerRoutines.checkInventoryFull(p)) return true;
-        ServerPlayer target = new ServerPlayer(4097, p.getName(),   // using a dummy id
-                p.getUniqueId().toString());
+        ServerPlayer target = new ServerPlayer(4097,    // register with a dummy id
+                new PlayerTag(p.getName(), p.getUniqueId().toString()));
 
         target.setName(CommandHelper.getFullEntry(args, 0));
         target.setJoinDate(PlayerRoutines

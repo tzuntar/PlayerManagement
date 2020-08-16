@@ -51,13 +51,12 @@ public class ServerPlayer {
     /**
      * ServerPlayer constructor
      *
-     * @param id       the new database id
-     * @param username in-game username
-     * @param uuid     unique Minecraft player uuid
+     * @param id  the new database id
+     * @param tag the player's username / uuid combination tag
      */
-    public ServerPlayer(int id, String username, String uuid) {
+    public ServerPlayer(int id, PlayerTag tag) {
         this.id = id;
-        this.tag = new PlayerTag(username, uuid);
+        this.tag = tag;
     }
 
     public int getPunishments() {

@@ -67,6 +67,8 @@ PlayerList:
     Admins: §cAdmins
 ```
 
+## Placeholders
+
 These are the `{placeholders}` supported as of PlayerManagement 1.6:
 
 ```yaml
@@ -80,6 +82,8 @@ These are the `{placeholders}` supported as of PlayerManagement 1.6:
 {playercompany}   # company of the current player
 {playergamemode}  # gamemode of the current player
 ```
+
+## Permissions
 
 The following permissions are used by this plugin:
 

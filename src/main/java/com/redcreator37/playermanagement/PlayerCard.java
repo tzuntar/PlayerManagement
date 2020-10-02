@@ -183,7 +183,7 @@ public class PlayerCard implements Listener {
             pages.add("§1§l --< §2§lCOMPANY §1§l>--"
                     + "\n\n§0§lEmployees: §r§1" + player.getCompany().getEmployees()
                     + "\n\n§0§lEstablished: §r§1" + player.getCompany().getEstablishedDate()
-                    + "\n\n§0§lSalary: §r§1" + PlayerRoutines
+                    + "\n\n§0§lWage: §r§1" + PlayerRoutines
                     .formatDecimal(player.getCompany().getWage())
                     + "\n§rPaid every §1" + PlayerManagement
                     .autoEcoTimeSeconds / 60 + "§r min.");

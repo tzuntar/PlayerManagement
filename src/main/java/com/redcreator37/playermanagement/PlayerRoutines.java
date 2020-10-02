@@ -170,7 +170,7 @@ public final class PlayerRoutines {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
                             + targetCompany + ChatColor.GOLD
                             + " cannot afford to pay your wage!");
-                    owner.addMail("WARNING! Your was unable to pay the wage for" +
+                    owner.addMail("WARNING! Your company was unable to pay the wage for" +
                             " the player " + player.getName() + "!");
                     return;
                 }

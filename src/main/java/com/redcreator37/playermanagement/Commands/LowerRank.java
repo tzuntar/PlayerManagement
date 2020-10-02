@@ -82,7 +82,7 @@ public class LowerRank implements CommandExecutor {
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while modifying the playerdata: " + ChatColor.RED
+                        + "Error while updating the playerdata: " + ChatColor.RED
                         + e.getMessage());
             }
         });

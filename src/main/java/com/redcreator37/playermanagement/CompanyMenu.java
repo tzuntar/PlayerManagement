@@ -76,7 +76,7 @@ public class CompanyMenu implements Listener {
                         "§bDescription: §f" + company.getDescription(),
                         "§6Balance: §f" + formatDecimal(company.getBalance()),
                         "§6Employees: §f" + company.getEmployees(),
-                        "§6Salary: §f" + formatDecimal(company.getWage()),
+                        "§6Wage: §f" + formatDecimal(company.getWage()),
                         "§6Owner: §f" + company.getOwner(),
                         "§6Established: §f" + company.getEstablishedDate()
                 }, 0);
@@ -84,10 +84,10 @@ public class CompanyMenu implements Listener {
                 new String[]{"§7§oCloses the menu and saves any changes"}, 8);
 
         // 2nd row
-        newItem(Material.GREEN_WOOL, "Increase salary", 1,
-                new String[]{"§fIncreases the salary for players by §a$10"}, 11);
-        newItem(Material.RED_WOOL, "Decrease salary", 1,
-                new String[]{"§fDecreases the salary for players by §a$10"}, 12);
+        newItem(Material.GREEN_WOOL, "Increase wage", 1,
+                new String[]{"§fIncreases the wage for players by §a$10"}, 11);
+        newItem(Material.RED_WOOL, "Decrease wage", 1,
+                new String[]{"§fDecreases the wage for players by §a$10"}, 12);
 
         newItem(Material.GREEN_CONCRETE, "Deposit §a$10", 1,
                 new String[]{"§fAdds §a$10 §fto the company's balance"}, 14);

@@ -1,5 +1,6 @@
 package com.redcreator37.playermanagement.Commands;
 
+import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.ChatColor;
 
 import java.util.Arrays;
@@ -27,7 +28,8 @@ final class CommandHelper {
      * @return the formatted string
      */
     static String parseCommandUsage(String cmd, String[] argumentList) {
-        StringBuilder usage = new StringBuilder("§6Usage: §a/");
+        StringBuilder usage = new StringBuilder("§6" + PlayerManagement.strings
+                .getString("usage") + " §a/");
         usage.append(cmd).append(" ");
         for (String s : argumentList) {
             String[] args = s.split("\\|");

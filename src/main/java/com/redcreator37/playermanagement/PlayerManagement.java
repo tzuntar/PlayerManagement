@@ -37,8 +37,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * A Minecraft Spigot Server plugin that extends native player data
@@ -47,6 +49,17 @@ import java.util.Objects;
  * @author RedCreator37
  */
 public final class PlayerManagement extends JavaPlugin {
+
+    /**
+     * The language to use for all strings on this server
+     */
+    public static String language = "en_US";
+
+    /**
+     * The resource bundle to use for retrieving localized strings
+     */
+    public static ResourceBundle strings = getResourceBundleFromLangCode(
+            "com.redcreator37.playermanagement.Strings", language);
 
     /**
      * Any in-game console output will get prefixed by this
@@ -179,6 +192,7 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
+        getResourceBundleFromLangCode("com.redcreator37.playermanagement.Strings", language);
         if (!setUpDatabase()) {
             getLogger().severe("FATAL: Unable to establish" +
                     " the database connection. Unloading the plugin...");
@@ -256,6 +270,7 @@ public final class PlayerManagement extends JavaPlugin {
         FileConfiguration conf = getConfig();
         // set up the default values
         conf.options().header("PlayerManagement Config File\n----------------------------\n");
+        conf.addDefault("General.Language", language);
         conf.addDefault("General.OutputPrefix", prefix.substring(0, prefix.length() - 1));
         conf.addDefault("General.DatabasePath", databasePath);
         conf.addDefault("General.DateFormat", dateFormat);
@@ -292,6 +307,7 @@ public final class PlayerManagement extends JavaPlugin {
         conf.options().copyDefaults(true);
 
         // load the values from config file
+        language = conf.getString("General.Language");
         prefix = conf.getString("General.OutputPrefix") + " ";
         String newPath = conf.getString("General.DatabasePath");
         databasePath = newPath != null && newPath.trim().equals("")
@@ -435,6 +451,21 @@ public final class PlayerManagement extends JavaPlugin {
                         .runTask(this, () -> getServer().getOnlinePlayers()
                                 .forEach(EnhancedPlayerList::updateList)),
                 1, playerListUpdateSeconds);
+    }
+
+    /**
+     * Returns the resource bundle with the matching name for this
+     * language code
+     *
+     * @param baseName the full name of the bundle to retrieve
+     * @param langCode a code in the language_country format
+     *                 (ex. <code>en_US</code>)
+     * @return the matching resource bundle or null if not found
+     */
+    private static ResourceBundle getResourceBundleFromLangCode(String baseName, String langCode) {
+        String[] locale = langCode.split("_");
+        return ResourceBundle.getBundle(baseName, new Locale(locale[0]
+                .toLowerCase(), locale[1].toUpperCase()));
     }
 
 }

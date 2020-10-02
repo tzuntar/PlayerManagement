@@ -19,6 +19,7 @@ import java.util.Objects;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
+import static com.redcreator37.playermanagement.PlayerManagement.strings;
 import static com.redcreator37.playermanagement.PlayerRoutines.formatDecimal;
 
 /**
@@ -73,16 +74,18 @@ public class CompanyMenu implements Listener {
         // 1st row
         newItem(Material.PAPER, "§a§l" + company, 1,
                 new String[]{
-                        "§bDescription: §f" + company.getDescription(),
-                        "§6Balance: §f" + formatDecimal(company.getBalance()),
-                        "§6Employees: §f" + company.getEmployees(),
-                        "§6Wage: §f" + formatDecimal(company.getWage()),
-                        "§6Owner: §f" + company.getOwner(),
-                        "§6Established: §f" + company.getEstablishedDate()
+                        "§b" + strings.getString("description") + " §f" + company.getDescription(),
+                        "§6" + strings.getString("balance") + " §f" + formatDecimal(company.getBalance()),
+                        "§6" + strings.getString("employees") + " §f" + company.getEmployees(),
+                        "§6" + strings.getString("wage") + " §f" + formatDecimal(company.getWage()),
+                        "§6" + strings.getString("owner") + " §f" + company.getOwner(),
+                        "§6" + strings.getString("established") + " §f" + company.getEstablishedDate()
                 }, 0);
         newItem(Material.OAK_DOOR, "Close", 1,
                 new String[]{"§7§oCloses the menu and saves any changes"}, 8);
 
+        // FIXME: localize the rest of the strings, make sure they match
+        //  the ones in the switch below
         // 2nd row
         newItem(Material.GREEN_WOOL, "Increase wage", 1,
                 new String[]{"§fIncreases the wage for players by §a$10"}, 11);

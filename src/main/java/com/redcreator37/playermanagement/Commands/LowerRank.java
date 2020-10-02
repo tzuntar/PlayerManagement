@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import static com.redcreator37.playermanagement.PlayerManagement.strings;
+
 /**
  * Increases a player's punishment count, takes the amount of money
  * and bans them if their count exceeds the maximum
@@ -48,8 +50,9 @@ public class LowerRank implements CommandExecutor {
                             .getUsername()), PlayerManagement.punishmentAmount);
                 } catch (Exception e) {
                     p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + "The player " + ChatColor.GREEN + target + ChatColor.GOLD
-                            + " is not online, money will not be taken!");
+                            + strings.getString("the-player")
+                            + ChatColor.GREEN + target + ChatColor.GOLD
+                            + strings.getString("isnt-online-money-not-taken"));
                 }
 
                 target.setPunishments(target.getPunishments() + 1);
@@ -59,7 +62,8 @@ public class LowerRank implements CommandExecutor {
                     try {   // tell them if they're online, otherwise ignore it
                         Objects.requireNonNull(p.getServer().getPlayer(target
                                 .getUsername())).sendMessage(PlayerManagement
-                                .prefix + ChatColor.GOLD + "You have been punished: "
+                                .prefix + ChatColor.GOLD + strings
+                                .getString("you-have-been-punished")
                                 + ChatColor.GREEN + reason);
                     } catch (NullPointerException ignored) {}
                 }
@@ -69,21 +73,20 @@ public class LowerRank implements CommandExecutor {
                     sender.getServer().getBannedPlayers().add(p.getServer()
                             .getPlayer(target.getUsername()));
                     p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + "The player " + ChatColor.GREEN + target
-                            + ChatColor.GOLD + " has exceeded the max number of" +
-                            " punishments and has been banned.");
+                            + strings.getString("the-player") + ChatColor.GREEN + target
+                            + ChatColor.GOLD + strings.getString("has-exceeded-max-punishments"));
                 } else {
                     p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + "The player " + ChatColor.GREEN + target
-                            + ChatColor.GOLD + " has been punished.");
+                            + strings.getString("the-player") + ChatColor.GREEN + target
+                            + ChatColor.GOLD + strings.getString("has-been-punished"));
                 }
 
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while updating the playerdata: " + ChatColor.RED
-                        + e.getMessage());
+                        + strings.getString("error-updating-playerdata")
+                        + ChatColor.RED + e.getMessage());
             }
         });
         return true;

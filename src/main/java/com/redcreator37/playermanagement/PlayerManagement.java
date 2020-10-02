@@ -59,7 +59,7 @@ public final class PlayerManagement extends JavaPlugin {
      * The resource bundle to use for retrieving localized strings
      */
     public static ResourceBundle strings = getResourceBundleFromLangCode(
-            "com.redcreator37.playermanagement.Strings", language);
+            "com.redcreator37.playermanagement.Resources.Strings", language);
 
     /**
      * Any in-game console output will get prefixed by this
@@ -145,13 +145,13 @@ public final class PlayerManagement extends JavaPlugin {
     @Override
     public void onEnable() {
         if (!getServer().getPluginManager().isPluginEnabled("Essentials")) {
-            getLogger().severe("ERROR: Essentials could not be detected!");
+            getLogger().severe(strings.getString("error-essentials-not-detected"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         if (!setUpEconomy()) {  // try to detect and enable Vault
-            getLogger().severe("ERROR: Vault could not be detected!");
+            getLogger().severe(strings.getString("error-vault-not-detected"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -192,10 +192,9 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
-        getResourceBundleFromLangCode("com.redcreator37.playermanagement.Strings", language);
+        getResourceBundleFromLangCode("com.redcreator37.playermanagement.Resources.Strings", language);
         if (!setUpDatabase()) {
-            getLogger().severe("FATAL: Unable to establish" +
-                    " the database connection. Unloading the plugin...");
+            getLogger().severe(strings.getString("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -401,9 +400,9 @@ public final class PlayerManagement extends JavaPlugin {
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
                 companyDb.insert(new Company(4097, "N/A"));
                 // BUG! CHECK! playerDb.insert(new ServerPlayer(4097, "N/A", "N/A"));
-                getLogger().info("Created an empty database");
+                getLogger().info(strings.getString("created-empty-db"));
             } catch (SQLException e) {
-                getLogger().severe("Error while creating the database: " + e.getMessage());
+                getLogger().severe(strings.getString("error-creating-db") + e.getMessage());
                 success = false;
             }
 
@@ -412,9 +411,9 @@ public final class PlayerManagement extends JavaPlugin {
             companies = companyDb.getAll();
             transactions = transactionDb.getAll();
             players = playerDb.getAll();
-            getLogger().info("Player database loaded successfully");
+            getLogger().info(strings.getString("player-db-loaded-successfully"));
         } catch (SQLException e) {
-            getLogger().severe("Error while reading from the database: " + e.getMessage());
+            getLogger().severe(strings.getString("error-reading-from-db") + e.getMessage());
             success = false;
         }
         return success;
@@ -435,7 +434,7 @@ public final class PlayerManagement extends JavaPlugin {
                             companyDb.update(company);
                         } catch (SQLException e) {
                             Bukkit.getLogger().severe(prefix + ChatColor.GOLD
-                                    + "Error while updating the playerdata: "
+                                    + strings.getString("error-updating-playerdata")
                                     + ChatColor.RED + e.getMessage());
                         }
                     });

@@ -35,21 +35,21 @@ public class GetId implements CommandExecutor {
 
             if (!PlayerManagement.eco.has(p, PlayerManagement.cardPrice)) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "You do not have enough money for a new ID card!");
+                        + PlayerManagement.strings.getString("not-enough-money-for-new-id"));
                 return true;
             }
 
             if (p.getInventory().firstEmpty() == -1) {  // make sure the inventory isn't full
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Inventory full!");
+                        + PlayerManagement.strings.getString("inventory-full"));
                 return true;
             }
 
             PlayerCard.giveNewCard(p, target);
             PlayerManagement.eco.withdrawPlayer(p, PlayerManagement.cardPrice);
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Bought a new ID card for " + ChatColor.GREEN + "$"
-                    + PlayerManagement.cardPrice + ChatColor.GOLD + ".");
+                    + PlayerManagement.strings.getString("bought-new-id")
+                    + ChatColor.GREEN + "$" + PlayerManagement.cardPrice + ChatColor.GOLD + ".");
             return true;
         }
 

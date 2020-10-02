@@ -36,13 +36,14 @@ public class EstablishCompany implements CommandExecutor {
         }
 
         if (PlayerManagement.companies.get(args[0]) != null) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Already exists!");
+            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + PlayerManagement.strings.getString("already-exists"));
             return true;
         }
 
         if (!PlayerManagement.eco.has(p, PlayerManagement.companyEstablishPrice)) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "You do not have enough money to establish a new company!");
+                    + PlayerManagement.strings.getString("not-enough-money-to-establish"));
             return true;
         }
 
@@ -59,11 +60,11 @@ public class EstablishCompany implements CommandExecutor {
                 PlayerManagement.companyDb.insert(newCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Company registration successful!");
+                        + PlayerManagement.strings.getString("company-registration-successful"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while saving company data: " + ChatColor.RED
-                        + e.getMessage());
+                        + PlayerManagement.strings.getString("error-saving-company-data")
+                        + ChatColor.RED + e.getMessage());
             }
         });
         return true;

@@ -136,11 +136,11 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
             try {
                 insert(t);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Transaction data saved.");
+                        + PlayerManagement.strings.getString("transaction-data-saved"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while saving transaction" +
-                        " data: " + ChatColor.RED + e.getMessage());
+                        + PlayerManagement.strings.getString("error-saving-transaction-data")
+                        + ChatColor.RED + e.getMessage());
             }
         });
     }

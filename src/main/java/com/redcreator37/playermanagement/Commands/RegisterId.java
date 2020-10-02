@@ -36,7 +36,7 @@ public class RegisterId implements CommandExecutor {
         ServerPlayer test = PlayerManagement.players.get(p.getUniqueId().toString());
         if (test != null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Already registered!");
+                    + PlayerManagement.strings.getString("already-registered"));
             return true;
         }
 
@@ -62,17 +62,17 @@ public class RegisterId implements CommandExecutor {
                     .get(p.getUniqueId().toString());
             if (registeredPlayer == null) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Failed to give the ID card!");
+                        + PlayerManagement.strings.getString("failed-to-give-id"));
                 return true;
             }
 
             PlayerCard.giveNewCard(p, registeredPlayer);
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Registration successful! Check your inventory for your ID card.");
+                    + PlayerManagement.strings.getString("registration-successful"));
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Error while adding the playerdata: " + ChatColor.RED
-                    + e.getMessage());
+                    + PlayerManagement.strings.getString("error-updating-playerdata")
+                    + ChatColor.RED + e.getMessage());
         }
         return true;
     }

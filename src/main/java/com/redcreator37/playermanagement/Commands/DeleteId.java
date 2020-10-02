@@ -45,13 +45,12 @@ public class DeleteId implements CommandExecutor {
                     .getCompaniesByOwner(target.getUuid());
             if (ownedCompanies.size() > 0) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.RED
-                        + "You still own one or more companies. Transfer their " +
-                        "ownership before the account!");
+                        + PlayerManagement.strings.getString("cant-unregister-still-owns-companies"));
                 return true;
             }
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Error while retrieving data from the database: "
+                    + PlayerManagement.strings.getString("error-retrieving-playerdata-from-db")
                     + ChatColor.RED + e.getMessage());
         }
 
@@ -62,12 +61,13 @@ public class DeleteId implements CommandExecutor {
                 // reload from the database
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "The player " + ChatColor.GREEN + target.getUsername()
-                        + ChatColor.GOLD + " has been successfully unregistered.");
+                        + PlayerManagement.strings.getString("the-player")
+                        + ChatColor.GREEN + target.getUsername() + ChatColor.GOLD
+                        + PlayerManagement.strings.getString("has-been-unregistered"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while removing the playerdata: " + ChatColor.RED
-                        + e.getMessage());
+                        + PlayerManagement.strings.getString("error-removing-playerdata")
+                        + ChatColor.RED + e.getMessage());
             }
         });
         return true;

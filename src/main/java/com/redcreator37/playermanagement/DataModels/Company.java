@@ -55,8 +55,8 @@ public class Company {
      * Company constructor - <strong>use this one only when
      * establishing a new company!</strong>
      *
-     * @param id    the database id
-     * @param name  the name
+     * @param id   the database id
+     * @param name the name
      */
     public Company(int id, String name) {
         this.id = id;
@@ -150,7 +150,8 @@ public class Company {
      */
     public void setWage(BigDecimal wage) {
         if (wage.intValue() < 0)
-            throw new IllegalArgumentException("Wage cannot be negative!");
+            throw new IllegalArgumentException(PlayerManagement.strings
+                    .getString("wage-cannot-be-negative"));
         this.wage = wage;
     }
 

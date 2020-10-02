@@ -48,11 +48,11 @@ public class SetNotes implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Notes updated.");
+                        + PlayerManagement.strings.getString("notes-updated"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while updating the playerdata: " + ChatColor.RED
-                        + e.getMessage());
+                        + PlayerManagement.strings.getString("error-updating-playerdata")
+                        + ChatColor.RED + e.getMessage());
             }
         });
         return true;

@@ -16,9 +16,13 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
+import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
+import static com.redcreator37.playermanagement.PlayerManagement.strings;
+import static com.redcreator37.playermanagement.PlayerManagement.transactionDb;
+import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 
 /**
  * A simple /pay command for companies
@@ -50,15 +54,15 @@ public class CompanyPay implements CommandExecutor {
         Company source = companies.get(args[0]),
                 target = companies.get(args[1]);
         if (source == null || target == null) {
-            p.sendMessage(prefix + ChatColor.GOLD + "Unknown company name!");
+            p.sendMessage(prefix + ChatColor.GOLD + strings.getString("unknown-company"));
             return true;
         }
 
         // check the ownership
         if (!source.getOwner().getUsername().equals(p.getName()) && !p
                 .hasPermission("management.admin")) {
-            p.sendMessage(prefix + ChatColor.GOLD
-                    + "You can only manage your own company!");
+            p.sendMessage(prefix + ChatColor.GOLD + strings
+                    .getString("you-can-only-manage-your-company"));
             return true;
         }
 
@@ -66,41 +70,43 @@ public class CompanyPay implements CommandExecutor {
         try {
             amount = new BigDecimal(args[2]);
         } catch (NumberFormatException e) {
-            p.sendMessage(prefix + ChatColor.GOLD
-                    + "Invalid number: " + ChatColor.GREEN + args[2]);
+            p.sendMessage(prefix + ChatColor.GOLD + strings.getString("invalid-number")
+                    + ChatColor.GREEN + args[2]);
             return true;
         }
 
         String formattedAmount = PlayerRoutines.formatDecimal(amount);
         if (source.getBalance().doubleValue() < amount.doubleValue()) {
             p.sendMessage(prefix + ChatColor.GOLD
-                    + "The company " + ChatColor.GREEN + source + ChatColor.GOLD
-                    + " can't afford to pay " + ChatColor.GREEN + formattedAmount
-                    + ChatColor.GOLD + "!");
+                    + strings.getString("the-company") + ChatColor.GREEN + source
+                    + ChatColor.GOLD + strings.getString("cant-afford-to-pay")
+                    + ChatColor.GREEN + formattedAmount + ChatColor.GOLD + "!");
             return true;
         }
 
         // withdraw the amount from the source
         source.setBalance(source.getBalance().subtract(amount));
-        PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
-                source.getId(), "->", "Pay " + formattedAmount,
-                "Pay " + formattedAmount + " to " + target, amount));
+        transactionDb.addAsync(p, new Transaction(4097,
+                source.getId(), "->", strings.getString("pay")
+                + formattedAmount, strings.getString("pay") + formattedAmount
+                + strings.getString("to") + target, amount));
 
         // add to the target
         target.setBalance(target.getBalance().add(amount));
-        PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
-                target.getId(), "<-", "Receive " + formattedAmount,
-                "Receive " + formattedAmount + " from " + source, amount));
+        transactionDb.addAsync(p, new Transaction(4097,
+                target.getId(), "<-", strings.getString("receive")
+                + formattedAmount, strings.getString("receive") + formattedAmount
+                + strings.getString("from") + source, amount));
 
         // update and re-read the data
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
-            PlayerManagement.companyDb.updateByPlayer(p, source);
-            PlayerManagement.companyDb.updateByPlayer(p, target);
+            companyDb.updateByPlayer(p, source);
+            companyDb.updateByPlayer(p, target);
             try {
-                PlayerManagement.transactions = PlayerManagement.transactionDb.getAll();
+                transactions = transactionDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
-                        + "Error while saving transaction data: "
+                        + strings.getString("error-saving-transaction-data")
                         + ChatColor.RED + e.getMessage());
             }
         });

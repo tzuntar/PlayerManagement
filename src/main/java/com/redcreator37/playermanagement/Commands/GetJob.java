@@ -35,8 +35,8 @@ public class GetJob implements CommandExecutor {
             return true;
 
         p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
-                + ChatColor.GOLD + " is employed as " + ChatColor.GREEN
-                + target.getJob() + ChatColor.GOLD + ".");
+                + ChatColor.GOLD + PlayerManagement.strings.getString("is-employed-as")
+                + ChatColor.GREEN + target.getJob() + ChatColor.GOLD + ".");
         return true;
     }
 }

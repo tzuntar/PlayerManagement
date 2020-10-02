@@ -47,15 +47,15 @@ public class SetCompany implements CommandExecutor {
         Company newCompany = PlayerManagement.companies.get(args[0]);
         if (newCompany == null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Unknown company: " + ChatColor.GREEN + args[0]
-                    + ChatColor.GOLD + ".");
+                    + PlayerManagement.strings.getString("unknown-company")
+                    + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
             return true;
         }
 
-        if (!newCompany.getOwner().equals(target.getUsername()) &&
+        if (!newCompany.getOwner().getUsername().equals(target.getUsername()) &&
                 !p.hasPermission("management.company.employ")) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "You can't employ yourself at this company!");
+                    + PlayerManagement.strings.getString("cant-employ-yourself"));
             return true;
         }
 
@@ -69,7 +69,8 @@ public class SetCompany implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
-                        + ChatColor.GOLD + " is now a part of the company "
+                        + ChatColor.GOLD + PlayerManagement.strings
+                        .getString("now-part-of-company")
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
 
                 // decrease the employee count when switching to a different company
@@ -81,8 +82,8 @@ public class SetCompany implements CommandExecutor {
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while updating the playerdata: " + ChatColor.RED
-                        + e.getMessage());
+                        + PlayerManagement.strings.getString("error-updating-playerdata")
+                        + ChatColor.RED + e.getMessage());
             }
         });
         return true;

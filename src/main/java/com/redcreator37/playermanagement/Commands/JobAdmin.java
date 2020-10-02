@@ -44,7 +44,8 @@ public class JobAdmin implements CommandExecutor {
                     Job j = PlayerManagement.jobs.get(args[1]);
                     if (j == null) {
                         p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                                + "Unknown job " + ChatColor.GREEN + args[1]);
+                                + PlayerManagement.strings.getString("unknown-job")
+                                + ChatColor.GREEN + args[1]);
                         return true;
                     }
                     PlayerManagement.jobDb.remove(j);
@@ -53,7 +54,8 @@ public class JobAdmin implements CommandExecutor {
                     Job job = PlayerManagement.jobs.get(args[1]);
                     if (job == null) {
                         p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                                + "Unknown job " + ChatColor.GREEN + args[1]);
+                                + PlayerManagement.strings.getString("unknown-job")
+                                + ChatColor.GREEN + args[1]);
                         return true;
                     }
                     job.setDescription(CommandHelper.getFullEntry(args, 2));
@@ -63,11 +65,12 @@ public class JobAdmin implements CommandExecutor {
 
             // update the job list to reflect the changes
             PlayerManagement.jobs = PlayerManagement.jobDb.getAll();
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD + "Job data saved.");
+            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + PlayerManagement.strings.getString("job-data-saved"));
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Error while accessing the database: " + ChatColor.RED
-                    + e.getMessage());
+                    + PlayerManagement.strings.getString("error-accessing-db")
+                    + ChatColor.RED + e.getMessage());
         }
         return true;
     }

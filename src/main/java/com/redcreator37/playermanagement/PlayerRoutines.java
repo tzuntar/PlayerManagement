@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.redcreator37.playermanagement.PlayerManagement.strings;
+
 /**
  * Common player routines
  */
@@ -58,8 +60,8 @@ public final class PlayerRoutines {
     public static boolean checkPlayerNonExistent(Player invoker, ServerPlayer target, String entered) {
         if (target == null) {
             invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Unknown or non-registered player: " + ChatColor.GREEN
-                    + entered + ChatColor.GOLD + ".");
+                    + strings.getString("unknown-player")
+                    + ChatColor.GREEN + entered + ChatColor.GOLD + ".");
             return true;
         }
         return false;
@@ -74,9 +76,8 @@ public final class PlayerRoutines {
      */
     public static boolean checkPermission(Player player, String permission) {
         if (!player.hasPermission(permission)) {
-            player.sendMessage(PlayerManagement.prefix
-                    + ChatColor.GOLD + "You do not have sufficient" +
-                    " permissions to access this command.");
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    + strings.getString("no-permission"));
             return false;
         }
         return true;
@@ -91,7 +92,7 @@ public final class PlayerRoutines {
     public static boolean checkInventoryFull(Player player) {
         if (player.getInventory().firstEmpty() == -1) {  // firstEmpty() returns -1 if it's full
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Inventory full!");
+                    + strings.getString("inventory-full"));
             return true;
         }
         return false;
@@ -107,7 +108,7 @@ public final class PlayerRoutines {
         assert sender != null;
         if (!(sender instanceof Player)) {
             sender.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "This command can only be used by players!");
+                    + strings.getString("player-only-command"));
             return null;
         }
         return (Player) sender;
@@ -158,27 +159,27 @@ public final class PlayerRoutines {
                             .fromString(targetCompany.getOwner().getUuid()));
                 } catch (NullPointerException e) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.RED
-                            + "ERROR: Company owner specified in the database is not valid!");
+                            + strings.getString("db-company-invalid"));
                     return; // failsafe in case an invalid player is specified in the db
                 }
 
                 if (owner.canAfford(wage)) {
                     PlayerManagement.eco.withdrawPlayer(ownerPl, wage.doubleValue());
-                    owner.addMail("WARNING! Money was taken from your account because" +
-                            " your company could not afford to pay the wages!");
+                    owner.addMail(strings.getString("money-taken-to-pay-wages"));
                 } else {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
-                            + targetCompany + ChatColor.GOLD
-                            + " cannot afford to pay your wage!");
-                    owner.addMail("WARNING! Your company was unable to pay the wage for" +
-                            " the player " + player.getName() + "!");
+                            + targetCompany + ChatColor.GOLD + strings
+                            .getString("cant-afford-to-pay-your-wage"));
+                    owner.addMail(strings.getString("unable-to-pay-wage-for-player")
+                            + player.getName() + "!");
                     return;
                 }
             } else {
                 Company company = PlayerManagement.companies.get(targetCompany.getName());
                 if (company == null) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + "Unknown company: " + ChatColor.GREEN + targetCompany);
+                            + strings.getString("unknown-company")
+                            + ChatColor.GREEN + targetCompany);
                     return;
                 }
 
@@ -192,8 +193,8 @@ public final class PlayerRoutines {
 
         if ((int) amount < 1) return;    // don't display on small / negative values
         player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
-                + "$" + amount + ChatColor.GOLD
-                + " has been added to your account.");
+                + "$" + amount + ChatColor.GOLD + strings
+                .getString("has-been-added-to-your-account"));
     }
 
     /**
@@ -225,7 +226,8 @@ public final class PlayerRoutines {
             return new BigDecimal(entered);
         } catch (Exception e) {
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Invalid number: " + ChatColor.GREEN + entered);
+                    + strings.getString("invalid-number")
+                    + ChatColor.GREEN + entered);
             return null;
         }
     }
@@ -247,22 +249,24 @@ public final class PlayerRoutines {
                 employees.add(pl);
         });
 
-        pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                + "\n\n§0§lName: §r§2§l§o" + c
-                + "\n\n§0§lDescription: §r§1§o" + c.getDescription()
-                + "\n\n§0§lBalance: §r§1" + formatDecimal(c.getBalance())
-                + "\n\n§0§lEmployees: §r§1" + c.getEmployees());
-        pages.add("§1§l --< §2§lCOMPANY §1§l>--"
-                + "\n\n§0§lSalary: §r§1" + formatDecimal(c.getWage())
-                + "\n§rPaid every §1" + PlayerManagement
-                .autoEcoTimeSeconds / 60 + "§r min."
-                + "\n\n§0Balance after payments: §r§1" + formatDecimal(afterPayments)
-                + "\n\n§0§lOwner: §r§1" + c.getOwner()
-                + "\n\n§0§lEstablished: §r§1" + c.getEstablishedDate());
+        pages.add("§1§l --< §2§l" + strings.getString("company-uppercase") + " §1§l > --"
+                + "\n\n§0§l" + strings.getString("name") + " §r§2§l§o" + c
+                + "\n\n§0§l" + strings.getString("description") + " §r§1§o" + c.getDescription()
+                + "\n\n§0§l" + strings.getString("balance") + " §r§1" + formatDecimal(c.getBalance())
+                + "\n\n§0§l" + strings.getString("employees") + " §r§1" + c.getEmployees());
+        pages.add("§1§l --< §2§l" + strings.getString("company-uppercase") + " §1§l>--"
+                + "\n\n§0§l" + strings.getString("wage") + " §r§1" + formatDecimal(c.getWage())
+                + "\n§r" + strings.getString("paid-every") + " §1" + PlayerManagement
+                .autoEcoTimeSeconds / 60 + "§r " + strings.getString("minutes")
+                + "\n\n§0" + strings.getString("balance-after-payments")
+                + " §r§1" + formatDecimal(afterPayments)
+                + "\n\n§0§l" + strings.getString("owner") + " §r§1" + c.getOwner()
+                + "\n\n§0§l" + strings.getString("established") + " §r§1" + c.getEstablishedDate());
 
         for (int i = 0; i < employees.size(); i++) {
-            StringBuilder sb = new StringBuilder("§1§l --< §2§lCOMPANY §1§l>--" +
-                    "\n\n§r§lEmployees:\n\n§r");
+            StringBuilder sb = new StringBuilder("§1§l --< §2§l" + strings
+                    .getString("company-uppercase") + " §1§l>--" +
+                    "\n\n§r§l" + strings.getString("employees") + "\n\n§r");
             ServerPlayer pl = employees.get(i);
             sb.append(pl).append("\n");
             for (int j = 0; j < 8; j++) {

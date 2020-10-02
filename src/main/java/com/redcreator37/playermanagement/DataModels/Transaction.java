@@ -120,8 +120,9 @@ public class Transaction {
 
         if (transactions.size() < 1) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "The company " + ChatColor.GREEN + c.getName()
-                    + ChatColor.GOLD + " has no transactions.");
+                    + PlayerManagement.strings.getString("the-company")
+                    + ChatColor.GREEN + c.getName() + ChatColor.GOLD
+                    + PlayerManagement.strings.getString("has-no-transactions"));
             return;
         }
 

@@ -47,8 +47,8 @@ public class SetJob implements CommandExecutor {
         Job newJob = PlayerManagement.jobs.get(args[0]);
         if (newJob == null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + "Unknown job: " + ChatColor.GREEN + args[0]
-                    + ChatColor.GOLD + ".");
+                    + PlayerManagement.strings.getString("unknown-job")
+                    + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
             return true;
         }
 
@@ -59,12 +59,12 @@ public class SetJob implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
-                        + ChatColor.GOLD + " is now employed as " + ChatColor.GREEN
-                        + newJob + ChatColor.GOLD + ".");
+                        + ChatColor.GOLD + PlayerManagement.strings.getString("now-employed-as")
+                        + ChatColor.GREEN + newJob + ChatColor.GOLD + ".");
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + "Error while updating the playerdata: " + ChatColor.RED
-                        + e.getMessage());
+                        + PlayerManagement.strings.getString("error-updating-playerdata")
+                        + ChatColor.RED + e.getMessage());
             }
         });
         return true;

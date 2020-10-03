@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -58,13 +59,13 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * The resource bundle to use for retrieving localized strings
      */
-    public static ResourceBundle strings = getResourceBundleFromLangCode("Strings", language);
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public static ResourceBundle strings = getBundleFromLangCode("Strings", language).get();
 
     /**
      * Any in-game console output will get prefixed by this
      */
-    public static String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.BLUE
-            + "Server" + ChatColor.DARK_GRAY + "] ";
+    public static String prefix = getDefaultPrefix();
 
     /**
      * The currently loaded Essentials plugin object
@@ -191,7 +192,11 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
-        getResourceBundleFromLangCode("Strings", language);
+        getBundleFromLangCode("Strings", language)
+                .ifPresent(bundle -> {
+                    strings = bundle;
+                    prefix = getDefaultPrefix();
+                });
         if (!setUpDatabase()) {
             getLogger().severe(strings.getString("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);
@@ -458,12 +463,28 @@ public final class PlayerManagement extends JavaPlugin {
      * @param baseName the full name of the bundle to retrieve
      * @param langCode a code in the language_country format
      *                 (ex. <code>en_US</code>)
-     * @return the matching resource bundle or null if not found
+     * @return the matching resource bundle or an empty optional
+     * if not found
      */
-    private static ResourceBundle getResourceBundleFromLangCode(String baseName, String langCode) {
+    @SuppressWarnings("SameParameterValue")
+    private static Optional<ResourceBundle> getBundleFromLangCode(String baseName, String langCode) {
         String[] locale = langCode.split("_");
-        return ResourceBundle.getBundle(baseName, new Locale(locale[0]
-                .toLowerCase(), locale[1].toUpperCase()));
+        try {
+            return Optional.of(ResourceBundle.getBundle(baseName, new Locale(locale[0]
+                    .toLowerCase(), locale[1].toUpperCase())));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns the plugin's localized default chat output prefix
+     *
+     * @return the formatted string
+     */
+    private static String getDefaultPrefix() {
+        return ChatColor.DARK_GRAY + "[" + ChatColor.BLUE
+                + strings.getString("server") + ChatColor.DARK_GRAY + "] ";
     }
 
 }

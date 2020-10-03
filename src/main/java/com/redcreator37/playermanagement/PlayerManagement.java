@@ -403,7 +403,6 @@ public final class PlayerManagement extends JavaPlugin {
                 // just insert a blank player, job and company using a bogus id
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
                 companyDb.insert(new Company(4097, "N/A"));
-                // BUG! CHECK! playerDb.insert(new ServerPlayer(4097, "N/A", "N/A"));
                 getLogger().info(strings.getString("created-empty-db"));
             } catch (SQLException e) {
                 getLogger().severe(strings.getString("error-creating-db") + e.getMessage());

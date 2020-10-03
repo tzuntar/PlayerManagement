@@ -192,11 +192,10 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
-        getBundleFromLangCode("Strings", language)
-                .ifPresent(bundle -> {
-                    strings = bundle;
-                    prefix = getDefaultPrefix();
-                });
+        getBundleFromLangCode("Strings", language).ifPresent(bundle -> {
+            strings = bundle;
+            prefix = getDefaultPrefix();
+        });
         if (!setUpDatabase()) {
             getLogger().severe(strings.getString("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);

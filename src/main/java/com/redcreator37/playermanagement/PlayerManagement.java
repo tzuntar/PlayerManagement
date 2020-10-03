@@ -58,8 +58,7 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * The resource bundle to use for retrieving localized strings
      */
-    public static ResourceBundle strings = getResourceBundleFromLangCode(
-            "com.redcreator37.playermanagement.Resources.Strings", language);
+    public static ResourceBundle strings = getResourceBundleFromLangCode("Strings", language);
 
     /**
      * Any in-game console output will get prefixed by this
@@ -192,7 +191,7 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
-        getResourceBundleFromLangCode("com.redcreator37.playermanagement.Resources.Strings", language);
+        getResourceBundleFromLangCode("Strings", language);
         if (!setUpDatabase()) {
             getLogger().severe(strings.getString("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);

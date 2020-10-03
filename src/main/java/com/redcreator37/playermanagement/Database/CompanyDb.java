@@ -46,7 +46,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         st.setString(2, c.getDescription());
         st.setString(3, c.getBalance().toString());
         st.setInt(4, c.getEmployees());
-        st.setString(5, c.getOwner().getUuid());
+        st.setString(5, c.getOwner().getUuid());     // bug: this field doesn't get initialized properly
         st.setString(6, c.getEstablishedDate());
         st.setString(7, c.getWage().toString());
         if (update) st.setInt(8, c.getId());

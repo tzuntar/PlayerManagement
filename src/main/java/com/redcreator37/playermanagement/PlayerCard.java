@@ -167,7 +167,7 @@ public class PlayerCard implements Listener {
                     + "\n §r§8[" + armorLevel + "§8]");
 
             DecimalFormat fourPlaces = new DecimalFormat("##.0000");
-            pages.add("§1§l ---< §9§" + strings.getString("player-uppercase") + " §1§l>---"
+            pages.add("§1§l ---< §9§l" + strings.getString("player-uppercase") + " §1§l>---"
                     + "\n\n§0§l" + strings.getString("location")
                     + "\n§1§lX: §r" + fourPlaces.format(p.getLocation().getX())
                     + "\n§1§lY: §r" + fourPlaces.format(p.getLocation().getY())
@@ -192,8 +192,8 @@ public class PlayerCard implements Listener {
                     + "\n\n§0§l" + strings.getString("description") + " §r§1§o"
                     + player.getCompany().getDescription()
                     + "\n\n§0§l" + strings.getString("owner") + " §r§1"
-                    + player.getCompany().getOwner());
-            pages.add("§1§l --< §2§l" + strings.getString("job-uppercase") + " §1§l>--"
+                    + player.getCompany().getOwner().getUsername());
+            pages.add("§1§l ---< §2§l" + strings.getString("job-uppercase") + " §1§l>---"
                     + "\n\n§0§l" + strings.getString("employees") + " §r§1"
                     + player.getCompany().getEmployees()
                     + "\n\n§0§l" + strings.getString("established") + " §r§1"

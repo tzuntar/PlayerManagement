@@ -71,13 +71,15 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         // loop through the records
         while (set.next()) {
             String uuid = set.getString("owner");
+            PlayerTag ownerTag = new PlayerTag(!uuid.equals("N/A")
+                    ? Bukkit.getOfflinePlayer(UUID
+                    .fromString(uuid)).getName() : "N/A", uuid);
             Company c = new Company(set.getInt("id"),
                     set.getString("name"),
                     set.getString("description"),
                     set.getString("money"),
                     set.getInt("employees"),
-                    new PlayerTag(Bukkit.getOfflinePlayer(UUID
-                            .fromString(uuid)).getName(), uuid),
+                    ownerTag,
                     set.getString("established"),
                     set.getString("paycheck"));
             companies.put(c.getName(), c);

@@ -10,8 +10,6 @@ import org.junit.Test;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Tests the database creation functionality
@@ -22,29 +20,20 @@ public class CreateDbTest {
      * Attempts to set up a blank database
      */
     @Test
-    @SuppressWarnings("UnusedAssignment")
     public void setUpDatabaseTest() {
         String dbPath = "target/test.db";
         File dbFile = new File(dbPath);
         if (dbFile.exists() && !dbFile.delete())
             Assert.fail("Could not delete the existing " + dbPath);
 
-        JobDb jobDb = null;
-        CompanyDb companyDb = null;
-        TransactionDb transactionDb = null;
-        PlayerDb playerDb = null;
         try (Connection db = SharedDb.connect(dbPath)) {
             SharedDb.createTables(db);
-            jobDb = new JobDb(db);
-            companyDb = new CompanyDb(db);
-            transactionDb = new TransactionDb(db);
-            playerDb = new PlayerDb(db);
+            JobDb jobDb = new JobDb(db);
+            CompanyDb companyDb = new CompanyDb(db);
+            TransactionDb transactionDb = new TransactionDb(db);
+            PlayerDb playerDb = new PlayerDb(db);
             // insert a blank job using a bogus id
             jobDb.insert(new Job(4097, "N/A", "N/A"));
-            new HashMap<>();
-            new HashMap<>();
-            new HashMap<>();
-            new ArrayList<>();
             System.out.println("Created an empty database");
 
             try {

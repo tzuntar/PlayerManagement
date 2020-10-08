@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Tests the database creation functionality
+ * Tests the database interface capabilities
  */
 public class DatabaseInterfaceTests {
 

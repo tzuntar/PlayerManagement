@@ -1,7 +1,4 @@
-import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Job;
-import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.DataModels.Transaction;
 import com.redcreator37.playermanagement.Database.CompanyDb;
 import com.redcreator37.playermanagement.Database.JobDb;
 import com.redcreator37.playermanagement.Database.PlayerDb;
@@ -15,8 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests the database creation functionality
@@ -27,17 +22,12 @@ public class CreateDbTest {
      * Attempts to set up a blank database
      */
     @Test
-    @SuppressWarnings({"unused", "UnusedAssignment"})
+    @SuppressWarnings("UnusedAssignment")
     public void setUpDatabaseTest() {
         String dbPath = "target/test.db";
         File dbFile = new File(dbPath);
         if (dbFile.exists() && !dbFile.delete())
             Assert.fail("Could not delete the existing " + dbPath);
-
-        List<Transaction> transactions;
-        Map<String, Company> companies;
-        Map<String, Job> jobs;
-        Map<String, ServerPlayer> players;
 
         JobDb jobDb = null;
         CompanyDb companyDb = null;
@@ -51,17 +41,17 @@ public class CreateDbTest {
             playerDb = new PlayerDb(db);
             // insert a blank job using a bogus id
             jobDb.insert(new Job(4097, "N/A", "N/A"));
-            players = new HashMap<>();
-            jobs = new HashMap<>();
-            companies = new HashMap<>();
-            transactions = new ArrayList<>();
+            new HashMap<>();
+            new HashMap<>();
+            new HashMap<>();
+            new ArrayList<>();
             System.out.println("Created an empty database");
 
             try {
-                jobs = jobDb.getAll();   // it has to be done in this exact order!
-                companies = companyDb.getAll();
-                transactions = transactionDb.getAll();
-                players = playerDb.getAll();
+                jobDb.getAll();
+                companyDb.getAll();
+                transactionDb.getAll();
+                playerDb.getAll();
                 System.out.println("Player database loaded successfully");
             } catch (SQLException e) {
                 Assert.fail("Error while reading from the database: " + e.getMessage());

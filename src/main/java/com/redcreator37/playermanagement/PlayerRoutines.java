@@ -208,6 +208,7 @@ public final class PlayerRoutines {
      * was already reached
      */
     public static double calculateAmount(double threshold, double base, double balance) {
+        assert threshold != 0;
         double d = balance / threshold;
         if (d > 1) return 0;
         return base * (1 - d);
@@ -320,7 +321,7 @@ public final class PlayerRoutines {
      * @param value the input string
      * @return value or "N/A" if null/empty
      */
-    static String getValueOrEmpty(String value) {
+    public static String getValueOrEmpty(String value) {
         return value == null || value.trim().equals("") ? "N/A" : value;
     }
 

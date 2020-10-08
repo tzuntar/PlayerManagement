@@ -54,4 +54,30 @@ public class PlayerRoutinesTests {
                 .formatDecimal(BigDecimal.valueOf(-3.12333)));
     }
 
+    /**
+     * Tests if the date format method fails properly
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void formatDateInvalid() {
+        PlayerRoutines.getCurrentDate("yyyy-mm.DD:HH.tt");
+    }
+
+    /**
+     * Tests the auto economy subtraction
+     */
+    @Test
+    public void autoEconomySubtractTest() {
+        Assert.assertEquals(9.8685, PlayerRoutines
+                .calculateAmount(1000, 15, 342.1), 0);
+    }
+
+    /**
+     * Tests the getValueOrEmpty method in PlayerRoutines class by
+     * submitting a null value
+     */
+    @Test
+    public void getValueOrEmptyNullValueTest() {
+        Assert.assertEquals("N/A", PlayerRoutines.getValueOrEmpty(null));
+    }
+
 }

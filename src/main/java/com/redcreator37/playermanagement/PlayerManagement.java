@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 /**
  * A Minecraft Spigot Server plugin that extends native player data
@@ -213,11 +212,8 @@ public final class PlayerManagement extends JavaPlugin {
         if (autoEcoEnabled) setUpAutoEconomy();
 
         // TODO: check if scoreboards are enabled in the config
-        List<String> playerNames = players.values().stream()
-                .map(ServerPlayer::getUsername)
-                .collect(Collectors.toList());
-        globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit
-                .getScoreboardManager()), "Players", playerNames);
+        globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit.getScoreboardManager()),
+                "Players", new ArrayList<>(players.values()));
         setUpDataBoardUpdating();
     }
 

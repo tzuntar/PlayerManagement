@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.redcreator37.playermanagement.PlayerManagement.strings;
 
@@ -148,12 +149,9 @@ public final class PlayerRoutines {
         List<String> pages = new ArrayList<>();
         BigDecimal afterPayments = c.getBalance().subtract(c.getWage()
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
-
-        List<ServerPlayer> employees = new ArrayList<>();
-        PlayerManagement.players.forEach((s, pl) -> {
-            if (pl.getCompany().getName().equals(c.getName()))
-                employees.add(pl);
-        });
+        List<ServerPlayer> employees = PlayerManagement.players.values().stream()
+                .filter(pl -> pl.getCompany().equals(c))
+                .collect(Collectors.toList());
 
         pages.add("§1§l --< §2§l" + strings.getString("company-uppercase") + " §1§l > --"
                 + "\n\n§0§l" + strings.getString("name") + " §r§2§l§o" + c

@@ -32,7 +32,7 @@ public class EconomyProvider {
     private final Essentials ess;
 
     /**
-     * The currently used minimal wage
+     * The currently set minimal wage
      */
     private final MinimalWage minimalWage;
 
@@ -88,6 +88,13 @@ public class EconomyProvider {
         }
     }
 
+    /**
+     * Constructs a new EconomyProvider object
+     *
+     * @param eco         the currently used Vault plugin object
+     * @param ess         the currently used Essentials player object
+     * @param minimalWage the currently set minimal wage
+     */
     public EconomyProvider(Economy eco, Essentials ess, MinimalWage minimalWage) {
         this.eco = eco;
         this.ess = ess;

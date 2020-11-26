@@ -23,6 +23,7 @@ import com.redcreator37.playermanagement.Database.JobDb;
 import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.Database.SharedDb;
 import com.redcreator37.playermanagement.Database.TransactionDb;
+import com.redcreator37.playermanagement.Scoreboards.IdBoard;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,6 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * A Minecraft Spigot Server plugin that extends native player data
@@ -140,6 +142,12 @@ public final class PlayerManagement extends JavaPlugin {
     public static TransactionDb transactionDb = null;
 
     /**
+     * The global scoreboard which displays basic data for
+     * all players
+     */
+    public static IdBoard globalDataBoard;
+
+    /**
      * Plugin startup logic
      */
     @Override
@@ -201,7 +209,16 @@ public final class PlayerManagement extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if (autoEcoEnabled && this.isEnabled()) setUpAutoEconomy();
+        if (!this.isEnabled()) return;  // safety check to prevent exceptions if disabled
+        if (autoEcoEnabled) setUpAutoEconomy();
+
+        // TODO: check if scoreboards are enabled in the config
+        List<String> playerNames = players.values().stream()
+                .map(ServerPlayer::getUsername)
+                .collect(Collectors.toList());
+        globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit
+                .getScoreboardManager()), "Players", playerNames);
+        setUpDataBoardUpdating();
     }
 
     /**
@@ -452,6 +469,15 @@ public final class PlayerManagement extends JavaPlugin {
                         .runTask(this, () -> getServer().getOnlinePlayers()
                                 .forEach(EnhancedPlayerList::updateList)),
                 1, playerListUpdateSeconds);
+    }
+
+    /**
+     * Sets up updating of the data scoreboard
+     */
+    private void setUpDataBoardUpdating() {
+        Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
+                        .runTask(this, () -> globalDataBoard.refreshData()),
+                1, playerListUpdateSeconds);    // TODO: use a separate timer
     }
 
     /**

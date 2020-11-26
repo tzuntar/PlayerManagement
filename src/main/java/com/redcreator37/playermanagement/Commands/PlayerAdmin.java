@@ -27,7 +27,7 @@ public class PlayerAdmin implements CommandExecutor {
             return true;
 
         p.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
-        p.sendMessage("§bID §9|   §bUSERNAME   §9|   §bJOINED   §9| §bJOB NAME §9| §bCOMPANY §9|   §bPNSMT.");
+        p.sendMessage("§bID §9|   §bUSERNAME   §9|   §bJOINED   §9| §bJOB NAME §9| §bCOMPANY §9|   §bPT.");
         p.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
 
         PlayerManagement.players.forEach((s, pl) -> {

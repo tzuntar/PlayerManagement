@@ -141,6 +141,11 @@ public final class PlayerManagement extends JavaPlugin {
     public static TransactionDb transactionDb = null;
 
     /**
+     * Provides in-game economy-related features
+     */
+    public static EconomyProvider economyProvider = null;
+
+    /**
      * The global scoreboard which displays basic data for
      * all players
      */
@@ -238,8 +243,8 @@ public final class PlayerManagement extends JavaPlugin {
 
     public static boolean autoEcoEnabled = true;
     public static int autoEcoTimeSeconds = 1200;
-    public static double autoEcoDefaultThreshold = 1000;
-    public static double autoEcoDefaultAmount = 250;
+    public static EconomyProvider.MinimalWage minimalWage =
+            new EconomyProvider.MinimalWage(1000, 250);
 
     public static boolean rewardsEnabled = true;
     public static double rewardRank1 = 10;
@@ -297,8 +302,8 @@ public final class PlayerManagement extends JavaPlugin {
         conf.addDefault("Punishments.MaxBeforeBan", maxPunishments);
         conf.addDefault("AutomaticEconomy.Enabled", autoEcoEnabled);
         conf.addDefault("AutomaticEconomy.TimeInSeconds", autoEcoTimeSeconds);
-        conf.addDefault("AutomaticEconomy.Threshold", autoEcoDefaultThreshold);
-        conf.addDefault("AutomaticEconomy.MoneyAmount", autoEcoDefaultAmount);
+        conf.addDefault("AutomaticEconomy.Threshold", minimalWage.getThreshold());
+        conf.addDefault("AutomaticEconomy.MoneyAmount", minimalWage.getAmount());
         conf.addDefault("Rewards.Enabled", rewardsEnabled);
         conf.addDefault("Rewards.Reward.Rank1", rewardRank1);
         conf.addDefault("Rewards.Reward.Rank2", rewardRank2);
@@ -342,8 +347,9 @@ public final class PlayerManagement extends JavaPlugin {
 
         autoEcoEnabled = conf.getBoolean("AutomaticEconomy.Enabled");
         autoEcoTimeSeconds = conf.getInt("AutomaticEconomy.TimeInSeconds");
-        autoEcoDefaultThreshold = conf.getDouble("AutomaticEconomy.Threshold");
-        autoEcoDefaultAmount = conf.getDouble("AutomaticEconomy.MoneyAmount");
+        minimalWage = new EconomyProvider.MinimalWage(
+                conf.getDouble("AutomaticEconomy.MoneyAmount"),
+                conf.getDouble("AutomaticEconomy.Threshold"));
 
         rewardsEnabled = conf.getBoolean("Rewards.Enabled");
         rewardRank1 = conf.getDouble("Rewards.Reward.Rank1");
@@ -438,12 +444,10 @@ public final class PlayerManagement extends JavaPlugin {
      * Sets up the automatic economy
      */
     private void setUpAutoEconomy() {
+        economyProvider = new EconomyProvider(eco, ess, minimalWage);
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                 .runTask(this, () -> {
-                    Bukkit.getOnlinePlayers().forEach(player ->
-                            PlayerRoutines.autoEconomyPlayer(player,
-                                    autoEcoDefaultAmount,
-                                    autoEcoDefaultThreshold));
+                    Bukkit.getOnlinePlayers().forEach(economyProvider::payWage);
                     companies.forEach((s, company) -> {
                         try {
                             companyDb.update(company);

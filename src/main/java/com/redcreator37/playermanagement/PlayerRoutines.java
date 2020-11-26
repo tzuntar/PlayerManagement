@@ -1,11 +1,8 @@
 package com.redcreator37.playermanagement;
 
-import com.earth2me.essentials.User;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,8 +14,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 import static com.redcreator37.playermanagement.PlayerManagement.strings;
 
@@ -28,7 +23,7 @@ import static com.redcreator37.playermanagement.PlayerManagement.strings;
 public final class PlayerRoutines {
 
     /**
-     * Noninstantiable
+     * Non-instantiable
      */
     private PlayerRoutines() {
     }
@@ -42,9 +37,8 @@ public final class PlayerRoutines {
      * player with this username wasn't found
      */
     public static String uuidFromUsername(Map<String, ServerPlayer> players, String username) {
-        return players.entrySet().stream()
-                .filter(entry -> Objects.equals(entry.getValue().getUsername(), username))
-                .map(Map.Entry::getKey)
+        return players.values().stream().filter(pl -> pl.getUsername().equals(username))
+                .map(ServerPlayer::getUuid)
                 .findFirst().orElse(null);
     }
 
@@ -123,95 +117,6 @@ public final class PlayerRoutines {
     public static String getCurrentDate(String dateFormat) {
         return new SimpleDateFormat(dateFormat)
                 .format(Calendar.getInstance().getTime());
-    }
-
-    /**
-     * Adds money to this player
-     *
-     * @param player       the player
-     * @param defAmount    the default amount
-     * @param defThreshold the default threshold after which the
-     *                     player will no longer receive any
-     *                     additional money
-     */
-    static void autoEconomyPlayer(Player player, double defAmount, double defThreshold) {
-        ServerPlayer target = PlayerManagement.players.get(player
-                .getUniqueId().toString());
-        if (target == null || Objects.requireNonNull(PlayerManagement.ess)
-                .getUser(player).isAfk()) return;   // unknown player or AFK
-
-        double amount;
-        Company targetCompany = target.getCompany();
-        if (targetCompany.getName().equals("N/A")) {  // the player isn't employed
-            amount = calculateAmount(defThreshold, defAmount,
-                    PlayerManagement.eco.getBalance(player));
-        } else if (!targetCompany.getName().equals("N/A")) {  // the player is employed, find the company
-            BigDecimal wage = targetCompany.getWage();
-            if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
-                // get the owner player handle
-                User owner = PlayerManagement.ess
-                        .getOfflineUser(targetCompany.getOwner().getUuid());
-
-                // get the OfflinePlayer object from the UUID
-                OfflinePlayer ownerPl;
-                try {
-                    ownerPl = Bukkit.getOfflinePlayer(UUID
-                            .fromString(targetCompany.getOwner().getUuid()));
-                } catch (NullPointerException e) {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.RED
-                            + strings.getString("db-company-invalid"));
-                    return; // failsafe in case an invalid player is specified in the db
-                }
-
-                if (owner.canAfford(wage)) {
-                    PlayerManagement.eco.withdrawPlayer(ownerPl, wage.doubleValue());
-                    owner.addMail(strings.getString("money-taken-to-pay-wages"));
-                } else {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
-                            + targetCompany + ChatColor.GOLD + strings
-                            .getString("cant-afford-to-pay-your-wage"));
-                    owner.addMail(strings.getString("unable-to-pay-wage-for-player")
-                            + player.getName() + "!");
-                    return;
-                }
-            } else {
-                Company company = PlayerManagement.companies.get(targetCompany.getName());
-                if (company == null) {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + strings.getString("unknown-company")
-                            + ChatColor.GREEN + targetCompany);
-                    return;
-                }
-
-                // update the database Company object
-                PlayerManagement.companies.get(company.getName()).setBalance(company
-                        .getBalance().subtract(wage));
-            }
-            amount = wage.doubleValue();
-        } else return;
-        PlayerManagement.eco.depositPlayer(player, amount);
-
-        if ((int) amount < 1) return;    // don't display on small / negative values
-        player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
-                + "$" + amount + ChatColor.GOLD + strings
-                .getString("has-been-added-to-your-account"));
-    }
-
-    /**
-     * Calculates the amount of money give based on these parameters
-     *
-     * @param threshold the threshold after which the player won't be
-     *                  given any additional money anymore (ex. 1000)
-     * @param base      the base amount of money to be given (ex. 250)
-     * @param balance   the player's current balance
-     * @return the calculated amount of money, or 0 if the threshold
-     * was already reached
-     */
-    public static double calculateAmount(double threshold, double base, double balance) {
-        assert threshold != 0;
-        double d = balance / threshold;
-        if (d > 1) return 0;
-        return base * (1 - d);
     }
 
     /**

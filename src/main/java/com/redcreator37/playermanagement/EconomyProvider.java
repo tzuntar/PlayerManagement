@@ -113,10 +113,10 @@ public class EconomyProvider {
                 .getUser(player).isAfk()) return;   // unknown player or AFK
 
         double amount;
-        Company targetCompany = target.getCompany();
-        if (targetCompany.getName().equals("N/A")) {  // the player isn't employed
+        if (isPlayerUnemployed(target)) {
             amount = minimalWage.calculateMinimalWage(eco.getBalance(player));
-        } else if (!targetCompany.getName().equals("N/A")) {  // the player is employed, find the company
+        } else if (!isPlayerUnemployed(target)) {
+            Company targetCompany = target.getCompany();
             BigDecimal wage = targetCompany.getWage();
             if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
                 // get the owner player handle
@@ -165,6 +165,18 @@ public class EconomyProvider {
         player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
                 + "$" + amount + ChatColor.GOLD + strings
                 .getString("has-been-added-to-your-account"));
+    }
+
+    /**
+     * Checks if this player is unemployed
+     *
+     * @param player the player to check
+     * @return true if the player is found to be unemployed (ie. the
+     * company's name is the same as the placeholder value) or false
+     * otherwise
+     */
+    public static boolean isPlayerUnemployed(ServerPlayer player) {
+        return player.getCompany().getName().equals("N/A");
     }
 
 }

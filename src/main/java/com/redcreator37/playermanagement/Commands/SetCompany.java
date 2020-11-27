@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.EconomyProvider;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -59,8 +60,6 @@ public class SetCompany implements CommandExecutor {
             return true;
         }
 
-        Company prevCompany = target.getCompany();
-
         target.setCompany(newCompany);
         newCompany.setEmployees(newCompany.getEmployees() + 1);
         Bukkit.getScheduler().runTask(PlayerManagement
@@ -74,7 +73,8 @@ public class SetCompany implements CommandExecutor {
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
 
                 // decrease the employee count when switching to a different company
-                if (!prevCompany.getName().equals("N/A"))
+                Company prevCompany = target.getCompany();
+                if (!EconomyProvider.isPlayerUnemployed(target))
                     prevCompany.setEmployees(prevCompany.getEmployees() - 1);
 
                 PlayerManagement.companyDb.update(newCompany);

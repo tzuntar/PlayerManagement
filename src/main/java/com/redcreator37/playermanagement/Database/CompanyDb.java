@@ -160,10 +160,10 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         try {
             update(company);
             PlayerManagement.companies = getAll();
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("company-data-saved"));
         } catch (SQLException ex) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("error-saving-company-data")
                     + ChatColor.RED + ex.getMessage());
         }

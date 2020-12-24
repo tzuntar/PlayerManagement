@@ -68,7 +68,7 @@ public class Company {
         this.employees = 0;
         this.owner = new PlayerTag("N/A", "N/A");
         this.established = PlayerRoutines
-                .getCurrentDate(PlayerManagement.dateFormat);
+                .getCurrentDate(PlayerManagement.prefs.dateFormat);
     }
 
     /**

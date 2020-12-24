@@ -34,16 +34,16 @@ public class AdvancementReward implements Listener {
             double reward;
             String adv = event.getAdvancement().getKey().getKey();
             if (adv.contains("recipes/")) return;   // skip the recipes
-            if (PlayerRoutines.checkIfContains(PlayerManagement.advRank1, adv))
-                reward = PlayerManagement.rewardRank1;
-            else if (PlayerRoutines.checkIfContains(PlayerManagement.advRank2, adv))
-                reward = PlayerManagement.rewardRank2;
-            else if (PlayerRoutines.checkIfContains(PlayerManagement.advRank3, adv))
-                reward = PlayerManagement.rewardRank3;
+            if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank1, adv))
+                reward = PlayerManagement.prefs.rewardRank1;
+            else if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank2, adv))
+                reward = PlayerManagement.prefs.rewardRank2;
+            else if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank3, adv))
+                reward = PlayerManagement.prefs.rewardRank3;
             else return;
 
             PlayerManagement.eco.depositPlayer(p, reward);
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("advancement-made")
                     + ChatColor.GREEN + "$" + reward + ChatColor.GOLD
                     + Localization.lc("has-been-added-to-your-account"));

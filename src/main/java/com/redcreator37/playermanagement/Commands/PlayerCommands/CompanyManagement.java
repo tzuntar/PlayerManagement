@@ -26,7 +26,6 @@ import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
-import static com.redcreator37.playermanagement.PlayerManagement.prefix;
 
 /**
  * Opens the in-game company management UI or changes the values
@@ -55,8 +54,9 @@ public class CompanyManagement extends PlayerCommand {
         Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 0, 0);
         if (!optTarget.isPresent()) return;
         ServerPlayer target = optTarget.get();
+        String prefix = PlayerManagement.prefs.prefix;
 
-        if (!PlayerRoutines.checkPermission(player, "management.company"))
+        if (PlayerRoutines.lacksPermission(player, "management.company"))
             return;
 
         if (args.length == 2 && !args[1].matches("info|transactions")) {

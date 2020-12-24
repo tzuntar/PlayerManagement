@@ -20,7 +20,6 @@ import static com.redcreator37.playermanagement.PlayerManagement.companies;
 import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
-import static com.redcreator37.playermanagement.PlayerManagement.prefix;
 import static com.redcreator37.playermanagement.PlayerManagement.transactionDb;
 import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 
@@ -47,6 +46,7 @@ public class CompanyPay extends PlayerCommand {
      */
     @Override
     public void execute(Player player, String[] args) {
+        String prefix = PlayerManagement.prefs.prefix;
         ServerPlayer serverPlayer = players.get(player.getUniqueId().toString());
         if (PlayerRoutines.checkPlayerNonExistent(player, serverPlayer, player.getName()))
             return;

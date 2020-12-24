@@ -31,20 +31,20 @@ public class EnhancedPlayerList implements Listener {
      * @param p the player that'll see the updated player list
      */
     public static void updateList(Player p) {
-        String[] entry = {PlayerManagement.genericPlayerEntry};
+        String[] entry = {PlayerManagement.prefs.genericPlayerEntry};
         if (p.hasPermission("playerlist.member"))
-            entry[0] = PlayerManagement.memberPlayerEntry;
+            entry[0] = PlayerManagement.prefs.memberPlayerEntry;
         if (p.hasPermission("playerlist.vip"))
-            entry[0] = PlayerManagement.vipPlayerEntry;
+            entry[0] = PlayerManagement.prefs.vipPlayerEntry;
         if (p.hasPermission("playerlist.admin"))
-            entry[0] = PlayerManagement.adminPlayerEntry;
+            entry[0] = PlayerManagement.prefs.adminPlayerEntry;
 
         // replace the placeholders and set the name, header and footer
         p.setPlayerListName(replacePlaceholders(p, entry, Objects
                 .requireNonNull(PlayerManagement.ess).getUser(p).isAfk()));
         p.setPlayerListHeaderFooter(replacePlaceholders(p,
-                PlayerManagement.playerListHeader, false),
-                replacePlaceholders(p, PlayerManagement.playerListFooter, false));
+                PlayerManagement.prefs.playerListHeader, false),
+                replacePlaceholders(p, PlayerManagement.prefs.playerListFooter, false));
     }
 
     /**
@@ -56,13 +56,13 @@ public class EnhancedPlayerList implements Listener {
      * @return the string with data inserted
      */
     private static String replacePlaceholders(Player p, String[] str, boolean playerAfk) {
-        String rank = PlayerManagement.genericPlayerLabel;
+        String rank = PlayerManagement.prefs.genericPlayerLabel;
         if (p.hasPermission("playerlist.member"))
-            rank = PlayerManagement.memberPlayerLabel;
+            rank = PlayerManagement.prefs.memberPlayerLabel;
         if (p.hasPermission("playerlist.vip"))
-            rank = PlayerManagement.vipPlayerLabel;
+            rank = PlayerManagement.prefs.vipPlayerLabel;
         if (p.hasPermission("playerlist.admin"))
-            rank = PlayerManagement.adminPlayerLabel;
+            rank = PlayerManagement.prefs.adminPlayerLabel;
 
         StringBuilder builder = new StringBuilder();
         for (String s : str)

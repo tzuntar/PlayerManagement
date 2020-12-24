@@ -43,7 +43,7 @@ public class SetJob extends PlayerCommand {
 
         Job newJob = PlayerManagement.jobs.get(args[0]);
         if (newJob == null) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("unknown-job")
                     + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
             return;
@@ -55,11 +55,11 @@ public class SetJob extends PlayerCommand {
             try {   // set the job and update the player list
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + Localization.lc("now-employed-as")
                         + ChatColor.GREEN + newJob + ChatColor.GOLD + ".");
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }

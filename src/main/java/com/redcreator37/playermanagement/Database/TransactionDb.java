@@ -136,10 +136,10 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
                 .getPlugin(PlayerManagement.class), () -> {
             try {
                 insert(t);
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("transaction-data-saved"));
             } catch (SQLException e) {
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("error-saving-transaction-data")
                         + ChatColor.RED + e.getMessage());
             }

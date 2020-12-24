@@ -28,7 +28,7 @@ public class TopPlayerList implements Listener {
     public void eventSignChanged(SignChangeEvent event) {
         if (!event.getLines()[0].equalsIgnoreCase("[topplayers]")) return;
 
-        event.setLine(0, PlayerManagement.scoreboardSignText);
+        event.setLine(0, PlayerManagement.prefs.scoreboardSignText);
         List<String> topPlayers = getTopPlayers(Arrays
                 .asList(Bukkit.getOfflinePlayers())).stream()
                 .distinct().collect(Collectors.toList());

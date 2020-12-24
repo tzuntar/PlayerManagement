@@ -67,8 +67,8 @@ public abstract class PlayerCommand implements CommandExecutor {
             displayHelp(player);
             return true;
         }
-        return permissions.size() == 1 && !PlayerRoutines
-                .checkPermission(player, permissions.get(0));
+        return permissions.size() == 1 && PlayerRoutines
+                .lacksPermission(player, permissions.get(0));
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class PlayerCommand implements CommandExecutor {
                     + " least two different permissions");
         String requiredPermission = args.length == adminArgsLength
                 ? permissions.get(0) : permissions.get(1);
-        if (!PlayerRoutines.checkPermission(player, requiredPermission))
+        if (PlayerRoutines.lacksPermission(player, requiredPermission))
             return Optional.empty();
 
         String targetName = args.length == adminArgsLength

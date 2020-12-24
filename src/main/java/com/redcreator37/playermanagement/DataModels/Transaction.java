@@ -120,7 +120,7 @@ public class Transaction {
                 .collect(Collectors.toList());
 
         if (transactions.size() < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("the-company")
                     + ChatColor.GREEN + c.getName() + ChatColor.GOLD
                     + Localization.lc("has-no-transactions"));

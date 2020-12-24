@@ -39,6 +39,7 @@ public class LowerRank extends PlayerCommand {
      */
     @Override
     public void execute(Player player, String[] args) {
+        String prefix = PlayerManagement.prefs.prefix;
         ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
                 .uuidFromUsername(PlayerManagement.players, args[0]));
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0]))
@@ -50,9 +51,9 @@ public class LowerRank extends PlayerCommand {
                 // take the amount of money
                 try {
                     PlayerManagement.eco.withdrawPlayer(player.getServer().getPlayer(target
-                            .getUsername()), PlayerManagement.punishmentAmount);
+                            .getUsername()), PlayerManagement.prefs.punishmentAmount);
                 } catch (Exception e) {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(prefix + ChatColor.GOLD
                             + lc("the-player")
                             + ChatColor.GREEN + target + ChatColor.GOLD
                             + lc("isnt-online-money-not-taken"));
@@ -64,21 +65,21 @@ public class LowerRank extends PlayerCommand {
                     String reason = CommandHelper.getFullEntry(args, 1);
                     try {   // tell them if they're online, otherwise ignore it
                         Objects.requireNonNull(player.getServer().getPlayer(target
-                                .getUsername())).sendMessage(PlayerManagement
-                                .prefix + ChatColor.GOLD + lc("you-have-been-punished")
+                                .getUsername())).sendMessage(prefix
+                                + ChatColor.GOLD + lc("you-have-been-punished")
                                 + ChatColor.GREEN + reason);
                     } catch (NullPointerException ignored) {}
                 }
 
                 // limit exceeded, issue ban
-                if (target.getPunishments() > PlayerManagement.maxPunishments) {
+                if (target.getPunishments() > PlayerManagement.prefs.maxPunishments) {
                     player.getServer().getBannedPlayers().add(player.getServer()
                             .getPlayer(target.getUsername()));
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(prefix + ChatColor.GOLD
                             + lc("the-player") + ChatColor.GREEN + target
                             + ChatColor.GOLD + lc("has-exceeded-max-punishments"));
                 } else {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(prefix + ChatColor.GOLD
                             + lc("the-player") + ChatColor.GREEN + target
                             + ChatColor.GOLD + lc("has-been-punished"));
                 }
@@ -86,7 +87,7 @@ public class LowerRank extends PlayerCommand {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(prefix + ChatColor.GOLD
                         + lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }

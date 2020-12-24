@@ -19,7 +19,6 @@ import java.util.Objects;
 import static com.redcreator37.playermanagement.Localization.lc;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
-import static com.redcreator37.playermanagement.PlayerManagement.prefix;
 import static com.redcreator37.playermanagement.PlayerRoutines.formatDecimal;
 
 /**
@@ -158,6 +157,7 @@ public class CompanyMenu implements Listener {
      * @param clickedItem the display name of the clicked item
      */
     public void processCommand(String clickedItem) {
+        String prefix = PlayerManagement.prefs.prefix;
         switch (clickedItem) {
             case "Close":
                 player.closeInventory();

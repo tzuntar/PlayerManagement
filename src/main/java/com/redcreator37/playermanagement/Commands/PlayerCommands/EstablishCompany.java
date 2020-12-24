@@ -36,13 +36,13 @@ public class EstablishCompany extends PlayerCommand {
     @Override
     public void execute(Player player, String[] args) {
         if (PlayerManagement.companies.get(args[0]) != null) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("already-exists"));
             return;
         }
 
-        if (!PlayerManagement.eco.has(player, PlayerManagement.companyEstablishPrice)) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+        if (!PlayerManagement.eco.has(player, PlayerManagement.prefs.establishPrice)) {
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("not-enough-money-to-establish"));
             return;
         }
@@ -53,16 +53,16 @@ public class EstablishCompany extends PlayerCommand {
                 .getPlugin(PlayerManagement.class), () -> {
             try {
                 PlayerManagement.eco.withdrawPlayer(player, PlayerManagement
-                        .companyEstablishPrice);
+                        .prefs.establishPrice);
                 newCompany.setBalance(new BigDecimal(PlayerManagement
-                        .companyEstablishPrice / 2));
+                        .prefs.establishPrice / 2));
 
                 PlayerManagement.companyDb.insert(newCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("company-registration-successful"));
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("error-saving-company-data")
                         + ChatColor.RED + e.getMessage());
             }

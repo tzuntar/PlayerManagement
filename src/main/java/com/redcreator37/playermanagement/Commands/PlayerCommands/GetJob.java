@@ -35,7 +35,7 @@ public class GetJob extends PlayerCommand {
         ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
                 .uuidFromUsername(PlayerManagement.players, args[0]));
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0])) return;
-        player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
+        player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
                 + ChatColor.GOLD + Localization.lc("is-employed-as")
                 + ChatColor.GREEN + target.getJob() + ChatColor.GOLD + ".");
     }

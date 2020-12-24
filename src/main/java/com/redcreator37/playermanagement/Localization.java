@@ -37,7 +37,6 @@ public class Localization {
      * @return the matching {@link ResourceBundle} or an empty {@link Optional}
      * if the matching bundle-language combination wasn't found
      */
-    @SuppressWarnings("SameParameterValue")
     private static Optional<ResourceBundle> getBundleFromLangCode(String baseName, String langCode) {
         String[] locale = langCode.split("_");
         try {

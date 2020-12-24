@@ -54,7 +54,7 @@ public final class PlayerRoutines {
      */
     public static boolean checkPlayerNonExistent(Player invoker, ServerPlayer target, String entered) {
         if (target == null) {
-            invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            invoker.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + lc("unknown-player")
                     + ChatColor.GREEN + entered + ChatColor.GOLD + ".");
             return true;
@@ -63,19 +63,19 @@ public final class PlayerRoutines {
     }
 
     /**
-     * Checks if this player has sufficient permissions
+     * Checks whether this {@link Player} lacks this permission
      *
      * @param player     the target player
      * @param permission the permission to check
      * @return true if the user has the specified permission, else otherwise
      */
-    public static boolean checkPermission(Player player, String permission) {
+    public static boolean lacksPermission(Player player, String permission) {
         if (!player.hasPermission(permission)) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + lc("no-permission"));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -86,7 +86,7 @@ public final class PlayerRoutines {
      */
     public static boolean checkInventoryFull(Player player) {
         if (player.getInventory().firstEmpty() == -1) {  // firstEmpty() returns -1 if it's full
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + lc("inventory-full"));
             return true;
         }
@@ -102,7 +102,7 @@ public final class PlayerRoutines {
     public static Player playerFromSender(CommandSender sender) {
         assert sender != null;
         if (!(sender instanceof Player)) {
-            sender.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            sender.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + lc("player-only-command"));
             return null;
         }
@@ -132,7 +132,7 @@ public final class PlayerRoutines {
         try {
             return new BigDecimal(entered);
         } catch (Exception e) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + lc("invalid-number")
                     + ChatColor.GREEN + entered);
             return null;
@@ -161,7 +161,7 @@ public final class PlayerRoutines {
         pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
                 + "\n\n§0§l" + lc("wage") + " §r§1" + formatDecimal(c.getWage())
                 + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
-                .autoEcoTimeSeconds / 60 + "§r " + lc("minutes")
+                .prefs.autoEcoTimeSeconds / 60 + "§r " + lc("minutes")
                 + "\n\n§0" + lc("balance-after-payments")
                 + " §r§1" + formatDecimal(afterPayments)
                 + "\n\n§0§l" + lc("owner") + " §r§1" + c.getOwner()

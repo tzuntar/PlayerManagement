@@ -38,7 +38,7 @@ public class RegisterId extends PlayerCommand {
     public void execute(Player player, String[] args) {
         ServerPlayer test = PlayerManagement.players.get(player.getUniqueId().toString());
         if (test != null) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("already-registered"));
             return;
         }
@@ -51,7 +51,7 @@ public class RegisterId extends PlayerCommand {
 
         target.setName(CommandHelper.getFullEntry(args, 0));
         target.setJoinDate(PlayerRoutines
-                .getCurrentDate(PlayerManagement.dateFormat));
+                .getCurrentDate(PlayerManagement.prefs.dateFormat));
         target.setJob(PlayerManagement.jobs.get("N/A"));
         target.setCompany(PlayerManagement.companies.get("N/A"));
         target.setNotes("");
@@ -64,16 +64,16 @@ public class RegisterId extends PlayerCommand {
             ServerPlayer registeredPlayer = PlayerManagement.players
                     .get(player.getUniqueId().toString());
             if (registeredPlayer == null) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("failed-to-give-id"));
                 return;
             }
 
             PlayerCard.giveNewCard(player, registeredPlayer);
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("registration-successful"));
         } catch (SQLException e) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("error-updating-playerdata")
                     + ChatColor.RED + e.getMessage());
         }

@@ -47,10 +47,10 @@ public class SetNotes extends PlayerCommand {
             try {   // set the notes and update the player list
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("notes-updated"));
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }

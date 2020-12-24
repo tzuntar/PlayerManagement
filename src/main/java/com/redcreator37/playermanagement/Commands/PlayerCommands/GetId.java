@@ -41,28 +41,28 @@ public class GetId extends PlayerCommand {
         ServerPlayer target = optTarget.get();
 
         if (args.length < 1) {  // if there are no elements specified, just give the player a new card
-            if (!PlayerManagement.eco.has(player, PlayerManagement.cardPrice)) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            if (!PlayerManagement.eco.has(player, PlayerManagement.prefs.cardPrice)) {
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("not-enough-money-for-new-id"));
                 return;
             }
 
             if (player.getInventory().firstEmpty() == -1) {  // make sure the inventory isn't full
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("inventory-full"));
                 return;
             }
 
             PlayerCard.giveNewCard(player, target);
-            PlayerManagement.eco.withdrawPlayer(player, PlayerManagement.cardPrice);
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            PlayerManagement.eco.withdrawPlayer(player, PlayerManagement.prefs.cardPrice);
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("bought-new-id")
-                    + ChatColor.GREEN + "$" + PlayerManagement.cardPrice + ChatColor.GOLD + ".");
+                    + ChatColor.GREEN + "$" + PlayerManagement.prefs.cardPrice + ChatColor.GOLD + ".");
             return;
         }
 
         // if it came so far, we can assume that args.length >= 1
-        if (!PlayerRoutines.checkPermission(player, "management.admin"))
+        if (PlayerRoutines.lacksPermission(player, "management.admin"))
             return;
 
         PlayerCard.displayCardData(player, target);

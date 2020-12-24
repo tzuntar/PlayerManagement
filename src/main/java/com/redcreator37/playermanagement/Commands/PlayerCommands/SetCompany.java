@@ -44,7 +44,7 @@ public class SetCompany extends PlayerCommand {
 
         Company newCompany = PlayerManagement.companies.get(args[0]);
         if (newCompany == null) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("unknown-company")
                     + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
             return;
@@ -52,7 +52,7 @@ public class SetCompany extends PlayerCommand {
 
         if (!newCompany.getOwner().getUsername().equals(target.getUsername()) &&
                 !player.hasPermission("management.company.employ")) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("cant-employ-yourself"));
             return;
         }
@@ -64,7 +64,7 @@ public class SetCompany extends PlayerCommand {
             try {   // set the job and update the player list
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + Localization.lc("now-part-of-company")
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
 
@@ -77,7 +77,7 @@ public class SetCompany extends PlayerCommand {
                 PlayerManagement.companyDb.update(prevCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                         + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }

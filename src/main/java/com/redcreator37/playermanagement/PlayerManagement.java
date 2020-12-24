@@ -28,7 +28,6 @@ import com.redcreator37.playermanagement.Scoreboards.IdBoard;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,7 +36,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,16 +50,6 @@ import java.util.Objects;
 public final class PlayerManagement extends JavaPlugin {
 
     /**
-     * The language to use for all strings on this server
-     */
-    public static String language = "en_US";
-
-    /**
-     * Any in-game console output will get prefixed by this
-     */
-    public static String prefix = getDefaultPrefix();
-
-    /**
      * The currently loaded Essentials plugin object
      */
     static final Essentials ess = (Essentials) Bukkit.getPluginManager()
@@ -73,20 +61,15 @@ public final class PlayerManagement extends JavaPlugin {
     public static Economy eco = null;
 
     /**
-     * The database to use to store the player data
-     */
-    private static String databasePath = "PlayerData.db";
-
-    /**
      * The database connection to use for all operations
      */
     private static Connection database = null;
 
     /**
-     * The date format to be used, <strong>must</strong>
-     * be a valid standard date format
+     * Contains all user-settable preferences of the currently
+     * running instance of this plugin
      */
-    public static String dateFormat = "yyyy-MM-dd";
+    public static PreferencesHolder prefs;
 
     /**
      * Contains the data for all players on the server
@@ -182,21 +165,25 @@ public final class PlayerManagement extends JavaPlugin {
         // register events
         getServer().getPluginManager().registerEvents(new PlayerCard(), this);
         getServer().getPluginManager().registerEvents(new TopPlayerList(), this);
-        if (rewardsEnabled) getServer().getPluginManager()
-                .registerEvents(new AdvancementReward(), this);
-        if (playerListEnabled) setUpAdvancedPlayerList();
 
-        loadConfig();
-        if (!Localization.changeLanguage("Strings", language))
+        // load the preferences and initialize other events
+        prefs = new PreferencesHolder();
+        prefs.loadConfig(getConfig());
+        saveConfig();
+
+        if (prefs.rewardsEnabled) getServer().getPluginManager()
+                .registerEvents(new AdvancementReward(), this);
+        if (prefs.playerListEnabled) setUpAdvancedPlayerList();
+        if (!Localization.changeLanguage("Strings", prefs.language))
             getLogger().warning(MessageFormat.format(Localization
-                    .lc("switching-lang-failed"), language));
+                    .lc("switching-lang-failed"), prefs.language));
         if (!setUpDatabase()) {
             getLogger().severe(Localization.lc("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
         if (!this.isEnabled()) return;  // safety check to prevent exceptions if disabled
-        if (autoEcoEnabled) setUpAutoEconomy();
+        if (prefs.autoEcoEnabled) setUpAutoEconomy();
 
         // TODO: check if scoreboards are enabled in the config
         globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit.getScoreboardManager()),
@@ -212,150 +199,6 @@ public final class PlayerManagement extends JavaPlugin {
         try {
             database.close();
         } catch (SQLException ignored) { }
-    }
-
-    // all other settings
-    public static double cardPrice = 2500;
-    public static String cardItemLore = "Unique Player ID Card";
-    public static String scoreboardSignText = "§8[§9TopPlayers§8]";
-
-    public static double companyEstablishPrice = 3000;
-    public static double punishmentAmount = 3000;
-    public static int maxPunishments = 5;
-
-    public static boolean autoEcoEnabled = true;
-    public static int autoEcoTimeSeconds = 1200;
-    public static EconomyProvider.MinimalWage minimalWage =
-            new EconomyProvider.MinimalWage(1000, 250);
-
-    public static boolean rewardsEnabled = true;
-    public static double rewardRank1 = 10;
-    public static double rewardRank2 = 25;
-    public static double rewardRank3 = 50;
-    public static List<String> advRank1 = AdvancementReward.getAdvancements(1);
-    public static List<String> advRank2 = AdvancementReward.getAdvancements(2);
-    public static List<String> advRank3 = AdvancementReward.getAdvancements(3);
-
-    private static boolean playerListEnabled = true;
-    private static int playerListUpdateSeconds = 300;
-    public static String[] playerListHeader = {
-            "§b§oA Minecraft Server                                   §r§a{playercount}§8/§a{maxplayers}",
-            "§8--------------------------------------------"
-    };
-    public static String[] playerListFooter = {
-            "§8--------------------------------------------",
-            "§6Money: §f{playerbalance}    §r§8: :    §6Messages: §f{playermail}",
-            "§6Gamemode: §f{playergamemode}    §r§8: :    §6World: §f{playerworld}",
-            "§6Rank: §f{playerrank}    §r§8: :    §6Company: §f{playercompany}",
-            "§8--------------------------------------------",
-            "§7§oStatistics are updated every 5 min",
-            "§8--------------------------------------------",
-            "§4YouTube:   §r§f§nlink§r      §r§8: :      §9Discord:   §r§f§nlink§r             ",
-            "\n§8§oPowered by PlayerManagement v1.6 by RedCreator37"
-    };
-    public static String genericPlayerEntry = "§8[ §f{playername} §8]";
-    public static String memberPlayerEntry = "§8[ §a{playername} §8]";
-    public static String vipPlayerEntry = "§8[ §b{playername} §8]";
-    public static String adminPlayerEntry = "§8[ §c{playername} §8]";
-
-    public static String genericPlayerLabel = "§fNone";
-    public static String memberPlayerLabel = "§aMembers";
-    public static String vipPlayerLabel = "§bVIP";
-    public static String adminPlayerLabel = "§cAdmins";
-
-    /**
-     * Loads the values from the config file or generates them
-     * if they don't exist yet
-     */
-    @SuppressWarnings("unchecked")
-    private void loadConfig() {
-        FileConfiguration conf = getConfig();
-        // set up the default values
-        conf.options().header("PlayerManagement Config File\n----------------------------\n");
-        conf.addDefault("General.Language", language);
-        conf.addDefault("General.OutputPrefix", prefix.substring(0, prefix.length() - 1));
-        conf.addDefault("General.DatabasePath", databasePath);
-        conf.addDefault("General.DateFormat", dateFormat);
-        conf.addDefault("General.CardPrice", cardPrice);
-        conf.addDefault("General.CardItemLore", cardItemLore);
-        conf.addDefault("General.ScoreboardSignText", scoreboardSignText);
-        conf.addDefault("Company.EstablishPrice", companyEstablishPrice);
-        conf.addDefault("Punishments.Amount", punishmentAmount);
-        conf.addDefault("Punishments.MaxBeforeBan", maxPunishments);
-        conf.addDefault("AutomaticEconomy.Enabled", autoEcoEnabled);
-        conf.addDefault("AutomaticEconomy.TimeInSeconds", autoEcoTimeSeconds);
-        conf.addDefault("AutomaticEconomy.Threshold", minimalWage.getThreshold());
-        conf.addDefault("AutomaticEconomy.MoneyAmount", minimalWage.getAmount());
-        conf.addDefault("Rewards.Enabled", rewardsEnabled);
-        conf.addDefault("Rewards.Reward.Rank1", rewardRank1);
-        conf.addDefault("Rewards.Reward.Rank2", rewardRank2);
-        conf.addDefault("Rewards.Reward.Rank3", rewardRank3);
-        conf.addDefault("Rewards.Advancements.Rank1", advRank1);
-        conf.addDefault("Rewards.Advancements.Rank2", advRank2);
-        conf.addDefault("Rewards.Advancements.Rank3", advRank3);
-        conf.addDefault("PlayerList.Enabled", playerListEnabled);
-        conf.addDefault("PlayerList.UpdateIntervalSeconds", playerListUpdateSeconds);
-        conf.addDefault("PlayerList.Header", Arrays.asList(playerListHeader));
-        conf.addDefault("PlayerList.Footer", Arrays.asList(playerListFooter));
-        conf.addDefault("PlayerList.Display.Generic", genericPlayerEntry);
-        conf.addDefault("PlayerList.Display.Members", memberPlayerEntry);
-        conf.addDefault("PlayerList.Display.VIP", vipPlayerEntry);
-        conf.addDefault("PlayerList.Display.Admins", adminPlayerEntry);
-        conf.addDefault("PlayerList.Label.Generic", genericPlayerLabel);
-        conf.addDefault("PlayerList.Label.Members", memberPlayerLabel);
-        conf.addDefault("PlayerList.Label.VIP", vipPlayerLabel);
-        conf.addDefault("PlayerList.Label.Admins", adminPlayerLabel);
-        conf.options().copyHeader(true);
-        conf.options().copyDefaults(true);
-
-        // load the values from config file
-        language = conf.getString("General.Language");
-        prefix = conf.getString("General.OutputPrefix") + " ";
-        String newPath = conf.getString("General.DatabasePath");
-        databasePath = newPath != null && newPath.trim().equals("")
-                ? databasePath : newPath;
-        String newDateFormat = conf.getString("General.DateFormat");
-        dateFormat = newDateFormat != null && newDateFormat.trim().equals("")
-                ? dateFormat : newDateFormat;
-        cardPrice = conf.getInt("General.CardPrice");
-        String newLore = conf.getString("General.CardItemLore");
-        cardItemLore = Objects.requireNonNull(newLore).trim()
-                .equals("") ? cardItemLore : newLore;
-        scoreboardSignText = conf.getString("General.ScoreboardSignText");
-
-        companyEstablishPrice = conf.getInt("Company.EstablishPrice");
-        punishmentAmount = conf.getInt("Punishments.Price");
-        maxPunishments = conf.getInt("Punishments.MaxBeforeBan");
-
-        autoEcoEnabled = conf.getBoolean("AutomaticEconomy.Enabled");
-        autoEcoTimeSeconds = conf.getInt("AutomaticEconomy.TimeInSeconds");
-        minimalWage = new EconomyProvider.MinimalWage(
-                conf.getDouble("AutomaticEconomy.MoneyAmount"),
-                conf.getDouble("AutomaticEconomy.Threshold"));
-
-        rewardsEnabled = conf.getBoolean("Rewards.Enabled");
-        rewardRank1 = conf.getDouble("Rewards.Reward.Rank1");
-        rewardRank2 = conf.getDouble("Rewards.Reward.Rank2");
-        rewardRank3 = conf.getDouble("Rewards.Reward.Rank3");
-        advRank1 = (List<String>) conf.getList("Rewards.Advancements.Rank1");
-        advRank2 = (List<String>) conf.getList("Rewards.Advancements.Rank2");
-        advRank3 = (List<String>) conf.getList("Rewards.Advancements.Rank3");
-
-        playerListEnabled = conf.getBoolean("PlayerList.Enabled");
-        playerListUpdateSeconds = conf.getInt("PlayerList.UpdateIntervalSeconds");
-        playerListHeader = PlayerRoutines.stringListToArray((List<String>) Objects
-                .requireNonNull(conf.getList("PlayerList.Header")));
-        playerListFooter = PlayerRoutines.stringListToArray((List<String>) Objects
-                .requireNonNull(conf.getList("PlayerList.Footer")));
-        genericPlayerEntry = conf.getString("PlayerList.Display.Generic");
-        memberPlayerEntry = conf.getString("PlayerList.Display.Members");
-        vipPlayerEntry = conf.getString("PlayerList.Display.VIP");
-        adminPlayerEntry = conf.getString("PlayerList.Display.Admins");
-        genericPlayerLabel = conf.getString("PlayerList.Label.Generic");
-        memberPlayerLabel = conf.getString("PlayerList.Label.Members");
-        vipPlayerLabel = conf.getString("PlayerList.Label.VIP");
-        adminPlayerLabel = conf.getString("PlayerList.Label.Admins");
-        saveConfig();
     }
 
     /**
@@ -380,9 +223,9 @@ public final class PlayerManagement extends JavaPlugin {
      */
     private boolean setUpDatabase() {
         boolean success = true;
-        boolean newDb = !new File(databasePath).exists();
+        boolean newDb = !new File(prefs.databasePath).exists();
         try {
-            database = SharedDb.connect(databasePath);
+            database = SharedDb.connect(prefs.databasePath);
         } catch (SQLException e) {
             success = false;
         }
@@ -427,9 +270,9 @@ public final class PlayerManagement extends JavaPlugin {
      *
      * @param name    the name of the command by which it can be invoked
      * @param command the {@link PlayerCommand} object which represents it
-     * @param <E>     the command's class
+     * @param <C>     the command's class
      */
-    private <E extends PlayerCommand> void registerCommand(String name, E command) {
+    private <C extends PlayerCommand> void registerCommand(String name, C command) {
         Objects.requireNonNull(this.getCommand(name)).setExecutor(command);
     }
 
@@ -437,7 +280,7 @@ public final class PlayerManagement extends JavaPlugin {
      * Sets up the automatic economy
      */
     private void setUpAutoEconomy() {
-        economyProvider = new EconomyProvider(eco, ess, minimalWage);
+        economyProvider = new EconomyProvider(eco, ess, prefs.minimalWage);
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                 .runTask(this, () -> {
                     Bukkit.getOnlinePlayers().forEach(economyProvider::payWage);
@@ -445,12 +288,12 @@ public final class PlayerManagement extends JavaPlugin {
                         try {
                             companyDb.update(company);
                         } catch (SQLException e) {
-                            Bukkit.getLogger().severe(prefix + ChatColor.GOLD
+                            Bukkit.getLogger().severe(prefs.prefix + ChatColor.GOLD
                                     + Localization.lc("error-updating-playerdata")
                                     + ChatColor.RED + e.getMessage());
                         }
                     });
-                }), 1, autoEcoTimeSeconds * 20L);
+                }), 1, prefs.autoEcoTimeSeconds * 20L);
     }
 
     /**
@@ -461,7 +304,7 @@ public final class PlayerManagement extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                         .runTask(this, () -> getServer().getOnlinePlayers()
                                 .forEach(EnhancedPlayerList::updateList)),
-                1, playerListUpdateSeconds);
+                1, prefs.playerListUpdateSeconds);
     }
 
     /**
@@ -470,17 +313,7 @@ public final class PlayerManagement extends JavaPlugin {
     private void setUpDataBoardUpdating() {
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                         .runTask(this, () -> globalDataBoard.refreshData()),
-                1, playerListUpdateSeconds);    // TODO: use a separate timer
-    }
-
-    /**
-     * Returns the plugin's localized default chat output prefix
-     *
-     * @return the formatted string
-     */
-    private static String getDefaultPrefix() {
-        return ChatColor.DARK_GRAY + "[" + ChatColor.BLUE
-                + Localization.lc("server") + ChatColor.DARK_GRAY + "] ";
+                1, prefs.playerListUpdateSeconds);    // TODO: use a separate timer
     }
 
 }

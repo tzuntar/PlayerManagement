@@ -128,7 +128,7 @@ public class EconomyProvider {
                     ownerPl = Bukkit.getOfflinePlayer(UUID
                             .fromString(targetCompany.getOwner().getUuid()));
                 } catch (NullPointerException e) {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.RED
+                    player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.RED
                             + lc("db-company-invalid"));
                     return; // failsafe in case an invalid player is specified in the db
                 }
@@ -137,7 +137,7 @@ public class EconomyProvider {
                     eco.withdrawPlayer(ownerPl, wage.doubleValue());
                     owner.addMail(lc("money-taken-to-pay-wages"));
                 } else {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
+                    player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
                             + targetCompany + ChatColor.GOLD
                             + lc("cant-afford-to-pay-your-wage"));
                     owner.addMail(lc("unable-to-pay-wage-for-player")
@@ -147,7 +147,7 @@ public class EconomyProvider {
             } else {
                 Company company = PlayerManagement.companies.get(targetCompany.getName());
                 if (company == null) {
-                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                             + lc("unknown-company")
                             + ChatColor.GREEN + targetCompany);
                     return;
@@ -162,7 +162,7 @@ public class EconomyProvider {
         eco.depositPlayer(player, amount);
 
         if ((int) amount < 1) return;    // don't display on small / negative values
-        player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
+        player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
                 + "$" + amount + ChatColor.GOLD
                 + lc("has-been-added-to-your-account"));
     }

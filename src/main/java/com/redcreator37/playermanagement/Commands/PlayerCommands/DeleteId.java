@@ -36,6 +36,7 @@ public class DeleteId extends PlayerCommand {
      */
     @Override
     public void execute(Player player, String[] args) {
+        String prefix = PlayerManagement.prefs.prefix;
         ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
                 .uuidFromUsername(PlayerManagement.players, args[0]));
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0]))
@@ -45,12 +46,12 @@ public class DeleteId extends PlayerCommand {
             Map<String, Company> ownedCompanies = PlayerManagement.companyDb
                     .getCompaniesByOwner(target.getUuid());
             if (ownedCompanies.size() > 0) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.RED
+                player.sendMessage(prefix + ChatColor.RED
                         + Localization.lc("cant-unregister-still-owns-companies"));
                 return;
             }
         } catch (SQLException e) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(prefix + ChatColor.GOLD
                     + Localization.lc("error-retrieving-playerdata-from-db")
                     + ChatColor.RED + e.getMessage());
         }
@@ -61,12 +62,12 @@ public class DeleteId extends PlayerCommand {
                 PlayerManagement.playerDb.remove(target);
                 // reload from the database
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(prefix + ChatColor.GOLD
                         + Localization.lc("the-player")
                         + ChatColor.GREEN + target.getUsername() + ChatColor.GOLD
                         + Localization.lc("has-been-unregistered"));
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(prefix + ChatColor.GOLD
                         + Localization.lc("error-removing-playerdata")
                         + ChatColor.RED + e.getMessage());
             }

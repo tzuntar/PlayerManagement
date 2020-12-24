@@ -34,7 +34,7 @@ public class JobAdmin extends PlayerCommand {
     @Override
     public void execute(Player player, String[] args) {
         if (args.length < 2 || args.length < 3 && args[0].matches("add|update")) {
-            player.sendMessage(PlayerManagement.prefix + CommandHelper
+            player.sendMessage(PlayerManagement.prefs.prefix + CommandHelper
                     .parseCommandUsage("jobadmin", new HashMap<String, Boolean>() {{
                         put("add|update|remove", true);
                         put("job_name", true);
@@ -52,7 +52,7 @@ public class JobAdmin extends PlayerCommand {
                 case "remove":
                     Job j = PlayerManagement.jobs.get(args[1]);
                     if (j == null) {
-                        player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                        player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                                 + Localization.lc("unknown-job")
                                 + ChatColor.GREEN + args[1]);
                         return;
@@ -62,7 +62,7 @@ public class JobAdmin extends PlayerCommand {
                 case "update":
                     Job job = PlayerManagement.jobs.get(args[1]);
                     if (job == null) {
-                        player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                        player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                                 + Localization.lc("unknown-job")
                                 + ChatColor.GREEN + args[1]);
                         return;
@@ -74,10 +74,10 @@ public class JobAdmin extends PlayerCommand {
 
             // update the job list to reflect the changes
             PlayerManagement.jobs = PlayerManagement.jobDb.getAll();
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("job-data-saved"));
         } catch (SQLException e) {
-            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("error-accessing-db")
                     + ChatColor.RED + e.getMessage());
         }

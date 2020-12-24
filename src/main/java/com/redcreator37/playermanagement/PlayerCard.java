@@ -45,7 +45,7 @@ public class PlayerCard implements Listener {
                         .getItemInMainHand().getItemMeta()).getLore();
             } catch (NullPointerException ignored) { }
 
-            if (lore != null && lore.contains(PlayerManagement.cardItemLore))
+            if (lore != null && lore.contains(PlayerManagement.prefs.cardItemLore))
                 handlePlayerCardEvent(p, lore);
         }
     }
@@ -59,7 +59,7 @@ public class PlayerCard implements Listener {
     private static void handlePlayerCardEvent(Player player, List<String> lore) {
         ServerPlayer target = PlayerManagement.players.get(lore.get(1));
         if (target != null) displayCardData(player, target);
-        else player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+        else player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                 + lc("invalid-id-card"));
     }
 
@@ -76,7 +76,7 @@ public class PlayerCard implements Listener {
         Objects.requireNonNull(data).setDisplayName("ID Card: " + target);
 
         List<String> lore = new ArrayList<>();
-        lore.add(PlayerManagement.cardItemLore);
+        lore.add(PlayerManagement.prefs.cardItemLore);
         lore.add(target.getUuid());
         Objects.requireNonNull(data).setLore(lore);
         stack.setItemMeta(data);
@@ -113,7 +113,7 @@ public class PlayerCard implements Listener {
      */
     public static void displayCardData(Player invoker, ServerPlayer player) {
         if (player == null) {   // invalid uuid or invalid card
-            invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            invoker.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + "Invalid ID card!");
             return;
         }
@@ -201,7 +201,7 @@ public class PlayerCard implements Listener {
                     + "\n\n§0§l" + lc("wage") + " §r§1" + PlayerRoutines
                     .formatDecimal(player.getCompany().getWage())
                     + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
-                    .autoEcoTimeSeconds / 60 + "§r " + lc("minutes"));
+                    .prefs.autoEcoTimeSeconds / 60 + "§r " + lc("minutes"));
         }
         openBook(invoker, pages, "N/A", "N/A");
     }

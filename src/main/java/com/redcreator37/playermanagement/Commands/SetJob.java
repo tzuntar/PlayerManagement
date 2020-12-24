@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -47,7 +48,7 @@ public class SetJob implements CommandExecutor {
         Job newJob = PlayerManagement.jobs.get(args[0]);
         if (newJob == null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("unknown-job")
+                    + Localization.lc("unknown-job")
                     + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
             return true;
         }
@@ -59,11 +60,11 @@ public class SetJob implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
-                        + ChatColor.GOLD + PlayerManagement.strings.getString("now-employed-as")
+                        + ChatColor.GOLD + Localization.lc("now-employed-as")
                         + ChatColor.GREEN + newJob + ChatColor.GOLD + ".");
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("error-updating-playerdata")
+                        + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }
         });

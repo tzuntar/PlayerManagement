@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Job;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -44,7 +45,7 @@ public class JobAdmin implements CommandExecutor {
                     Job j = PlayerManagement.jobs.get(args[1]);
                     if (j == null) {
                         p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                                + PlayerManagement.strings.getString("unknown-job")
+                                + Localization.lc("unknown-job")
                                 + ChatColor.GREEN + args[1]);
                         return true;
                     }
@@ -54,7 +55,7 @@ public class JobAdmin implements CommandExecutor {
                     Job job = PlayerManagement.jobs.get(args[1]);
                     if (job == null) {
                         p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                                + PlayerManagement.strings.getString("unknown-job")
+                                + Localization.lc("unknown-job")
                                 + ChatColor.GREEN + args[1]);
                         return true;
                     }
@@ -66,10 +67,10 @@ public class JobAdmin implements CommandExecutor {
             // update the job list to reflect the changes
             PlayerManagement.jobs = PlayerManagement.jobDb.getAll();
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("job-data-saved"));
+                    + Localization.lc("job-data-saved"));
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("error-accessing-db")
+                    + Localization.lc("error-accessing-db")
                     + ChatColor.RED + e.getMessage());
         }
         return true;

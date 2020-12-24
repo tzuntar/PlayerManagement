@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.redcreator37.playermanagement.PlayerManagement.strings;
+import static com.redcreator37.playermanagement.Localization.lc;
 
 /**
  * Provides in-game economy-related features
@@ -129,18 +129,18 @@ public class EconomyProvider {
                             .fromString(targetCompany.getOwner().getUuid()));
                 } catch (NullPointerException e) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.RED
-                            + strings.getString("db-company-invalid"));
+                            + lc("db-company-invalid"));
                     return; // failsafe in case an invalid player is specified in the db
                 }
 
                 if (owner.canAfford(wage)) {
                     eco.withdrawPlayer(ownerPl, wage.doubleValue());
-                    owner.addMail(strings.getString("money-taken-to-pay-wages"));
+                    owner.addMail(lc("money-taken-to-pay-wages"));
                 } else {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
-                            + targetCompany + ChatColor.GOLD + strings
-                            .getString("cant-afford-to-pay-your-wage"));
-                    owner.addMail(strings.getString("unable-to-pay-wage-for-player")
+                            + targetCompany + ChatColor.GOLD
+                            + lc("cant-afford-to-pay-your-wage"));
+                    owner.addMail(lc("unable-to-pay-wage-for-player")
                             + player.getName() + "!");
                     return;
                 }
@@ -148,7 +148,7 @@ public class EconomyProvider {
                 Company company = PlayerManagement.companies.get(targetCompany.getName());
                 if (company == null) {
                     player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                            + strings.getString("unknown-company")
+                            + lc("unknown-company")
                             + ChatColor.GREEN + targetCompany);
                     return;
                 }
@@ -163,8 +163,8 @@ public class EconomyProvider {
 
         if ((int) amount < 1) return;    // don't display on small / negative values
         player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN
-                + "$" + amount + ChatColor.GOLD + strings
-                .getString("has-been-added-to-your-account"));
+                + "$" + amount + ChatColor.GOLD
+                + lc("has-been-added-to-your-account"));
     }
 
     /**

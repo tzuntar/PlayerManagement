@@ -3,6 +3,7 @@ package com.redcreator37.playermanagement.Commands;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.EconomyProvider;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -48,7 +49,7 @@ public class SetCompany implements CommandExecutor {
         Company newCompany = PlayerManagement.companies.get(args[0]);
         if (newCompany == null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("unknown-company")
+                    + Localization.lc("unknown-company")
                     + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
             return true;
         }
@@ -56,7 +57,7 @@ public class SetCompany implements CommandExecutor {
         if (!newCompany.getOwner().getUsername().equals(target.getUsername()) &&
                 !p.hasPermission("management.company.employ")) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("cant-employ-yourself"));
+                    + Localization.lc("cant-employ-yourself"));
             return true;
         }
 
@@ -68,8 +69,7 @@ public class SetCompany implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
-                        + ChatColor.GOLD + PlayerManagement.strings
-                        .getString("now-part-of-company")
+                        + ChatColor.GOLD + Localization.lc("now-part-of-company")
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
 
                 // decrease the employee count when switching to a different company
@@ -82,7 +82,7 @@ public class SetCompany implements CommandExecutor {
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("error-updating-playerdata")
+                        + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }
         });

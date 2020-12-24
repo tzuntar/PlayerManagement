@@ -34,15 +34,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 /**
  * A Minecraft Spigot Server plugin that extends native player data
@@ -56,12 +54,6 @@ public final class PlayerManagement extends JavaPlugin {
      * The language to use for all strings on this server
      */
     public static String language = "en_US";
-
-    /**
-     * The resource bundle to use for retrieving localized strings
-     */
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public static ResourceBundle strings = getBundleFromLangCode("Strings", language).get();
 
     /**
      * Any in-game console output will get prefixed by this
@@ -157,13 +149,13 @@ public final class PlayerManagement extends JavaPlugin {
     @Override
     public void onEnable() {
         if (!getServer().getPluginManager().isPluginEnabled("Essentials")) {
-            getLogger().severe(strings.getString("error-essentials-not-detected"));
+            getLogger().severe(Localization.lc("error-essentials-not-detected"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         if (!setUpEconomy()) {  // try to detect and enable Vault
-            getLogger().severe(strings.getString("error-vault-not-detected"));
+            getLogger().severe(Localization.lc("error-vault-not-detected"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -204,12 +196,11 @@ public final class PlayerManagement extends JavaPlugin {
         if (playerListEnabled) setUpAdvancedPlayerList();
 
         loadConfig();
-        getBundleFromLangCode("Strings", language).ifPresent(bundle -> {
-            strings = bundle;
-            prefix = getDefaultPrefix();
-        });
+        if (!Localization.changeLanguage("Strings", language))
+            getLogger().warning(MessageFormat.format(Localization
+                    .lc("switching-lang-failed"), language));
         if (!setUpDatabase()) {
-            getLogger().severe(strings.getString("error-db-connection-failed"));
+            getLogger().severe(Localization.lc("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -421,9 +412,9 @@ public final class PlayerManagement extends JavaPlugin {
                 // just insert a blank player, job and company using a bogus id
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
                 companyDb.insert(new Company(4097, "N/A"));
-                getLogger().info(strings.getString("created-empty-db"));
+                getLogger().info(Localization.lc("created-empty-db"));
             } catch (SQLException e) {
-                getLogger().severe(strings.getString("error-creating-db") + e.getMessage());
+                getLogger().severe(Localization.lc("error-creating-db") + e.getMessage());
                 success = false;
             }
 
@@ -432,9 +423,9 @@ public final class PlayerManagement extends JavaPlugin {
             companies = companyDb.getAll();
             transactions = transactionDb.getAll();
             players = playerDb.getAll();
-            getLogger().info(strings.getString("player-db-loaded-successfully"));
+            getLogger().info(Localization.lc("player-db-loaded-successfully"));
         } catch (SQLException e) {
-            getLogger().severe(strings.getString("error-reading-from-db") + e.getMessage());
+            getLogger().severe(Localization.lc("error-reading-from-db") + e.getMessage());
             success = false;
         }
         return success;
@@ -453,11 +444,11 @@ public final class PlayerManagement extends JavaPlugin {
                             companyDb.update(company);
                         } catch (SQLException e) {
                             Bukkit.getLogger().severe(prefix + ChatColor.GOLD
-                                    + strings.getString("error-updating-playerdata")
+                                    + Localization.lc("error-updating-playerdata")
                                     + ChatColor.RED + e.getMessage());
                         }
                     });
-                }), 1, autoEcoTimeSeconds * 20);
+                }), 1, autoEcoTimeSeconds * 20L);
     }
 
     /**
@@ -481,34 +472,13 @@ public final class PlayerManagement extends JavaPlugin {
     }
 
     /**
-     * Returns the resource bundle with the matching name for this
-     * language code
-     *
-     * @param baseName the full name of the bundle to retrieve
-     * @param langCode a code in the language_country format
-     *                 (ex. <code>en_US</code>)
-     * @return the matching resource bundle or an empty optional
-     * if not found
-     */
-    @SuppressWarnings("SameParameterValue")
-    private static Optional<ResourceBundle> getBundleFromLangCode(String baseName, String langCode) {
-        String[] locale = langCode.split("_");
-        try {
-            return Optional.of(ResourceBundle.getBundle(baseName, new Locale(locale[0]
-                    .toLowerCase(), locale[1].toUpperCase())));
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
-    /**
      * Returns the plugin's localized default chat output prefix
      *
      * @return the formatted string
      */
     private static String getDefaultPrefix() {
         return ChatColor.DARK_GRAY + "[" + ChatColor.BLUE
-                + strings.getString("server") + ChatColor.DARK_GRAY + "] ";
+                + Localization.lc("server") + ChatColor.DARK_GRAY + "] ";
     }
 
 }

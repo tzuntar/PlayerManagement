@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -36,7 +37,7 @@ public class RegisterId implements CommandExecutor {
         ServerPlayer test = PlayerManagement.players.get(p.getUniqueId().toString());
         if (test != null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("already-registered"));
+                    + Localization.lc("already-registered"));
             return true;
         }
 
@@ -62,16 +63,16 @@ public class RegisterId implements CommandExecutor {
                     .get(p.getUniqueId().toString());
             if (registeredPlayer == null) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("failed-to-give-id"));
+                        + Localization.lc("failed-to-give-id"));
                 return true;
             }
 
             PlayerCard.giveNewCard(p, registeredPlayer);
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("registration-successful"));
+                    + Localization.lc("registration-successful"));
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("error-updating-playerdata")
+                    + Localization.lc("error-updating-playerdata")
                     + ChatColor.RED + e.getMessage());
         }
         return true;

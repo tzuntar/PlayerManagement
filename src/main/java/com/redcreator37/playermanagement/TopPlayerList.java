@@ -26,7 +26,7 @@ public class TopPlayerList implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void eventSignChanged(SignChangeEvent event) {
-        if (!event.getLines()[0].toLowerCase().equals("[topplayers]")) return;
+        if (!event.getLines()[0].equalsIgnoreCase("[topplayers]")) return;
 
         event.setLine(0, PlayerManagement.scoreboardSignText);
         List<String> topPlayers = getTopPlayers(Arrays

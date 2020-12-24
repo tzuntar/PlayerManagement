@@ -1,5 +1,6 @@
 package com.redcreator37.playermanagement.DataModels;
 
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 
@@ -151,8 +152,8 @@ public class Company {
      */
     public void setWage(BigDecimal wage) {
         if (wage.intValue() < 0)
-            throw new IllegalArgumentException(PlayerManagement.strings
-                    .getString("wage-cannot-be-negative"));
+            throw new IllegalArgumentException(Localization
+                    .lc("wage-cannot-be-negative"));
         this.wage = wage;
     }
 

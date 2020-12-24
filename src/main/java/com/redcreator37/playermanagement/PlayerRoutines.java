@@ -16,7 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.redcreator37.playermanagement.PlayerManagement.strings;
+import static com.redcreator37.playermanagement.Localization.lc;
 
 /**
  * Common player routines
@@ -55,7 +55,7 @@ public final class PlayerRoutines {
     public static boolean checkPlayerNonExistent(Player invoker, ServerPlayer target, String entered) {
         if (target == null) {
             invoker.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + strings.getString("unknown-player")
+                    + lc("unknown-player")
                     + ChatColor.GREEN + entered + ChatColor.GOLD + ".");
             return true;
         }
@@ -72,7 +72,7 @@ public final class PlayerRoutines {
     public static boolean checkPermission(Player player, String permission) {
         if (!player.hasPermission(permission)) {
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + strings.getString("no-permission"));
+                    + lc("no-permission"));
             return false;
         }
         return true;
@@ -87,7 +87,7 @@ public final class PlayerRoutines {
     public static boolean checkInventoryFull(Player player) {
         if (player.getInventory().firstEmpty() == -1) {  // firstEmpty() returns -1 if it's full
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + strings.getString("inventory-full"));
+                    + lc("inventory-full"));
             return true;
         }
         return false;
@@ -103,7 +103,7 @@ public final class PlayerRoutines {
         assert sender != null;
         if (!(sender instanceof Player)) {
             sender.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + strings.getString("player-only-command"));
+                    + lc("player-only-command"));
             return null;
         }
         return (Player) sender;
@@ -133,7 +133,7 @@ public final class PlayerRoutines {
             return new BigDecimal(entered);
         } catch (Exception e) {
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + strings.getString("invalid-number")
+                    + lc("invalid-number")
                     + ChatColor.GREEN + entered);
             return null;
         }
@@ -153,24 +153,24 @@ public final class PlayerRoutines {
                 .filter(pl -> pl.getCompany().equals(c))
                 .collect(Collectors.toList());
 
-        pages.add("§1§l --< §2§l" + strings.getString("company-uppercase") + " §1§l > --"
-                + "\n\n§0§l" + strings.getString("name") + " §r§2§l§o" + c
-                + "\n\n§0§l" + strings.getString("description") + " §r§1§o" + c.getDescription()
-                + "\n\n§0§l" + strings.getString("balance") + " §r§1" + formatDecimal(c.getBalance())
-                + "\n\n§0§l" + strings.getString("employees") + " §r§1" + c.getEmployees());
-        pages.add("§1§l --< §2§l" + strings.getString("company-uppercase") + " §1§l>--"
-                + "\n\n§0§l" + strings.getString("wage") + " §r§1" + formatDecimal(c.getWage())
-                + "\n§r" + strings.getString("paid-every") + " §1" + PlayerManagement
-                .autoEcoTimeSeconds / 60 + "§r " + strings.getString("minutes")
-                + "\n\n§0" + strings.getString("balance-after-payments")
+        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l > --"
+                + "\n\n§0§l" + lc("name") + " §r§2§l§o" + c
+                + "\n\n§0§l" + lc("description") + " §r§1§o" + c.getDescription()
+                + "\n\n§0§l" + lc("balance") + " §r§1" + formatDecimal(c.getBalance())
+                + "\n\n§0§l" + lc("employees") + " §r§1" + c.getEmployees());
+        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
+                + "\n\n§0§l" + lc("wage") + " §r§1" + formatDecimal(c.getWage())
+                + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
+                .autoEcoTimeSeconds / 60 + "§r " + lc("minutes")
+                + "\n\n§0" + lc("balance-after-payments")
                 + " §r§1" + formatDecimal(afterPayments)
-                + "\n\n§0§l" + strings.getString("owner") + " §r§1" + c.getOwner()
-                + "\n\n§0§l" + strings.getString("established") + " §r§1" + c.getEstablishedDate());
+                + "\n\n§0§l" + lc("owner") + " §r§1" + c.getOwner()
+                + "\n\n§0§l" + lc("established") + " §r§1" + c.getEstablishedDate());
 
         for (int i = 0; i < employees.size(); i++) {
-            StringBuilder sb = new StringBuilder("§1§l --< §2§l" + strings
-                    .getString("company-uppercase") + " §1§l>--" +
-                    "\n\n§r§l" + strings.getString("employees") + "\n\n§r");
+            StringBuilder sb = new StringBuilder("§1§l --< §2§l"
+                    + lc("company-uppercase") + " §1§l>--"
+                    + "\n\n§r§l" + lc("employees") + "\n\n§r");
             ServerPlayer pl = employees.get(i);
             sb.append(pl).append("\n");
             for (int j = 0; j < 8; j++) {

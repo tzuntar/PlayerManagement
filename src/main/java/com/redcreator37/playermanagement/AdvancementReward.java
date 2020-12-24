@@ -44,9 +44,9 @@ public class AdvancementReward implements Listener {
 
             PlayerManagement.eco.depositPlayer(p, reward);
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("advancement-made")
+                    + Localization.lc("advancement-made")
                     + ChatColor.GREEN + "$" + reward + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("has-been-added-to-your-account"));
+                    + Localization.lc("has-been-added-to-your-account"));
         });
     }
 

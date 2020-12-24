@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -35,7 +36,7 @@ public class GetJob implements CommandExecutor {
             return true;
 
         p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
-                + ChatColor.GOLD + PlayerManagement.strings.getString("is-employed-as")
+                + ChatColor.GOLD + Localization.lc("is-employed-as")
                 + ChatColor.GREEN + target.getJob() + ChatColor.GOLD + ".");
         return true;
     }

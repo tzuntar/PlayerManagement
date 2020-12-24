@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.redcreator37.playermanagement.PlayerManagement.strings;
+import static com.redcreator37.playermanagement.Localization.lc;
 
 /**
  * Handles all in-game ID card actions
@@ -60,7 +60,7 @@ public class PlayerCard implements Listener {
         ServerPlayer target = PlayerManagement.players.get(lore.get(1));
         if (target != null) displayCardData(player, target);
         else player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                + strings.getString("invalid-id-card"));
+                + lc("invalid-id-card"));
     }
 
     /**
@@ -129,18 +129,18 @@ public class PlayerCard implements Listener {
         String job = PlayerRoutines.getValueOrEmpty(player.getJob().getName()),
                 company = PlayerRoutines.getValueOrEmpty(player.getCompany().getName());
         List<String> pages = new ArrayList<>();
-        pages.add("§1§l ---< §9§l" + strings.getString("player-uppercase") + " §1§l>---"
-                + "\n\n§0§l" + strings.getString("username") + " §r§1" + player
-                + "\n\n§0§l" + strings.getString("name") + " §r§1" + player.getName()
-                + "\n\n§0§l" + strings.getString("registration-date") + " §r§1" + player.getJoinDate()
-                + "\n\n§0§l" + strings.getString("job-name") + " §r§1" + job);
+        pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
+                + "\n\n§0§l" + lc("username") + " §r§1" + player
+                + "\n\n§0§l" + lc("name") + " §r§1" + player.getName()
+                + "\n\n§0§l" + lc("registration-date") + " §r§1" + player.getJoinDate()
+                + "\n\n§0§l" + lc("job-name") + " §r§1" + job);
 
-        pages.add("§1§l ---< §9§l" + strings.getString("player-uppercase") + " §1§l>---"
-                + "\n\n§0§l" + strings.getString("company") + " §r§1" + company
-                + "\n\n§0§l" + strings.getString("notes") + " §r§1§o"
+        pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
+                + "\n\n§0§l" + lc("company") + " §r§1" + company
+                + "\n\n§0§l" + lc("notes") + " §r§1§o"
                 + PlayerRoutines.getValueOrEmpty(player.getNotes())
-                + "\n\n§0§l" + strings.getString("money") + " §r§1" + balance
-                + "\n\n§0§l" + strings.getString("punishments") + " §r§1"
+                + "\n\n§0§l" + lc("money") + " §r§1" + balance
+                + "\n\n§0§l" + lc("punishments") + " §r§1"
                 + formatPunishments(player));
 
         if (p != null) {    // these are only available if the player is online
@@ -152,56 +152,56 @@ public class PlayerCard implements Listener {
             String armorLevel = getBarGraph(armor, 20);
 
             // values are cast to int for formatting purposes
-            pages.add("§1§l ---< §9§l" + strings.getString("player-uppercase") + " §1§l>---"
-                    + "\n\n §0§l" + strings.getString("health")
+            pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
+                    + "\n\n §0§l" + lc("health")
                     + "      §1" + (int) p.getHealth() + "§8/§120"
                     + "\n §r§8[" + health + "§8]"
-                    + "\n\n §0§l" + strings.getString("food")
+                    + "\n\n §0§l" + lc("food")
                     + "         §1" + p.getFoodLevel() + "§8/§120"
                     + "\n §r§8[" + foodLevel + "§8]"
-                    + "\n\n §0§l" + strings.getString("saturation")
+                    + "\n\n §0§l" + lc("saturation")
                     + "  §1" + (int) p.getSaturation() + "§8/§120"
                     + "\n §r§8[" + saturationLevel + "§8]"
-                    + "\n\n §0§l" + strings.getString("armor")
+                    + "\n\n §0§l" + lc("armor")
                     + "        §1" + (int) armor + "§8/§120"
                     + "\n §r§8[" + armorLevel + "§8]");
 
             DecimalFormat fourPlaces = new DecimalFormat("##.0000");
-            pages.add("§1§l ---< §9§l" + strings.getString("player-uppercase") + " §1§l>---"
-                    + "\n\n§0§l" + strings.getString("location")
+            pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
+                    + "\n\n§0§l" + lc("location")
                     + "\n§1§lX: §r" + fourPlaces.format(p.getLocation().getX())
                     + "\n§1§lY: §r" + fourPlaces.format(p.getLocation().getY())
                     + "\n§1§lZ: §r" + fourPlaces.format(p.getLocation().getZ())
-                    + "\n\n§r§l" + strings.getString("experience")
-                    + "\n§r" + strings.getString("level") + " §r§1" + p.getLevel()
-                    + "\n§r" + strings.getString("to-next-level") + " §r§1" + p.getExpToLevel()
-                    + "\n§r" + strings.getString("total") + " §r§1" + p.getTotalExperience());
-        } else pages.add("§1§l ---< §9§l" + strings.getString("player-uppercase") + " §1§l>---"
-                + "\n\n§0§o§l" + strings.getString("unavailable") + " \n§r"
-                + strings.getString("player-not-online"));
+                    + "\n\n§r§l" + lc("experience")
+                    + "\n§r" + lc("level") + " §r§1" + p.getLevel()
+                    + "\n§r" + lc("to-next-level") + " §r§1" + p.getExpToLevel()
+                    + "\n§r" + lc("total") + " §r§1" + p.getTotalExperience());
+        } else pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
+                + "\n\n§0§o§l" + lc("unavailable") + " \n§r"
+                + lc("player-not-online"));
 
         if (!job.equals("N/A"))
-            pages.add("§1§l ----< §5§l" + strings.getString("job-uppercase") + " §1§l>----"
-                    + "\n\n§0§l" + strings.getString("job-name") + " §r§1" + player.getJob()
-                    + "\n\n§0§l" + strings.getString("job-description")
+            pages.add("§1§l ----< §5§l" + lc("job-uppercase") + " §1§l>----"
+                    + "\n\n§0§l" + lc("job-name") + " §r§1" + player.getJob()
+                    + "\n\n§0§l" + lc("job-description")
                     + " §r§1§o" + player.getJob().getDescription());
 
         if (!company.equals("N/A")) {
-            pages.add("§1§l --< §2§l" + strings.getString("company-uppercase") + " §1§l>--"
-                    + "\n\n§0§l" + strings.getString("name") + " §r§1" + player.getCompany()
-                    + "\n\n§0§l" + strings.getString("description") + " §r§1§o"
+            pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
+                    + "\n\n§0§l" + lc("name") + " §r§1" + player.getCompany()
+                    + "\n\n§0§l" + lc("description") + " §r§1§o"
                     + player.getCompany().getDescription()
-                    + "\n\n§0§l" + strings.getString("owner") + " §r§1"
+                    + "\n\n§0§l" + lc("owner") + " §r§1"
                     + player.getCompany().getOwner().getUsername());
-            pages.add("§1§l ---< §2§l" + strings.getString("job-uppercase") + " §1§l>---"
-                    + "\n\n§0§l" + strings.getString("employees") + " §r§1"
+            pages.add("§1§l ---< §2§l" + lc("job-uppercase") + " §1§l>---"
+                    + "\n\n§0§l" + lc("employees") + " §r§1"
                     + player.getCompany().getEmployees()
-                    + "\n\n§0§l" + strings.getString("established") + " §r§1"
+                    + "\n\n§0§l" + lc("established") + " §r§1"
                     + player.getCompany().getEstablishedDate()
-                    + "\n\n§0§l" + strings.getString("wage") + " §r§1" + PlayerRoutines
+                    + "\n\n§0§l" + lc("wage") + " §r§1" + PlayerRoutines
                     .formatDecimal(player.getCompany().getWage())
-                    + "\n§r" + strings.getString("paid-every") + " §1" + PlayerManagement
-                    .autoEcoTimeSeconds / 60 + "§r " + strings.getString("minutes"));
+                    + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
+                    .autoEcoTimeSeconds / 60 + "§r " + lc("minutes"));
         }
         openBook(invoker, pages, "N/A", "N/A");
     }

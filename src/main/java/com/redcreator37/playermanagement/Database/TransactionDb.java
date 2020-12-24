@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Database;
 
 import com.redcreator37.playermanagement.DataModels.Transaction;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -136,10 +137,10 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
             try {
                 insert(t);
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("transaction-data-saved"));
+                        + Localization.lc("transaction-data-saved"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("error-saving-transaction-data")
+                        + Localization.lc("error-saving-transaction-data")
                         + ChatColor.RED + e.getMessage());
             }
         });

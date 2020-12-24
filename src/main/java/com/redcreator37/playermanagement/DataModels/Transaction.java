@@ -1,5 +1,6 @@
 package com.redcreator37.playermanagement.DataModels;
 
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -120,9 +121,9 @@ public class Transaction {
 
         if (transactions.size() < 1) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("the-company")
+                    + Localization.lc("the-company")
                     + ChatColor.GREEN + c.getName() + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("has-no-transactions"));
+                    + Localization.lc("has-no-transactions"));
             return;
         }
 

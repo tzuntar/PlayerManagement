@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -48,10 +49,10 @@ public class SetNotes implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("notes-updated"));
+                        + Localization.lc("notes-updated"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("error-updating-playerdata")
+                        + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }
         });

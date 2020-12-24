@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -45,12 +46,12 @@ public class DeleteId implements CommandExecutor {
                     .getCompaniesByOwner(target.getUuid());
             if (ownedCompanies.size() > 0) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.RED
-                        + PlayerManagement.strings.getString("cant-unregister-still-owns-companies"));
+                        + Localization.lc("cant-unregister-still-owns-companies"));
                 return true;
             }
         } catch (SQLException e) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("error-retrieving-playerdata-from-db")
+                    + Localization.lc("error-retrieving-playerdata-from-db")
                     + ChatColor.RED + e.getMessage());
         }
 
@@ -61,12 +62,12 @@ public class DeleteId implements CommandExecutor {
                 // reload from the database
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("the-player")
+                        + Localization.lc("the-player")
                         + ChatColor.GREEN + target.getUsername() + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("has-been-unregistered"));
+                        + Localization.lc("has-been-unregistered"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("error-removing-playerdata")
+                        + Localization.lc("error-removing-playerdata")
                         + ChatColor.RED + e.getMessage());
             }
         });

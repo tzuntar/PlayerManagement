@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Database;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -160,10 +161,10 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
             update(company);
             PlayerManagement.companies = getAll();
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("company-data-saved"));
+                    + Localization.lc("company-data-saved"));
         } catch (SQLException ex) {
             player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("error-saving-company-data")
+                    + Localization.lc("error-saving-company-data")
                     + ChatColor.RED + ex.getMessage());
         }
     }

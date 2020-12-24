@@ -17,13 +17,13 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
+import static com.redcreator37.playermanagement.Localization.lc;
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
 import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
 import static com.redcreator37.playermanagement.PlayerManagement.prefix;
-import static com.redcreator37.playermanagement.PlayerManagement.strings;
 
 /**
  * Opens the in-game company management UI or changes the values
@@ -59,29 +59,29 @@ public class CompanyManagement implements CommandExecutor {
         String companyName = p.hasPermission("management.admin") && args.length > 0
                 ? args[0] : target.getCompany().getName();
         if (companyName.equals("N/A")) {
-            p.sendMessage(prefix + ChatColor.GOLD + strings
-                    .getString("player-not-an-owner-of-any-company"));
+            p.sendMessage(prefix + ChatColor.GOLD
+                    + lc("player-not-an-owner-of-any-company"));
             return true;
         }
 
         // try to get the company from the database
         Company company = companies.get(companyName);
         if (company == null) {
-            p.sendMessage(prefix + ChatColor.GOLD + strings
-                    .getString("unknown-company") + ChatColor.GREEN + companyName);
+            p.sendMessage(prefix + ChatColor.GOLD + lc("unknown-company")
+                    + ChatColor.GREEN + companyName);
             return true;
         }
 
         // check the ownership
         if (!company.getOwner().getUsername().equals(p.getName())
                 && !p.hasPermission("management.admin")) {
-            p.sendMessage(prefix + ChatColor.GOLD + strings
-                    .getString("you-can-only-manage-your-company"));
+            p.sendMessage(prefix + ChatColor.GOLD
+                    + lc("you-can-only-manage-your-company"));
             return true;
         }
 
         if (args.length < 2) {  // no arguments, open the menu
-            new CompanyMenu(p, company + strings.getString("management"), company);
+            new CompanyMenu(p, company + lc("management"), company);
             return true;
         }
 
@@ -98,43 +98,43 @@ public class CompanyManagement implements CommandExecutor {
                 break;
             case "increase":
                 company.setWage(company.getWage().add(amount));
-                p.sendMessage(prefix + "§6" + strings.getString("wages-increased-by")
+                p.sendMessage(prefix + "§6" + lc("wages-increased-by")
                         + "§a$" + amount + "§6.");
                 break;
             case "decrease":
                 try {
                     company.setWage(company.getWage().subtract(amount));
-                    p.sendMessage(prefix + "§6" + strings.getString("wages-decreased-by")
+                    p.sendMessage(prefix + "§6" + lc("wages-decreased-by")
                             + "§a$" + amount + "§6.");
                 } catch (IllegalArgumentException e) {
-                    p.sendMessage(prefix + "§6" + strings.getString("wage-cannot-be-negative"));
+                    p.sendMessage(prefix + "§6" + lc("wage-cannot-be-negative"));
                 }
                 break;
             case "deposit":
                 eco.withdrawPlayer(p, amount.doubleValue());
                 company.setBalance(company.getBalance().add(amount));
-                p.sendMessage(prefix + "§a$" + amount + " §6" + strings
-                        .getString("has-been-taken-from-your-account"));
+                p.sendMessage(prefix + "§a$" + amount + " §6"
+                        + lc("has-been-taken-from-your-account"));
 
                 PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
                         company.getId(), "<-", "Deposit $"
-                        + amount, strings.getString("deposit") + " $" + amount
-                        + strings.getString("from-the-player") + target, amount));
+                        + amount, lc("deposit") + " $" + amount
+                        + lc("from-the-player") + target, amount));
                 break;
             case "withdraw":
                 company.setBalance(company.getBalance().subtract(amount));
                 eco.depositPlayer(p, amount.doubleValue());
-                p.sendMessage(prefix + "§a$" + amount + " §6" + strings
-                        .getString("has-been-added-to-your-account"));
+                p.sendMessage(prefix + "§a$" + amount + " §6"
+                        + lc("has-been-added-to-your-account"));
 
                 PlayerManagement.transactionDb.addAsync(p, new Transaction(4097,
-                        company.getId(), "->", strings.getString("withdraw") + " $"
-                        + amount, strings.getString("withdraw") + " $" + amount
-                        + strings.getString("to-the-player") + target, amount));
+                        company.getId(), "->", lc("withdraw") + " $"
+                        + amount, lc("withdraw") + " $" + amount
+                        + lc("to-the-player") + target, amount));
                 break;
             case "setdesc":
                 company.setDescription(CommandHelper.getFullEntry(args, 2));
-                p.sendMessage(prefix + "§6" + strings.getString("description-set"));
+                p.sendMessage(prefix + "§6" + lc("description-set"));
                 break;
             case "setowner":
                 ServerPlayer newOwner = players.get(PlayerRoutines
@@ -143,7 +143,7 @@ public class CompanyManagement implements CommandExecutor {
                     return true;
 
                 company.setOwner(new PlayerTag(newOwner.getUsername(), newOwner.getUuid()));
-                p.sendMessage(prefix + "§6" + strings.getString("ownership-changed-to") + " §a"
+                p.sendMessage(prefix + "§6" + lc("ownership-changed-to") + " §a"
                         + newOwner.getUsername());
                 break;
             case "transactions":
@@ -153,14 +153,14 @@ public class CompanyManagement implements CommandExecutor {
                 try {
                     companyDb.remove(company);
                     companies = companyDb.getAll();
-                    p.sendMessage(prefix + "§" + strings.getString("removed-company")
+                    p.sendMessage(prefix + "§" + lc("removed-company")
                             + " §a" + args[1]);
                 } catch (SQLException e) {
-                    p.sendMessage(prefix + "§6" + strings.getString("error-removing-company-data")
+                    p.sendMessage(prefix + "§6" + lc("error-removing-company-data")
                             + " §4" + e.getMessage());
                 }
             default:
-                p.sendMessage(prefix + "§6" + strings.getString("unknown-command")
+                p.sendMessage(prefix + "§6" + lc("unknown-command")
                         + " §a" + args[1]);
                 return true;
         }
@@ -175,7 +175,7 @@ public class CompanyManagement implements CommandExecutor {
                         .transactionDb.getAll();
             } catch (SQLException e) {
                 p.sendMessage(prefix + ChatColor.GOLD
-                        + strings.getString("error-saving-transaction-data")
+                        + lc("error-saving-transaction-data")
                         + ChatColor.RED + e.getMessage());
             }
         });

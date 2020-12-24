@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -37,13 +38,13 @@ public class EstablishCompany implements CommandExecutor {
 
         if (PlayerManagement.companies.get(args[0]) != null) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("already-exists"));
+                    + Localization.lc("already-exists"));
             return true;
         }
 
         if (!PlayerManagement.eco.has(p, PlayerManagement.companyEstablishPrice)) {
             p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("not-enough-money-to-establish"));
+                    + Localization.lc("not-enough-money-to-establish"));
             return true;
         }
 
@@ -60,10 +61,10 @@ public class EstablishCompany implements CommandExecutor {
                 PlayerManagement.companyDb.insert(newCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("company-registration-successful"));
+                        + Localization.lc("company-registration-successful"));
             } catch (SQLException e) {
                 p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                        + PlayerManagement.strings.getString("error-saving-company-data")
+                        + Localization.lc("error-saving-company-data")
                         + ChatColor.RED + e.getMessage());
             }
         });

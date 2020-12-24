@@ -1,74 +1,71 @@
-package com.redcreator37.playermanagement.Commands;
+package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
-import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Establishes a new in-game company
  */
-public class EstablishCompany implements CommandExecutor {
+public class EstablishCompany extends PlayerCommand {
+
+    public EstablishCompany() {
+        super("establish", new HashMap<String, Boolean>() {{
+            put("company_name", true);
+        }}, new ArrayList<String>() {{
+            add("company.management.establish");
+        }});
+    }
 
     /**
-     * Main command process
+     * Runs this command and performs the actions
+     *
+     * @param player the {@link Player} who ran the command
+     * @param args   the arguments entered by the player
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-        Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null || !PlayerRoutines
-                .checkPermission(p, "management.company.establish"))
-            return true;
-
-        if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + CommandHelper
-                    .parseCommandUsage("establish", new String[]{"*company_name"}));
-            return true;
-        }
-
+    public void execute(Player player, String[] args) {
         if (PlayerManagement.companies.get(args[0]) != null) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("already-exists"));
-            return true;
+            return;
         }
 
-        if (!PlayerManagement.eco.has(p, PlayerManagement.companyEstablishPrice)) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+        if (!PlayerManagement.eco.has(player, PlayerManagement.companyEstablishPrice)) {
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("not-enough-money-to-establish"));
-            return true;
+            return;
         }
 
         Company newCompany = new Company(4097, args[0]);
-        newCompany.setOwner(new PlayerTag(p.getName(), p.getUniqueId().toString()));
+        newCompany.setOwner(new PlayerTag(player.getName(), player.getUniqueId().toString()));
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                PlayerManagement.eco.withdrawPlayer(p, PlayerManagement
+                PlayerManagement.eco.withdrawPlayer(player, PlayerManagement
                         .companyEstablishPrice);
                 newCompany.setBalance(new BigDecimal(PlayerManagement
                         .companyEstablishPrice / 2));
 
                 PlayerManagement.companyDb.insert(newCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + Localization.lc("company-registration-successful"));
             } catch (SQLException e) {
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + Localization.lc("error-saving-company-data")
                         + ChatColor.RED + e.getMessage());
             }
         });
-        return true;
     }
-
 }

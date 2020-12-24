@@ -1,64 +1,60 @@
-package com.redcreator37.playermanagement.Commands;
+package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.EconomyProvider;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
-import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * Sets the player's company
  */
-public class SetCompany implements CommandExecutor {
+public class SetCompany extends PlayerCommand {
+
+    public SetCompany() {
+        super("setcompany", new HashMap<String, Boolean>() {{
+            put("company_name", true);
+            put("player_name", false);
+        }}, new ArrayList<String>() {{
+            add("management.user");
+            add("management.admin");
+        }});
+    }
 
     /**
-     * Main command process
+     * Runs this command and performs the actions
+     *
+     * @param player the {@link Player} who ran the command
+     * @param args   the arguments entered by the player
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-        Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null) return true;
-
-        if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + CommandHelper
-                    .parseCommandUsage("setcompany", new String[]{"*company_name", "player_name"}));
-            return true;
-        }
-
-        String requiredPermission = args.length == 1
-                ? "management.user" : "management.admin";
-        if (!PlayerRoutines.checkPermission(p, requiredPermission))
-            return true;
-
-        String targetName = args.length == 1 ? p.getName() : args[1];
-        ServerPlayer target = PlayerManagement.players.get(args.length == 1
-                ? p.getUniqueId().toString()
-                : PlayerRoutines.uuidFromUsername(PlayerManagement.players, targetName));
-        if (PlayerRoutines.checkPlayerNonExistent(p, target, targetName))
-            return true;
+    public void execute(Player player, String[] args) {
+        Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 1, 1);
+        if (!optTarget.isPresent()) return;
+        ServerPlayer target = optTarget.get();
 
         Company newCompany = PlayerManagement.companies.get(args[0]);
         if (newCompany == null) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("unknown-company")
                     + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
-            return true;
+            return;
         }
 
         if (!newCompany.getOwner().getUsername().equals(target.getUsername()) &&
-                !p.hasPermission("management.company.employ")) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                !player.hasPermission("management.company.employ")) {
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("cant-employ-yourself"));
-            return true;
+            return;
         }
 
         target.setCompany(newCompany);
@@ -68,7 +64,7 @@ public class SetCompany implements CommandExecutor {
             try {   // set the job and update the player list
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
+                player.sendMessage(PlayerManagement.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + Localization.lc("now-part-of-company")
                         + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
 
@@ -81,11 +77,10 @@ public class SetCompany implements CommandExecutor {
                 PlayerManagement.companyDb.update(prevCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + Localization.lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }
         });
-        return true;
     }
 }

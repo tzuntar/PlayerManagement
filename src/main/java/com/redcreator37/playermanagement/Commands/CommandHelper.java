@@ -4,11 +4,12 @@ import com.redcreator37.playermanagement.Localization;
 import org.bukkit.ChatColor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Contains helper methods for command handler classes
  */
-final class CommandHelper {
+public final class CommandHelper {
 
     /**
      * Non-instantiable
@@ -19,23 +20,21 @@ final class CommandHelper {
     /**
      * Returns the formatted command usage help for this command
      *
-     * @param cmd          the command (without the <code>/</code>)
-     * @param argumentList the list of arguments, separate sub-arguments
-     *                     with vertical bars (<code>|</code>). Prefix
-     *                     non-optional arguments with an asterisk.
-     *                     Example: for <code>/ping name [hello|hello1|hello2]
-     *                     </code>: <code>{"*name", "hello|hello1|hello2"}</code>
+     * @param name      name of the command (without the {@code /})
+     * @param arguments a {@link HashMap} of arguments, where key is
+     *                  the argument name and value is a boolean
+     *                  which tells whether the specific argument is
+     *                  required or not
      * @return the formatted string
      */
-    static String parseCommandUsage(String cmd, String[] argumentList) {
+    public static String parseCommandUsage(String name, HashMap<String, Boolean> arguments) {
         StringBuilder usage = new StringBuilder("§6" + Localization.lc("usage") + " §a/");
-        usage.append(cmd).append(" ");
-        for (String s : argumentList) {
-            String[] args = s.split("\\|");
-            usage.append(s.charAt(0) == '*'
-                    ? formatRequiredArgs(args)
+        usage.append(name).append(" ");
+        arguments.forEach((argName, req) -> {
+            String[] args = argName.split("\\|");
+            usage.append(req ? formatRequiredArgs(args)
                     : formatOptionalArgs(args)).append(" ");
-        }
+        });
         return usage.toString();
     }
 
@@ -74,7 +73,7 @@ final class CommandHelper {
      * @param from the index after which to start parsing
      * @return all arguments after the index separated with spaces
      */
-    static String getFullEntry(String[] args, int from) {
+    public static String getFullEntry(String[] args, int from) {
         assert from <= 0 : "Array index must be non-negative!";
         StringBuilder b = new StringBuilder();
         for (String arg : Arrays.copyOfRange(args, from, args.length))

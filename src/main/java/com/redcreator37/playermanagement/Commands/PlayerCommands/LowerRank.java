@@ -1,16 +1,17 @@
-package com.redcreator37.playermanagement.Commands;
+package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
+import com.redcreator37.playermanagement.Commands.CommandHelper;
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static com.redcreator37.playermanagement.Localization.lc;
@@ -19,37 +20,39 @@ import static com.redcreator37.playermanagement.Localization.lc;
  * Increases a player's punishment count, takes the amount of money
  * and bans them if their count exceeds the maximum
  */
-public class LowerRank implements CommandExecutor {
+public class LowerRank extends PlayerCommand {
+
+    public LowerRank() {
+        super("punish", new HashMap<String, Boolean>() {{
+            put("player_name", true);
+            put("Reason...", false);
+        }}, new ArrayList<String>() {{
+            add("management.admin");
+        }});
+    }
 
     /**
-     * Main command process
+     * Runs this command and performs the actions
+     *
+     * @param player the {@link Player} who ran the command
+     * @param args   the arguments entered by the player
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-        Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null || !PlayerRoutines.checkPermission(p, "management.admin"))
-            return true;
-
-        if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + CommandHelper
-                    .parseCommandUsage("punish", new String[]{"*player_name", "Reason"}));
-            return true;
-        }
-
+    public void execute(Player player, String[] args) {
         ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
                 .uuidFromUsername(PlayerManagement.players, args[0]));
-        if (PlayerRoutines.checkPlayerNonExistent(p, target, args[0]))
-            return true;
+        if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0]))
+            return;
 
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
                 // take the amount of money
                 try {
-                    PlayerManagement.eco.withdrawPlayer(p.getServer().getPlayer(target
+                    PlayerManagement.eco.withdrawPlayer(player.getServer().getPlayer(target
                             .getUsername()), PlayerManagement.punishmentAmount);
                 } catch (Exception e) {
-                    p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                             + lc("the-player")
                             + ChatColor.GREEN + target + ChatColor.GOLD
                             + lc("isnt-online-money-not-taken"));
@@ -60,7 +63,7 @@ public class LowerRank implements CommandExecutor {
                 if (args.length > 1) {  // if there's a reason specified
                     String reason = CommandHelper.getFullEntry(args, 1);
                     try {   // tell them if they're online, otherwise ignore it
-                        Objects.requireNonNull(p.getServer().getPlayer(target
+                        Objects.requireNonNull(player.getServer().getPlayer(target
                                 .getUsername())).sendMessage(PlayerManagement
                                 .prefix + ChatColor.GOLD + lc("you-have-been-punished")
                                 + ChatColor.GREEN + reason);
@@ -69,13 +72,13 @@ public class LowerRank implements CommandExecutor {
 
                 // limit exceeded, issue ban
                 if (target.getPunishments() > PlayerManagement.maxPunishments) {
-                    sender.getServer().getBannedPlayers().add(p.getServer()
+                    player.getServer().getBannedPlayers().add(player.getServer()
                             .getPlayer(target.getUsername()));
-                    p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                             + lc("the-player") + ChatColor.GREEN + target
                             + ChatColor.GOLD + lc("has-exceeded-max-punishments"));
                 } else {
-                    p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                    player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                             + lc("the-player") + ChatColor.GREEN + target
                             + ChatColor.GOLD + lc("has-been-punished"));
                 }
@@ -83,11 +86,10 @@ public class LowerRank implements CommandExecutor {
                 PlayerManagement.playerDb.update(target);
                 PlayerManagement.players = PlayerManagement.playerDb.getAll();
             } catch (SQLException e) {
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + lc("error-updating-playerdata")
                         + ChatColor.RED + e.getMessage());
             }
         });
-        return true;
     }
 }

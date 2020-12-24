@@ -1,5 +1,7 @@
-package com.redcreator37.playermanagement.Commands;
+package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
+import com.redcreator37.playermanagement.Commands.CommandHelper;
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.Localization;
@@ -7,45 +9,45 @@ import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Registers a new player to the database
  */
-public class RegisterId implements CommandExecutor {
+public class RegisterId extends PlayerCommand {
+
+    public RegisterId() {
+        super("registerid", new HashMap<String, Boolean>() {{
+            put("Real Name", true);
+        }}, new ArrayList<String>() {{
+            add("management.user");
+        }});
+    }
 
     /**
-     * Main command process
+     * Runs this command and performs the actions
+     *
+     * @param player the {@link Player} who ran the command
+     * @param args   the arguments entered by the player
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-        Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null || !PlayerRoutines.checkPermission(p, "management.user"))
-            return true;
-
-        if (args.length < 1) {
-            p.sendMessage(PlayerManagement.prefix + CommandHelper
-                    .parseCommandUsage("registerid", new String[]{"Real Name"}));
-            return true;
-        }
-
-        ServerPlayer test = PlayerManagement.players.get(p.getUniqueId().toString());
+    public void execute(Player player, String[] args) {
+        ServerPlayer test = PlayerManagement.players.get(player.getUniqueId().toString());
         if (test != null) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("already-registered"));
-            return true;
+            return;
         }
 
         // their inventory should not be full because we're going
         // to give them an ID card after registration
-        if (PlayerRoutines.checkInventoryFull(p)) return true;
+        if (PlayerRoutines.checkInventoryFull(player)) return;
         ServerPlayer target = new ServerPlayer(4097,    // register with a dummy id
-                new PlayerTag(p.getName(), p.getUniqueId().toString()));
+                new PlayerTag(player.getName(), player.getUniqueId().toString()));
 
         target.setName(CommandHelper.getFullEntry(args, 0));
         target.setJoinDate(PlayerRoutines
@@ -60,21 +62,20 @@ public class RegisterId implements CommandExecutor {
             PlayerManagement.players = PlayerManagement.playerDb.getNewlyRegistered();
 
             ServerPlayer registeredPlayer = PlayerManagement.players
-                    .get(p.getUniqueId().toString());
+                    .get(player.getUniqueId().toString());
             if (registeredPlayer == null) {
-                p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                         + Localization.lc("failed-to-give-id"));
-                return true;
+                return;
             }
 
-            PlayerCard.giveNewCard(p, registeredPlayer);
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            PlayerCard.giveNewCard(player, registeredPlayer);
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("registration-successful"));
         } catch (SQLException e) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("error-updating-playerdata")
                     + ChatColor.RED + e.getMessage());
         }
-        return true;
     }
 }

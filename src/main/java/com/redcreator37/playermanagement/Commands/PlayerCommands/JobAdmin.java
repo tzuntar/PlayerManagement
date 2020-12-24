@@ -1,38 +1,46 @@
-package com.redcreator37.playermanagement.Commands;
+package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
+import com.redcreator37.playermanagement.Commands.CommandHelper;
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
-import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Manages the job database
  */
-public class JobAdmin implements CommandExecutor {
+public class JobAdmin extends PlayerCommand {
+
+    public JobAdmin() {
+        super("jobadmin", new HashMap<String, Boolean>() {{
+            put("add|update|remove", true);
+        }}, new ArrayList<String>() {{
+            add("management.admin");
+        }});
+    }
 
     /**
-     * Main command process
+     * Runs this command and performs the actions
+     *
+     * @param player the {@link Player} who ran the command
+     * @param args   the arguments entered by the player
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-        Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null) return true;
-
-        if (!PlayerRoutines.checkPermission(p, "management.admin"))
-            return true;
-
+    public void execute(Player player, String[] args) {
         if (args.length < 2 || args.length < 3 && args[0].matches("add|update")) {
-            p.sendMessage(PlayerManagement.prefix + CommandHelper
-                    .parseCommandUsage("jobadmin", new String[]{"add|update|remove",
-                            "*job_name", "Job Description"}));
-            return true;
+            player.sendMessage(PlayerManagement.prefix + CommandHelper
+                    .parseCommandUsage("jobadmin", new HashMap<String, Boolean>() {{
+                        put("add|update|remove", true);
+                        put("job_name", true);
+                        put("Job Description", true);
+                    }}));
+            return;
         }
 
         try {
@@ -44,20 +52,20 @@ public class JobAdmin implements CommandExecutor {
                 case "remove":
                     Job j = PlayerManagement.jobs.get(args[1]);
                     if (j == null) {
-                        p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                        player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                                 + Localization.lc("unknown-job")
                                 + ChatColor.GREEN + args[1]);
-                        return true;
+                        return;
                     }
                     PlayerManagement.jobDb.remove(j);
                     break;
                 case "update":
                     Job job = PlayerManagement.jobs.get(args[1]);
                     if (job == null) {
-                        p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+                        player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                                 + Localization.lc("unknown-job")
                                 + ChatColor.GREEN + args[1]);
-                        return true;
+                        return;
                     }
                     job.setDescription(CommandHelper.getFullEntry(args, 2));
                     PlayerManagement.jobDb.update(job);
@@ -66,14 +74,12 @@ public class JobAdmin implements CommandExecutor {
 
             // update the job list to reflect the changes
             PlayerManagement.jobs = PlayerManagement.jobDb.getAll();
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("job-data-saved"));
         } catch (SQLException e) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
                     + Localization.lc("error-accessing-db")
                     + ChatColor.RED + e.getMessage());
         }
-        return true;
     }
-
 }

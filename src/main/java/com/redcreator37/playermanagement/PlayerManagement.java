@@ -1,19 +1,20 @@
 package com.redcreator37.playermanagement;
 
 import com.earth2me.essentials.Essentials;
-import com.redcreator37.playermanagement.Commands.CompanyManagement;
-import com.redcreator37.playermanagement.Commands.CompanyPay;
-import com.redcreator37.playermanagement.Commands.DeleteId;
-import com.redcreator37.playermanagement.Commands.EstablishCompany;
-import com.redcreator37.playermanagement.Commands.GetId;
-import com.redcreator37.playermanagement.Commands.GetJob;
-import com.redcreator37.playermanagement.Commands.JobAdmin;
-import com.redcreator37.playermanagement.Commands.LowerRank;
-import com.redcreator37.playermanagement.Commands.PlayerAdmin;
-import com.redcreator37.playermanagement.Commands.RegisterId;
-import com.redcreator37.playermanagement.Commands.SetCompany;
-import com.redcreator37.playermanagement.Commands.SetJob;
-import com.redcreator37.playermanagement.Commands.SetNotes;
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.CompanyManagement;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.CompanyPay;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.DeleteId;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.EstablishCompany;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.GetId;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.GetJob;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.JobAdmin;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.LowerRank;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.PlayerAdmin;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.RegisterId;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.SetCompany;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.SetJob;
+import com.redcreator37.playermanagement.Commands.PlayerCommands.SetNotes;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
@@ -161,32 +162,22 @@ public final class PlayerManagement extends JavaPlugin {
         }
 
         // register commands
-        Objects.requireNonNull(this.getCommand("registerid"))
-                .setExecutor(new RegisterId());
-        Objects.requireNonNull(this.getCommand("getid"))
-                .setExecutor(new GetId());
-        Objects.requireNonNull(this.getCommand("deleteid"))
-                .setExecutor(new DeleteId());
-        Objects.requireNonNull(this.getCommand("setjob"))
-                .setExecutor(new SetJob());
-        Objects.requireNonNull(this.getCommand("setcompany"))
-                .setExecutor(new SetCompany());
-        Objects.requireNonNull(this.getCommand("setnotes"))
-                .setExecutor(new SetNotes());
-        Objects.requireNonNull(this.getCommand("job"))
-                .setExecutor(new GetJob());
-        Objects.requireNonNull(this.getCommand("punish"))
-                .setExecutor(new LowerRank());
-        Objects.requireNonNull(this.getCommand("jobadmin"))
-                .setExecutor(new JobAdmin());
-        Objects.requireNonNull(this.getCommand("company"))
-                .setExecutor(new CompanyManagement());
-        Objects.requireNonNull(this.getCommand("establish"))
-                .setExecutor(new EstablishCompany());
-        Objects.requireNonNull(this.getCommand("playeradmin"))
-                .setExecutor(new PlayerAdmin());
-        Objects.requireNonNull(this.getCommand("cpay"))
-                .setExecutor(new CompanyPay());
+        HashMap<String, PlayerCommand> commands = new HashMap<String, PlayerCommand>() {{
+            put("registerid", new RegisterId());
+            put("getid", new GetId());
+            put("deleteid", new DeleteId());
+            put("setjob", new SetJob());
+            put("setcompany", new SetCompany());
+            put("setnotes", new SetNotes());
+            put("job", new GetJob());
+            put("jobadmin", new JobAdmin());
+            put("punish", new LowerRank());
+            put("company", new CompanyManagement());
+            put("establish", new EstablishCompany());
+            put("playeradmin", new PlayerAdmin());
+            put("cpay", new CompanyPay());
+        }};
+        commands.forEach(this::registerCommand);
 
         // register events
         getServer().getPluginManager().registerEvents(new PlayerCard(), this);
@@ -429,6 +420,17 @@ public final class PlayerManagement extends JavaPlugin {
             success = false;
         }
         return success;
+    }
+
+    /**
+     * Registers this {@link PlayerCommand} into the plugin
+     *
+     * @param name    the name of the command by which it can be invoked
+     * @param command the {@link PlayerCommand} object which represents it
+     * @param <E>     the command's class
+     */
+    private <E extends PlayerCommand> void registerCommand(String name, E command) {
+        Objects.requireNonNull(this.getCommand(name)).setExecutor(command);
     }
 
     /**

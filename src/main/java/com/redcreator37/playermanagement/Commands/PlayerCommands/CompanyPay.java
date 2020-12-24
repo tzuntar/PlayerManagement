@@ -1,5 +1,6 @@
-package com.redcreator37.playermanagement.Commands;
+package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
+import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
@@ -7,13 +8,12 @@ import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
@@ -27,90 +27,89 @@ import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 /**
  * A simple /pay command for companies
  */
-public class CompanyPay implements CommandExecutor {
+public class CompanyPay extends PlayerCommand {
+
+    public CompanyPay() {
+        super("cpay", new HashMap<String, Boolean>() {{
+            put("from", true);
+            put("to", true);
+            put("amount", true);
+        }}, new ArrayList<String>() {{
+            add("management.company");
+        }});
+    }
 
     /**
-     * Main command process
+     * Runs this command and performs the actions
+     *
+     * @param player the {@link Player} who ran the command
+     * @param args   the arguments entered by the player
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-        Player p = PlayerRoutines.playerFromSender(sender);
-        if (p == null) return true;
-
-        if (!PlayerRoutines.checkPermission(p, "management.company"))
-            return true;
-
-        if (args.length < 3) {
-            p.sendMessage(prefix + CommandHelper.parseCommandUsage("cpay",
-                    new String[]{"from", "to", "amount"}));
-            return true;
-        }
-
-        ServerPlayer serverPlayer = players.get(p.getUniqueId().toString());
-        if (PlayerRoutines.checkPlayerNonExistent(p, serverPlayer, p.getName()))
-            return true;
+    public void execute(Player player, String[] args) {
+        ServerPlayer serverPlayer = players.get(player.getUniqueId().toString());
+        if (PlayerRoutines.checkPlayerNonExistent(player, serverPlayer, player.getName()))
+            return;
 
         // attempt to look up both companies
         Company source = companies.get(args[0]),
                 target = companies.get(args[1]);
         if (source == null || target == null) {
-            p.sendMessage(prefix + ChatColor.GOLD + lc("unknown-company"));
-            return true;
+            player.sendMessage(prefix + ChatColor.GOLD + lc("unknown-company"));
+            return;
         }
 
         // check the ownership
-        if (!source.getOwner().getUsername().equals(p.getName()) && !p
+        if (!source.getOwner().getUsername().equals(player.getName()) && !player
                 .hasPermission("management.admin")) {
-            p.sendMessage(prefix + ChatColor.GOLD
+            player.sendMessage(prefix + ChatColor.GOLD
                     + lc("you-can-only-manage-your-company"));
-            return true;
+            return;
         }
 
         BigDecimal amount;
         try {
             amount = new BigDecimal(args[2]);
         } catch (NumberFormatException e) {
-            p.sendMessage(prefix + ChatColor.GOLD + lc("invalid-number")
+            player.sendMessage(prefix + ChatColor.GOLD + lc("invalid-number")
                     + ChatColor.GREEN + args[2]);
-            return true;
+            return;
         }
 
         String formattedAmount = PlayerRoutines.formatDecimal(amount);
         if (source.getBalance().doubleValue() < amount.doubleValue()) {
-            p.sendMessage(prefix + ChatColor.GOLD
+            player.sendMessage(prefix + ChatColor.GOLD
                     + lc("the-company") + ChatColor.GREEN + source
                     + ChatColor.GOLD + lc("cant-afford-to-pay")
                     + ChatColor.GREEN + formattedAmount + ChatColor.GOLD + "!");
-            return true;
+            return;
         }
 
         // withdraw the amount from the source
         source.setBalance(source.getBalance().subtract(amount));
-        transactionDb.addAsync(p, new Transaction(4097,
+        transactionDb.addAsync(player, new Transaction(4097,
                 source.getId(), "->", lc("pay")
                 + formattedAmount, lc("pay") + formattedAmount
                 + lc("to") + target, amount));
 
         // add to the target
         target.setBalance(target.getBalance().add(amount));
-        transactionDb.addAsync(p, new Transaction(4097,
+        transactionDb.addAsync(player, new Transaction(4097,
                 target.getId(), "<-", lc("receive")
                 + formattedAmount, lc("receive") + formattedAmount
                 + lc("from") + source, amount));
 
         // update and re-read the data
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
-            companyDb.updateByPlayer(p, source);
-            companyDb.updateByPlayer(p, target);
+            companyDb.updateByPlayer(player, source);
+            companyDb.updateByPlayer(player, target);
             try {
                 transactions = transactionDb.getAll();
             } catch (SQLException e) {
-                p.sendMessage(prefix + ChatColor.GOLD
+                player.sendMessage(prefix + ChatColor.GOLD
                         + lc("error-saving-transaction-data")
                         + ChatColor.RED + e.getMessage());
             }
         });
-        return true;
     }
-
 }

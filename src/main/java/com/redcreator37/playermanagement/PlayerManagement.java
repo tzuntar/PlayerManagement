@@ -283,7 +283,7 @@ public final class PlayerManagement extends JavaPlugin {
         economyProvider = new EconomyProvider(eco, ess, prefs.minimalWage);
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                 .runTask(this, () -> {
-                    Bukkit.getOnlinePlayers().forEach(economyProvider::payWage);
+                    Bukkit.getOnlinePlayers().forEach(economyProvider::globalPayWage);
                     companies.forEach((s, company) -> {
                         try {
                             companyDb.update(company);

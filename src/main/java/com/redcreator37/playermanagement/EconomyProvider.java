@@ -102,69 +102,85 @@ public class EconomyProvider {
     }
 
     /**
-     * Pays the wage to this player
+     * Determines this player's position and pays the according wage.
+     * This method checks whether this player is employed or not. If
+     * not, it also checks eligibility for the global "basic income"
+     * payment.
      *
-     * @param player the player to which the wage will be paid to
+     * @param player the player which will receive the payment
      */
-    public void payWage(Player player) {
+    public void globalPayWage(Player player) {
         ServerPlayer target = PlayerManagement.players.get(player
                 .getUniqueId().toString());
         if (target == null || Objects.requireNonNull(ess)
                 .getUser(player).isAfk()) return;   // unknown player or AFK
 
         double amount;
-        if (isPlayerUnemployed(target)) {
+        if (isPlayerUnemployed(target))
             amount = minimalWage.calculateMinimalWage(eco.getBalance(player));
-        } else if (!isPlayerUnemployed(target)) {
-            Company targetCompany = target.getCompany();
-            BigDecimal wage = targetCompany.getWage();
-            if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
-                // get the owner player handle
-                User owner = ess.getOfflineUser(targetCompany.getOwner().getUuid());
-
-                // get the OfflinePlayer object from the UUID
-                OfflinePlayer ownerPl;
-                try {
-                    ownerPl = Bukkit.getOfflinePlayer(UUID
-                            .fromString(targetCompany.getOwner().getUuid()));
-                } catch (NullPointerException e) {
-                    player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.RED
-                            + lc("db-company-invalid"));
-                    return; // failsafe in case an invalid player is specified in the db
-                }
-
-                if (owner.canAfford(wage)) {
-                    eco.withdrawPlayer(ownerPl, wage.doubleValue());
-                    owner.addMail(lc("money-taken-to-pay-wages"));
-                } else {
-                    player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
-                            + targetCompany + ChatColor.GOLD
-                            + lc("cant-afford-to-pay-your-wage"));
-                    owner.addMail(lc("unable-to-pay-wage-for-player")
-                            + player.getName() + "!");
-                    return;
-                }
-            } else {
-                Company company = PlayerManagement.companies.get(targetCompany.getName());
-                if (company == null) {
-                    player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                            + lc("unknown-company")
-                            + ChatColor.GREEN + targetCompany);
-                    return;
-                }
-
-                // update the database Company object
-                PlayerManagement.companies.get(company.getName()).setBalance(company
-                        .getBalance().subtract(wage));
-            }
-            amount = wage.doubleValue();
-        } else return;
+        else if (!isPlayerUnemployed(target))
+            amount = payWageEmployed(player, target);
+        else return;
         eco.depositPlayer(player, amount);
 
         if ((int) amount < 1) return;    // don't display on small / negative values
         player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
                 + "$" + amount + ChatColor.GOLD
                 + lc("has-been-added-to-your-account"));
+    }
+
+    /**
+     * Pays the wage to this player. For this to work, the player has
+     * to be employed at a company.
+     *
+     * @param player the player which will receive the payment
+     * @param target the player's {@link ServerPlayer} equivalent
+     * @return the amount of the paid wage, or {@code 0} if nothing
+     * was paid
+     */
+    private double payWageEmployed(Player player, ServerPlayer target) {
+        Company targetCompany = target.getCompany();
+        BigDecimal wage = targetCompany.getWage();
+        if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
+            // get the owner player handle
+            User owner = ess.getOfflineUser(targetCompany.getOwner().getUuid());
+
+            // get the OfflinePlayer object from the UUID
+            OfflinePlayer ownerPl;
+            try {
+                ownerPl = Bukkit.getOfflinePlayer(UUID
+                        .fromString(targetCompany.getOwner().getUuid()));
+            } catch (NullPointerException e) {
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.RED
+                        + lc("db-company-invalid"));
+                return 0; // failsafe in case an invalid player is specified in the db
+            }
+
+            if (owner.canAfford(wage)) {
+                eco.withdrawPlayer(ownerPl, wage.doubleValue());
+                owner.addMail(lc("money-taken-to-pay-wages"));
+            } else {
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
+                        + targetCompany + ChatColor.GOLD
+                        + lc("cant-afford-to-pay-your-wage"));
+                owner.addMail(lc("unable-to-pay-wage-for-player")
+                        + player.getName() + "!");
+                return 0;
+            }
+        } else {
+            Company company = PlayerManagement.companies.get(targetCompany.getName());
+            if (company == null) {
+                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
+                        + lc("unknown-company")
+                        + ChatColor.GREEN + targetCompany);
+                return 0;
+            }
+
+            // update the database Company object
+            PlayerManagement.companies.get(company.getName()).setBalance(company
+                    .getBalance().subtract(wage));
+        }
+        return wage.doubleValue();
     }
 
     /**

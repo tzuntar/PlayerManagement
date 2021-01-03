@@ -51,7 +51,7 @@ public class LowerRank extends PlayerCommand {
                 // take the amount of money
                 try {
                     PlayerManagement.eco.withdrawPlayer(player.getServer().getPlayer(target
-                            .getUsername()), PlayerManagement.prefs.punishmentAmount);
+                            .getUsername()), PlayerManagement.prefs.fineAmount);
                 } catch (Exception e) {
                     player.sendMessage(prefix + ChatColor.GOLD
                             + lc("the-player")
@@ -72,7 +72,7 @@ public class LowerRank extends PlayerCommand {
                 }
 
                 // limit exceeded, issue ban
-                if (target.getPunishments() > PlayerManagement.prefs.maxPunishments) {
+                if (target.getPunishments() > PlayerManagement.prefs.maxFines) {
                     player.getServer().getBannedPlayers().add(player.getServer()
                             .getPlayer(target.getUsername()));
                     player.sendMessage(prefix + ChatColor.GOLD

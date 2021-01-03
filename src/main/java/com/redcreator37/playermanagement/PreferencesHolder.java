@@ -34,33 +34,113 @@ public class PreferencesHolder {
      */
     public String dateFormat = "yyyy-MM-dd";
 
+    /**
+     * The standard price of an ID card that's charged when a player
+     * loses theirs and requests a new one
+     */
     public double cardPrice = 2500;
+
+    /**
+     * The item lore (description) text which separates ID cards from
+     * other items
+     */
     public String cardItemLore = "Unique Player ID Card";
+
+    /**
+     * The price of establishing a new company
+     */
+    public double establishPrice = 3000;
+
+    /**
+     * The amount of money that'll be taken after a player is fined
+     */
+    public double fineAmount = 3000;
+
+    /**
+     * The number of fines a player can receive before they get banned
+     */
+    public int maxFines = 5;
+
+    /**
+     * The text which will be displayed on the top of each scoreboard
+     * sign
+     */
     public String scoreboardSignText = "§8[§9TopPlayers§8]";
 
-    public double establishPrice = 3000;
-    public double punishmentAmount = 3000;
-    public int maxPunishments = 5;
-
+    /**
+     * Toggles automatic economy management
+     */
     public boolean autoEcoEnabled = true;
+
+    /**
+     * The amount of times between the runs of the automatic economy
+     * background task
+     */
     public int autoEcoTimeSeconds = 1200;
+
+    /**
+     * The minimal wage (basic income), paid to unemployed players
+     */
     public EconomyProvider.MinimalWage minimalWage =
             new EconomyProvider.MinimalWage(1000, 250);
 
+    /**
+     * Toggles advancement rewards
+     */
     public boolean rewardsEnabled = true;
+
+    /**
+     * The reward for rank 1 advancements
+     */
     public double rewardRank1 = 10;
+
+    /**
+     * The reward for rank 2 advancements
+     */
     public double rewardRank2 = 25;
+
+    /**
+     * The reward for rank 3 advancements
+     */
     public double rewardRank3 = 50;
+
+    /**
+     * The list of rank 1 advancements
+     */
     public List<String> advRank1 = AdvancementReward.getAdvancements(1);
+
+    /**
+     * The list of rank 2 advancements
+     */
     public List<String> advRank2 = AdvancementReward.getAdvancements(2);
+
+    /**
+     * The list of rank 3 advancements
+     */
     public List<String> advRank3 = AdvancementReward.getAdvancements(3);
 
+    /**
+     * Toggles the enhanced TAB player list
+     */
     boolean playerListEnabled = true;
+
+    /**
+     * The amount of time in seconds between player list updates.
+     * This value is ignored when a player joins / leaves the server.
+     */
     int playerListUpdateSeconds = 300;
+
+    /**
+     * Player list header, displayed above the list of players
+     */
     public String[] playerListHeader = {
             "§b§oA Minecraft Server                                   §r§a{playercount}§8/§a{maxplayers}",
             "§8--------------------------------------------"
     };
+
+    /**
+     * Player list footer, displayed below the list of players
+     */
     public String[] playerListFooter = {
             "§8--------------------------------------------",
             "§6Money: §f{playerbalance}    §r§8: :    §6Messages: §f{playermail}",
@@ -72,14 +152,46 @@ public class PreferencesHolder {
             "§4YouTube:   §r§f§nlink§r      §r§8: :      §9Discord:   §r§f§nlink§r             ",
             "\n§8§oPowered by PlayerManagement v1.6 by RedCreator37"
     };
+
+    /**
+     * The style of a player entry in the player list for players
+     * without ranks
+     */
     public String genericPlayerEntry = "§8[ §f{playername} §8]";
+
+    /**
+     * The style of a player entry in the player list for members
+     */
     public String memberPlayerEntry = "§8[ §a{playername} §8]";
+
+    /**
+     * The style of a player entry in the player list for VIP players
+     */
     public String vipPlayerEntry = "§8[ §b{playername} §8]";
+
+    /**
+     * The style of a player entry in the player list for admins
+     */
     public String adminPlayerEntry = "§8[ §c{playername} §8]";
 
+    /**
+     * The rank label for players without ranks
+     */
     public String genericPlayerLabel = "§fNone";
+
+    /**
+     * The rank label for members
+     */
     public String memberPlayerLabel = "§aMembers";
+
+    /**
+     * The rank label for VIP players
+     */
     public String vipPlayerLabel = "§bVIP";
+
+    /**
+     * The rank label for admins
+     */
     public String adminPlayerLabel = "§cAdmins";
 
     /**
@@ -98,8 +210,8 @@ public class PreferencesHolder {
         conf.addDefault("General.CardItemLore", cardItemLore);
         conf.addDefault("General.ScoreboardSignText", scoreboardSignText);
         conf.addDefault("Company.EstablishPrice", establishPrice);
-        conf.addDefault("Punishments.Amount", punishmentAmount);
-        conf.addDefault("Punishments.MaxBeforeBan", maxPunishments);
+        conf.addDefault("Punishments.Amount", fineAmount);
+        conf.addDefault("Punishments.MaxBeforeBan", maxFines);
         conf.addDefault("AutomaticEconomy.Enabled", autoEcoEnabled);
         conf.addDefault("AutomaticEconomy.TimeInSeconds", autoEcoTimeSeconds);
         conf.addDefault("AutomaticEconomy.Threshold", minimalWage.getThreshold());
@@ -142,8 +254,8 @@ public class PreferencesHolder {
         scoreboardSignText = conf.getString("General.ScoreboardSignText");
 
         establishPrice = conf.getInt("Company.EstablishPrice");
-        punishmentAmount = conf.getInt("Punishments.Price");
-        maxPunishments = conf.getInt("Punishments.MaxBeforeBan");
+        fineAmount = conf.getInt("Punishments.Price");
+        maxFines = conf.getInt("Punishments.MaxBeforeBan");
 
         autoEcoEnabled = conf.getBoolean("AutomaticEconomy.Enabled");
         autoEcoTimeSeconds = conf.getInt("AutomaticEconomy.TimeInSeconds");

@@ -7,7 +7,9 @@ create table companies
     description text    default '',
     money       text    default '0' not null,
     employees   integer default 0,
-    owner       text    default '',
+    owner       text    default ''
+        constraint companies_players_username_fk
+            references players (username),
     established text    default '',
     paycheck    text    default '10'
 );
@@ -38,10 +40,6 @@ create table players
     notes       text default '',
     punishments int  default 0 not null
 );
---
-alter table companies
-    add constraint companies_players_username_fk
-        foreign key (owner) references players (username);
 --
 create table transactions
 (

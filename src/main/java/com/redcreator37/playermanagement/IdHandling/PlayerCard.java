@@ -22,7 +22,7 @@ import static com.redcreator37.playermanagement.Localization.lc;
 /**
  * Handles all in-game ID card actions
  */
-public class PlayerCard implements Listener {
+public final class PlayerCard implements Listener {
 
     /**
      * Handles all right-click events

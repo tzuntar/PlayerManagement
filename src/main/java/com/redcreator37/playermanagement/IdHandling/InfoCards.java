@@ -27,7 +27,13 @@ import static com.redcreator37.playermanagement.Localization.lc;
  * A common class for creating and displaying in-game book based data
  * representations
  */
-public class InfoCards {
+public final class InfoCards {
+
+    /**
+     * Non-instantiable
+     */
+    private InfoCards() {
+    }
 
     /**
      * Constructs and displays an in-game book to the player

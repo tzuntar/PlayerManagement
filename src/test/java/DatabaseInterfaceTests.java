@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -47,7 +48,8 @@ public class DatabaseInterfaceTests {
             Assert.fail("Could not delete the existing " + DB_PATH);
 
         try (Connection db = SharedDb.connect(DB_PATH)) {
-            SharedDb.createTables(db);
+            SharedDb.createTables(db, DatabaseInterfaceTests.class
+                    .getClassLoader().getResourceAsStream("GenerateDb.sql"));
             JobDb jobDb = new JobDb(db);
             // insert a blank job using a bogus id
             jobDb.insert(new Job(4097, GENERIC_PH, GENERIC_PH));
@@ -62,7 +64,7 @@ public class DatabaseInterfaceTests {
             } catch (SQLException e) {
                 Assert.fail("Error while reading from the database: " + e.getMessage());
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             Assert.fail("Creating the database failed: " + e.getMessage());
         }
         Assert.assertTrue(true);    // already passed at this point

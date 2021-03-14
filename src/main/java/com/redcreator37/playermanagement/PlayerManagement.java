@@ -33,6 +33,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -255,12 +256,13 @@ public final class PlayerManagement extends JavaPlugin {
 
         if (newDb) // empty database
             try {
-                SharedDb.createTables(database);
+                SharedDb.createTables(database, PlayerManagement.class
+                        .getClassLoader().getResourceAsStream("GenerateDb.sql"));
                 // just insert a blank player, job and company using a bogus id
                 jobDb.insert(new Job(4097, "N/A", "N/A"));
                 companyDb.insert(new Company(4097, "N/A"));
                 getLogger().info(Localization.lc("created-empty-db"));
-            } catch (SQLException e) {
+            } catch (SQLException | IOException e) {
                 getLogger().severe(Localization.lc("error-creating-db") + e.getMessage());
                 success = false;
             }

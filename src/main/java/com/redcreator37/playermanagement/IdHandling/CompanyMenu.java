@@ -25,7 +25,7 @@ import static com.redcreator37.playermanagement.PlayerRoutines.formatDecimal;
 /**
  * A simple chest-like company management UI
  */
-public class CompanyMenu implements Listener {
+public final class CompanyMenu implements Listener {
 
     /**
      * Represents the internal inventory

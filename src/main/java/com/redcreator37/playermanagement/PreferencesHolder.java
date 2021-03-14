@@ -38,6 +38,11 @@ public class PreferencesHolder {
     public String cardItemLore = "Unique Player ID Card";
     public String scoreboardSignText = "§8[§9TopPlayers§8]";
 
+    /**
+     * Enables experimental features
+     */
+    public boolean experimentalFeatures = false;
+
     public double establishPrice = 3000;
     public double punishmentAmount = 3000;
     public int maxPunishments = 5;
@@ -97,6 +102,7 @@ public class PreferencesHolder {
         conf.addDefault("General.CardPrice", cardPrice);
         conf.addDefault("General.CardItemLore", cardItemLore);
         conf.addDefault("General.ScoreboardSignText", scoreboardSignText);
+        conf.addDefault("General.ExperimentalFeatures", experimentalFeatures);
         conf.addDefault("Company.EstablishPrice", establishPrice);
         conf.addDefault("Punishments.Amount", punishmentAmount);
         conf.addDefault("Punishments.MaxBeforeBan", maxPunishments);
@@ -140,6 +146,7 @@ public class PreferencesHolder {
         cardItemLore = Objects.requireNonNull(newLore).trim()
                 .equals("") ? cardItemLore : newLore;
         scoreboardSignText = conf.getString("General.ScoreboardSignText");
+        experimentalFeatures = conf.getBoolean("General.ExperimentalFeatures");
 
         establishPrice = conf.getInt("Company.EstablishPrice");
         punishmentAmount = conf.getInt("Punishments.Price");

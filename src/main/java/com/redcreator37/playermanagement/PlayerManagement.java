@@ -24,6 +24,7 @@ import com.redcreator37.playermanagement.Database.JobDb;
 import com.redcreator37.playermanagement.Database.PlayerDb;
 import com.redcreator37.playermanagement.Database.SharedDb;
 import com.redcreator37.playermanagement.Database.TransactionDb;
+import com.redcreator37.playermanagement.IdHandling.PlayerCard;
 import com.redcreator37.playermanagement.Scoreboards.IdBoard;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -173,22 +174,23 @@ public final class PlayerManagement extends JavaPlugin {
 
         if (prefs.rewardsEnabled) getServer().getPluginManager()
                 .registerEvents(new AdvancementReward(), this);
-        if (prefs.playerListEnabled) setUpAdvancedPlayerList();
+        if (prefs.playerListEnabled) enablePlayerList();
         if (!Localization.changeLanguage("Strings", prefs.language))
             getLogger().warning(MessageFormat.format(Localization
                     .lc("switching-lang-failed"), prefs.language));
-        if (!setUpDatabase()) {
+        if (!initializeDatabase()) {
             getLogger().severe(Localization.lc("error-db-connection-failed"));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
         if (!this.isEnabled()) return;  // safety check to prevent exceptions if disabled
-        if (prefs.autoEcoEnabled) setUpAutoEconomy();
+        if (prefs.autoEcoEnabled) enableAutoEconomy();
 
-        // TODO: check if scoreboards are enabled in the config
-        globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit.getScoreboardManager()),
-                "Players", new ArrayList<>(players.values()));
-        setUpDataBoardUpdating();
+        if (prefs.experimentalFeatures) {
+            globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit.getScoreboardManager()),
+                    "Players", new ArrayList<>(players.values()));
+            enableScoreboards();
+        }
     }
 
     /**
@@ -199,6 +201,17 @@ public final class PlayerManagement extends JavaPlugin {
         try {
             database.close();
         } catch (SQLException ignored) { }
+    }
+
+    /**
+     * Registers this {@link PlayerCommand} into the plugin
+     *
+     * @param name    the name of the command by which it can be invoked
+     * @param command the {@link PlayerCommand} object which represents it
+     * @param <C>     the command's class
+     */
+    private <C extends PlayerCommand> void registerCommand(String name, C command) {
+        Objects.requireNonNull(this.getCommand(name)).setExecutor(command);
     }
 
     /**
@@ -221,7 +234,7 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * Sets up the database connection
      */
-    private boolean setUpDatabase() {
+    private boolean initializeDatabase() {
         boolean success = true;
         boolean newDb = !new File(prefs.databasePath).exists();
         try {
@@ -266,20 +279,9 @@ public final class PlayerManagement extends JavaPlugin {
     }
 
     /**
-     * Registers this {@link PlayerCommand} into the plugin
-     *
-     * @param name    the name of the command by which it can be invoked
-     * @param command the {@link PlayerCommand} object which represents it
-     * @param <C>     the command's class
-     */
-    private <C extends PlayerCommand> void registerCommand(String name, C command) {
-        Objects.requireNonNull(this.getCommand(name)).setExecutor(command);
-    }
-
-    /**
      * Sets up the automatic economy
      */
-    private void setUpAutoEconomy() {
+    private void enableAutoEconomy() {
         economyProvider = new EconomyProvider(eco, ess, prefs.minimalWage);
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                 .runTask(this, () -> {
@@ -299,7 +301,7 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * Sets up automatic player list updating
      */
-    private void setUpAdvancedPlayerList() {
+    private void enablePlayerList() {
         getServer().getPluginManager().registerEvents(new EnhancedPlayerList(), this);
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                         .runTask(this, () -> getServer().getOnlinePlayers()
@@ -310,10 +312,10 @@ public final class PlayerManagement extends JavaPlugin {
     /**
      * Sets up updating of the data scoreboard
      */
-    private void setUpDataBoardUpdating() {
+    private void enableScoreboards() {
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                         .runTask(this, () -> globalDataBoard.refreshData()),
-                1, prefs.playerListUpdateSeconds);    // TODO: use a separate timer
+                1, prefs.playerListUpdateSeconds);
     }
 
 }

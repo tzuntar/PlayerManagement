@@ -2,8 +2,9 @@ package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.IdHandling.InfoCards;
 import com.redcreator37.playermanagement.Localization;
-import com.redcreator37.playermanagement.PlayerCard;
+import com.redcreator37.playermanagement.IdHandling.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -65,6 +66,6 @@ public class GetId extends PlayerCommand {
         if (PlayerRoutines.lacksPermission(player, "management.admin"))
             return;
 
-        PlayerCard.displayCardData(player, target);
+        InfoCards.displayPlayerInfo(player, target);
     }
 }

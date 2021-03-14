@@ -1,6 +1,6 @@
-# Configuration File Values
+# Configuration File Structure
 
-The following is the structure of the config file as of PlayerManagement 1.6:
+The following is the structure of the config file as of PlayerManagement 1.7:
 
 ```yaml
 General:
@@ -10,6 +10,7 @@ General:
   CardPrice: 2500.0             # the price of an ID card (ignored on /registerid)
   CardItemLore: Unique Player ID Card # ID card item lore (changing this will invalidate all existing ID cards on the server!)
   ScoreboardSignText: §8[§9TopPlayers§8]  # the formatted text that [TopPlayers] on signs will be replaced with
+  ExperimentalFeatures: false   # toggles experimental features (don't use this on a public server)
 Company:
   EstablishPrice: 3000.0        # the price of establishing a new company
 Punishments:
@@ -54,13 +55,13 @@ PlayerList:
   - |2-
 
     §8§oPowered by PlayerManagement v1.6 by RedCreator37
-  # you can remove these 3 lines ^^^
+  # you can remove these 3 credit lines ^^^
   Display:                      # formatting used for players of each rank in the playerlist
     Generic: §8[ §f{playername} §8]
     Members: §8[ §a{playername} §8]
     VIP: §8[ §b{playername} §8]
     Admins: §8[ §c{playername} §8]
-  Label:                        # formatted rank labels
+  Label:                        # rank label formats
     Generic: §fNone
     Members: §aMembers
     VIP: §bVIP
@@ -69,7 +70,7 @@ PlayerList:
 
 ## Placeholders
 
-These are the `{placeholders}` supported as of PlayerManagement 1.6:
+These are the `{placeholders}` supported as of PlayerManagement 1.7:
 
 ```yaml
 {playercount}     # the number of online players
@@ -77,10 +78,10 @@ These are the `{placeholders}` supported as of PlayerManagement 1.6:
 {playername}      # username of the current player
 {playerbalance}   # balance of the current player
 {playermail}      # mail count of the current player
-{playerworld}     # world in which the player is located
+{playerworld}     # the world in which the player is located
 {playerrank}      # rank of the current player
 {playercompany}   # company of the current player
-{playergamemode}  # gamemode of the current player
+{playergamemode}  # game mode of the current player
 ```
 
 ## Permissions
@@ -92,24 +93,24 @@ management.user:
   description: The recommended user-level permission
   default: op
 management.admin:
-  description: Gives access to all commands
+  description: Grants access to all commands
   default: op
 management.company:
-  description: Gives access to most company-related commands
+  description: Grants access to most company management-related commands
   default: op
 management.company.establish:
-  description: Gives a player the permission to establish a new company
+  description: Allows establishing new companies
   default: op
 management.company.employ:
-  description: Gives a player the permission to employ at other companies
+  description: Allows employing at other companies
   default: op
 playerlist.member:
-  description: Member rank
+  description: Default member rank
   default: op
 playerlist.vip:
-  description: VIP rank
+  description: Default VIP rank
   default: op
 playerlist.admin:
-  description: Admin rank
+  description: Default admin rank
   default: op
 ```

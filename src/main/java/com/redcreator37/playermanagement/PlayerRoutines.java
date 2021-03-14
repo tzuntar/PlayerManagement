@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement;
 
-import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,12 +8,10 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -137,52 +134,6 @@ public final class PlayerRoutines {
                     + ChatColor.GREEN + entered);
             return null;
         }
-    }
-
-    /**
-     * Displays the info for the specified company in a book
-     *
-     * @param p the player that'll see the info
-     * @param c the company to get the data from
-     */
-    public static void displayCompanyInfo(Player p, Company c) {
-        List<String> pages = new ArrayList<>();
-        BigDecimal afterPayments = c.getBalance().subtract(c.getWage()
-                .multiply(BigDecimal.valueOf(c.getEmployees())));
-        List<ServerPlayer> employees = PlayerManagement.players.values().stream()
-                .filter(pl -> pl.getCompany().equals(c))
-                .collect(Collectors.toList());
-
-        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l > --"
-                + "\n\n§0§l" + lc("name") + " §r§2§l§o" + c
-                + "\n\n§0§l" + lc("description") + " §r§1§o" + c.getDescription()
-                + "\n\n§0§l" + lc("balance") + " §r§1" + formatDecimal(c.getBalance())
-                + "\n\n§0§l" + lc("employees") + " §r§1" + c.getEmployees());
-        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
-                + "\n\n§0§l" + lc("wage") + " §r§1" + formatDecimal(c.getWage())
-                + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
-                .prefs.autoEcoTimeSeconds / 60 + "§r " + lc("minutes")
-                + "\n\n§0" + lc("balance-after-payments")
-                + " §r§1" + formatDecimal(afterPayments)
-                + "\n\n§0§l" + lc("owner") + " §r§1" + c.getOwner()
-                + "\n\n§0§l" + lc("established") + " §r§1" + c.getEstablishedDate());
-
-        for (int i = 0; i < employees.size(); i++) {
-            StringBuilder sb = new StringBuilder("§1§l --< §2§l"
-                    + lc("company-uppercase") + " §1§l>--"
-                    + "\n\n§r§l" + lc("employees") + "\n\n§r");
-            ServerPlayer pl = employees.get(i);
-            sb.append(pl).append("\n");
-            for (int j = 0; j < 8; j++) {
-                i++;
-                if (i < employees.size()) {
-                    pl = employees.get(i);
-                    sb.append(pl).append("\n");
-                }
-            }
-            pages.add(sb.toString());
-        }
-        PlayerCard.openBook(p, pages, "N/A", "N/A");
     }
 
     /**

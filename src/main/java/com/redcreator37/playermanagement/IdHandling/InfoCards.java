@@ -1,20 +1,17 @@
-package com.redcreator37.playermanagement;
+package com.redcreator37.playermanagement.IdHandling;
 
+import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.PlayerManagement;
+import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -22,66 +19,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
 /**
- * Handles all in-game ID card actions
+ * A common class for creating and displaying in-game book based data
+ * representations
  */
-public class PlayerCard implements Listener {
+public class InfoCards {
 
     /**
-     * Handles all right-click events
+     * Constructs and displays an in-game book to the player
      *
-     * @param event the player interact event
+     * @param p      the target player
+     * @param pages  the contents of the book
+     * @param title  the book title
+     * @param author the book author
      */
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerUse(PlayerInteractEvent event) {
-        Player p = event.getPlayer();
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-            List<String> lore = null;
-            try {
-                lore = Objects.requireNonNull(p.getInventory()
-                        .getItemInMainHand().getItemMeta()).getLore();
-            } catch (NullPointerException ignored) { }
-
-            if (lore != null && lore.contains(PlayerManagement.prefs.cardItemLore))
-                handlePlayerCardEvent(p, lore);
-        }
-    }
-
-    /**
-     * Handles card right click event
-     *
-     * @param player the player that caused the event
-     * @param lore   the item (card) lore
-     */
-    private static void handlePlayerCardEvent(Player player, List<String> lore) {
-        ServerPlayer target = PlayerManagement.players.get(lore.get(1));
-        if (target != null) displayCardData(player, target);
-        else player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                + lc("invalid-id-card"));
-    }
-
-    /**
-     * Creates a new ID card item serialized with the player's
-     * UUID and gives it to the player
-     *
-     * @param player the player the card will be given to
-     * @param target the ServerPlayer object to get the data form
-     */
-    public static void giveNewCard(Player player, ServerPlayer target) {
-        ItemStack stack = new ItemStack(Material.ENCHANTED_BOOK, 1);
-        ItemMeta data = stack.getItemMeta();
-        Objects.requireNonNull(data).setDisplayName("ID Card: " + target);
-
-        List<String> lore = new ArrayList<>();
-        lore.add(PlayerManagement.prefs.cardItemLore);
-        lore.add(target.getUuid());
-        Objects.requireNonNull(data).setLore(lore);
-        stack.setItemMeta(data);
-
-        player.getInventory().addItem(stack);
+    public static void openBook(Player p, List<String> pages, String title, String author) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
+        BookMeta meta = (BookMeta) book.getItemMeta();
+        Objects.requireNonNull(meta).setPages(pages);
+        meta.setTitle(title);
+        meta.setAuthor(author);
+        book.setItemMeta(meta);
+        p.openBook(book);
     }
 
     /**
@@ -92,7 +55,7 @@ public class PlayerCard implements Listener {
      * @return the color formatted string
      */
     @SuppressWarnings("SameParameterValue")
-    private static String getBarGraph(double level, double max) {
+    private static String drawBarGraph(double level, double max) {
         assert level <= max;
         StringBuilder graph = new StringBuilder((int) max * 2);
         String lvl = "§2";
@@ -111,7 +74,7 @@ public class PlayerCard implements Listener {
      * @param invoker the player requesting the data
      * @param player  the player for which to look up the data
      */
-    public static void displayCardData(Player invoker, ServerPlayer player) {
+    public static void displayPlayerInfo(Player invoker, ServerPlayer player) {
         if (player == null) {   // invalid uuid or invalid card
             invoker.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + "Invalid ID card!");
@@ -144,12 +107,12 @@ public class PlayerCard implements Listener {
                 + formatPunishments(player));
 
         if (p != null) {    // these are only available if the player is online
-            String health = getBarGraph(p.getHealth(), 20);
-            String foodLevel = getBarGraph(p.getFoodLevel(), 20);
-            String saturationLevel = getBarGraph(p.getSaturation(), 20);
+            String health = drawBarGraph(p.getHealth(), 20);
+            String foodLevel = drawBarGraph(p.getFoodLevel(), 20);
+            String saturationLevel = drawBarGraph(p.getSaturation(), 20);
             double armor = Objects.requireNonNull(p
                     .getAttribute(Attribute.GENERIC_ARMOR)).getValue();
-            String armorLevel = getBarGraph(armor, 20);
+            String armorLevel = drawBarGraph(armor, 20);
 
             // values are cast to int for formatting purposes
             pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
@@ -207,21 +170,49 @@ public class PlayerCard implements Listener {
     }
 
     /**
-     * Constructs and displays an in-game book to the player
+     * Displays the info for the specified company in a book
      *
-     * @param p      the target player
-     * @param pages  the contents of the book
-     * @param title  the book title
-     * @param author the book author
+     * @param p the player that'll see the info
+     * @param c the company to get the data from
      */
-    public static void openBook(Player p, List<String> pages, String title, String author) {
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
-        BookMeta meta = (BookMeta) book.getItemMeta();
-        Objects.requireNonNull(meta).setPages(pages);
-        meta.setTitle(title);
-        meta.setAuthor(author);
-        book.setItemMeta(meta);
-        p.openBook(book);
+    public static void displayCompanyInfo(Player p, Company c) {
+        List<String> pages = new ArrayList<>();
+        BigDecimal afterPayments = c.getBalance().subtract(c.getWage()
+                .multiply(BigDecimal.valueOf(c.getEmployees())));
+        List<ServerPlayer> employees = PlayerManagement.players.values().stream()
+                .filter(pl -> pl.getCompany().equals(c))
+                .collect(Collectors.toList());
+
+        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l > --"
+                + "\n\n§0§l" + lc("name") + " §r§2§l§o" + c
+                + "\n\n§0§l" + lc("description") + " §r§1§o" + c.getDescription()
+                + "\n\n§0§l" + lc("balance") + " §r§1" + PlayerRoutines.formatDecimal(c.getBalance())
+                + "\n\n§0§l" + lc("employees") + " §r§1" + c.getEmployees());
+        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
+                + "\n\n§0§l" + lc("wage") + " §r§1" + PlayerRoutines.formatDecimal(c.getWage())
+                + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
+                .prefs.autoEcoTimeSeconds / 60 + "§r " + lc("minutes")
+                + "\n\n§0" + lc("balance-after-payments")
+                + " §r§1" + PlayerRoutines.formatDecimal(afterPayments)
+                + "\n\n§0§l" + lc("owner") + " §r§1" + c.getOwner()
+                + "\n\n§0§l" + lc("established") + " §r§1" + c.getEstablishedDate());
+
+        for (int i = 0; i < employees.size(); i++) {
+            StringBuilder sb = new StringBuilder("§1§l --< §2§l"
+                    + lc("company-uppercase") + " §1§l>--"
+                    + "\n\n§r§l" + lc("employees") + "\n\n§r");
+            ServerPlayer pl = employees.get(i);
+            sb.append(pl).append("\n");
+            for (int j = 0; j < 8; j++) {
+                i++;
+                if (i < employees.size()) {
+                    pl = employees.get(i);
+                    sb.append(pl).append("\n");
+                }
+            }
+            pages.add(sb.toString());
+        }
+        openBook(p, pages, "N/A", "N/A");
     }
 
     /**

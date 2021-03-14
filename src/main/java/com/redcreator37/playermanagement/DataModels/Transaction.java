@@ -1,7 +1,7 @@
 package com.redcreator37.playermanagement.DataModels;
 
+import com.redcreator37.playermanagement.IdHandling.InfoCards;
 import com.redcreator37.playermanagement.Localization;
-import com.redcreator37.playermanagement.PlayerCard;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -142,7 +142,7 @@ public class Transaction {
             }
             pages.add(sb.toString());
         }
-        PlayerCard.openBook(p, pages, "N/A", "N/A");
+        InfoCards.openBook(p, pages, "N/A", "N/A");
     }
 
     /**
@@ -152,14 +152,8 @@ public class Transaction {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + getId();
-        result *= 37 + getCompanyId();
-        result *= 37 + Objects.hashCode(getDirection());
-        result *= 37 + Objects.hashCode(getTitle());
-        result *= 37 + Objects.hashCode(getDescription());
-        result *= 37 + Objects.hashCode(getAmount());
-        return result;
+        return Objects.hash(getId(), getCompanyId(), getDirection(),
+                getTitle(), getDescription(), getAmount());
     }
 
 }

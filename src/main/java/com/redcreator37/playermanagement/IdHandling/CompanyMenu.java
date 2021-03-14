@@ -1,7 +1,8 @@
-package com.redcreator37.playermanagement;
+package com.redcreator37.playermanagement.IdHandling;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Transaction;
+import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -108,7 +109,8 @@ public class CompanyMenu implements Listener {
      * @param slot    the inventory slot (must be valid!)
      */
     public void newItem(Material type, String caption, int amount, String[] lore, int slot) {
-        assert slot <= inventory.getSize();
+        if (slot > inventory.getSize())
+            throw new IllegalArgumentException("Slot number must not exceed the size of the inventory");
         ItemStack item = new ItemStack(type);
         ItemMeta meta = item.getItemMeta();
 

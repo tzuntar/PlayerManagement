@@ -47,6 +47,11 @@ public class PreferencesHolder {
     public String cardItemLore = "Unique Player ID Card";
 
     /**
+     * Enables experimental features
+     */
+    public boolean experimentalFeatures = false;
+
+    /**
      * The price of establishing a new company
      */
     public double establishPrice = 3000;
@@ -209,6 +214,7 @@ public class PreferencesHolder {
         conf.addDefault("General.CardPrice", cardPrice);
         conf.addDefault("General.CardItemLore", cardItemLore);
         conf.addDefault("General.ScoreboardSignText", scoreboardSignText);
+        conf.addDefault("General.ExperimentalFeatures", experimentalFeatures);
         conf.addDefault("Company.EstablishPrice", establishPrice);
         conf.addDefault("Punishments.Amount", fineAmount);
         conf.addDefault("Punishments.MaxBeforeBan", maxFines);
@@ -252,6 +258,7 @@ public class PreferencesHolder {
         cardItemLore = Objects.requireNonNull(newLore).trim()
                 .equals("") ? cardItemLore : newLore;
         scoreboardSignText = conf.getString("General.ScoreboardSignText");
+        experimentalFeatures = conf.getBoolean("General.ExperimentalFeatures");
 
         establishPrice = conf.getInt("Company.EstablishPrice");
         fineAmount = conf.getInt("Punishments.Price");

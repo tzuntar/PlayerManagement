@@ -32,8 +32,8 @@ public class TransactionDb extends SharedDb<Transaction, List<Transaction>> {
     /**
      * Executes the specified sql update query
      *
-     * @param sql the SQL command. Example: <code>INSERT INTO
-     *            contacts (name, surname) VALUES (?, ?)</code>
+     * @param sql the SQL command. Example: {@code INSERT INTO
+     *            contacts (name, surname) VALUES (?, ?)}
      * @param t   the Transaction object to get the data from
      * @throws SQLException on errors
      */

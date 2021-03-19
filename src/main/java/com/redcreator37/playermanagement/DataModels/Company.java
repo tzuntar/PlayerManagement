@@ -174,16 +174,8 @@ public class Company {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + getId();
-        result *= 37 + Objects.hashCode(getName());
-        result *= 37 + Objects.hashCode(getDescription());
-        result *= 37 + Objects.hashCode(getBalance());
-        result *= 37 + Objects.hashCode(getEmployees());
-        result *= 37 + Objects.hashCode(getOwner());
-        result *= 37 + Objects.hashCode(getEstablishedDate());
-        result *= 37 + Objects.hashCode(getWage());
-        return result;
+        return Objects.hash(getId(), getName(), getDescription(), getBalance(),
+                getEmployees(), getOwner(), getEstablishedDate(), getWage());
     }
 
 }

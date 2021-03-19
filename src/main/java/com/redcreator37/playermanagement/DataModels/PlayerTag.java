@@ -66,10 +66,7 @@ public class PlayerTag {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + Objects.hashCode(getUsername());
-        result *= 37 + Objects.hashCode(getUuid());
-        return result;
+        return Objects.hash(getUsername(), getUuid());
     }
 
 }

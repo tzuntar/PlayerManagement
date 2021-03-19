@@ -27,8 +27,8 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
     /**
      * Executes the specified sql update query
      *
-     * @param sql the SQL command. Example: <code>INSERT INTO
-     *            contacts (name, surname) VALUES (?, ?)</code>
+     * @param sql the SQL command. Example: {@code INSERT INTO
+     *            contacts (name, surname) VALUES (?, ?)}
      * @param job the Job object to get the data froms
      * @throws SQLException on errors
      */

@@ -2,11 +2,12 @@ package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
 import com.redcreator37.playermanagement.Commands.CommandHelper;
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
-import com.redcreator37.playermanagement.CompanyMenu;
+import com.redcreator37.playermanagement.IdHandling.CompanyMenu;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
+import com.redcreator37.playermanagement.IdHandling.InfoCards;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
@@ -109,7 +110,7 @@ public class CompanyManagement extends PlayerCommand {
 
         switch (args[1]) {
             case "info":
-                PlayerRoutines.displayCompanyInfo(player, company);
+                InfoCards.displayCompanyInfo(player, company);
                 break;
             case "increase":
                 company.setWage(company.getWage().add(amount));

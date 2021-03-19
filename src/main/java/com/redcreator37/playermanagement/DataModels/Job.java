@@ -68,11 +68,7 @@ public class Job {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + getId();
-        result *= 37 + Objects.hashCode(getName());
-        result *= 37 + Objects.hashCode(getDescription());
-        return result;
+        return Objects.hash(getId(), getName(), getDescription());
     }
 
 }

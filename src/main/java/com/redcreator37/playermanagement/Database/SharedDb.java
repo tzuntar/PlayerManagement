@@ -1,5 +1,9 @@
 package com.redcreator37.playermanagement.Database;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,8 +12,8 @@ import java.sql.SQLException;
  * Common database routines
  *
  * @param <T> the type of the data to operate on
- * @param <R> the result that'll be returned by data retrieval
- *            methods (used to allow different return values than maps)
+ * @param <R> the result which will be returned by methods
+ *            (used to allow different return values than maps)
  */
 public abstract class SharedDb<T, R> {
 
@@ -40,8 +44,8 @@ public abstract class SharedDb<T, R> {
     /**
      * Executes this sql update query
      *
-     * @param sql    the SQL command. Example: <code>INSERT INTO
-     *               contacts(name, surname) VALUES(?,?)</code>
+     * @param sql    the SQL command. Example: {@code INSERT INTO
+     *               contacts (name, surname) VALUES (?, ?)}
      * @param t      the object containing the data
      * @param update controls whether to run an update or an insert
      *               operation
@@ -68,6 +72,7 @@ public abstract class SharedDb<T, R> {
     public abstract R getAll() throws SQLException;
 
     /**
+     * +
      * Inserts this object into the database
      *
      * @param t the object to insert
@@ -92,60 +97,22 @@ public abstract class SharedDb<T, R> {
     public abstract void remove(T t) throws SQLException;
 
     /**
-     * Create possibly nonexistent database tables
+     * Creates possibly nonexistent database tables
      *
-     * @param db the database connection to use
+     * @param con       database connection
+     * @param sqlStream the stream to the file which contains SQL
+     *                  queries to execute to generate the tables
      * @throws SQLException on errors
      */
-    public static void createTables(Connection db) throws SQLException {
-        String sql = "create table if not exists players\n(\n" +
-                "    id          integer not null\n" +
-                "        constraint players_pk\n" +
-                "            primary key autoincrement,\n" +
-                "    username    text    not null,\n" +
-                "    uuid        text    not null,\n" +
-                "    name        text default '',\n" +
-                "    join_date   text default '',\n" +
-                "    job         text default ''\n" +
-                "        constraint players_jobs_name_fk\n" +
-                "            references jobs (name),\n" +
-                "    company     text default ''\n" +
-                "        constraint players_companies_name_fk\n" +
-                "            references companies (name),\n" +
-                "    notes       text default '',\n" +
-                "    punishments int  default 0 not null\n);";
-        db.prepareStatement(sql).execute();
-        sql = "create table if not exists jobs\n(\n" +
-                "    id          integer not null\n" +
-                "        primary key autoincrement,\n" +
-                "    name        text    not null,\n" +
-                "    description text default ''\n);";
-        db.prepareStatement(sql).execute();
-        sql = "create table if not exists companies\n(\n" +
-                "    id          integer not null\n" +
-                "        constraint companies_pk\n" +
-                "            primary key autoincrement,\n" +
-                "    name        text    default 'N/A' not null,\n" +
-                "    description text    default '',\n" +
-                "    money       text    default '0' not null,\n" +
-                "    employees   integer default 0,\n" +
-                "    owner       text    default ''\n" +
-                "        constraint companies_players_username_fk\n" +
-                "            references players (username),\n" +
-                "    established text    default '',\n" +
-                "    paycheck    text    default '10'\n);";
-        db.prepareStatement(sql).execute();
-        sql = "create table if not exists transactions\n(\n" +
-                "    id          integer not null\n" +
-                "        constraint transactions_pk\n" +
-                "            primary key autoincrement,\n" +
-                "    companyId   integer not null\n" +
-                "        references companies,\n" +
-                "    direction   TEXT    not null,\n" +
-                "    title       TEXT,\n" +
-                "    description text,\n" +
-                "    amount      TEXT default '0' not null);";
-        db.prepareStatement(sql).execute();
+    public static void createTables(Connection con, InputStream sqlStream) throws SQLException, IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(sqlStream));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null)
+            if (line.startsWith("--")) {
+                con.prepareStatement(builder.toString()).execute();
+                builder = new StringBuilder();
+            } else builder.append(line).append(" ");
     }
 
 }

@@ -41,7 +41,7 @@ public final class PlayerRoutines {
     }
 
     /**
-     * Returns <code>true</code> if this ServerPlayer doesn't exist
+     * Returns {@code true} if this ServerPlayer doesn't exist
      * and sends the message to the invoker
      *
      * @param invoker the command invoker which will see any output
@@ -109,7 +109,7 @@ public final class PlayerRoutines {
     /**
      * Returns the current date in a string
      *
-     * @param dateFormat the date format (ex. <code>yyyy-MM-dd</code>)
+     * @param dateFormat the date format (ex. {@code yyyy-MM-dd})
      * @return the current date in the specified format
      */
     public static String getCurrentDate(String dateFormat) {

@@ -34,8 +34,8 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     /**
      * Executes the specified sql update query
      *
-     * @param sql the SQL command. Example: <code>INSERT INTO
-     *            contacts (name, surname) VALUES (?, ?)</code>
+     * @param sql the SQL command. Example: {@code INSERT INTO
+     *            contacts (name, surname) VALUES (?, ?)}
      * @param c   the Company object to get the data from
      * @throws SQLException on errors
      */

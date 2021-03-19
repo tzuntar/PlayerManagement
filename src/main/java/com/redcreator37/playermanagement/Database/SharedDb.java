@@ -12,8 +12,8 @@ import java.sql.SQLException;
  * Common database routines
  *
  * @param <T> the type of the data to operate on
- * @param <R> the result that'll be returned by data retrieval
- *            methods (used to allow different return values than maps)
+ * @param <R> the result which will be returned by methods
+ *            (used to allow different return values than maps)
  */
 public abstract class SharedDb<T, R> {
 
@@ -44,8 +44,8 @@ public abstract class SharedDb<T, R> {
     /**
      * Executes this sql update query
      *
-     * @param sql    the SQL command. Example: <code>INSERT INTO
-     *               contacts(name, surname) VALUES(?,?)</code>
+     * @param sql    the SQL command. Example: {@code INSERT INTO
+     *               contacts (name, surname) VALUES (?, ?)}
      * @param t      the object containing the data
      * @param update controls whether to run an update or an insert
      *               operation
@@ -72,6 +72,7 @@ public abstract class SharedDb<T, R> {
     public abstract R getAll() throws SQLException;
 
     /**
+     * +
      * Inserts this object into the database
      *
      * @param t the object to insert

@@ -30,8 +30,8 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
     /**
      * Executes the specified sql update query
      *
-     * @param sql    the SQL command. Example: <code>INSERT INTO
-     *               contacts(name, surname) VALUES(?, ?)</code>
+     * @param sql    the SQL command. Example: {@code INSERT INTO
+     *               contacts (name, surname) VALUES (?, ?)}
      * @param player the player object to get the data from
      * @throws SQLException on errors
      */

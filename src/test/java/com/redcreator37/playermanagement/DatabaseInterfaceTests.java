@@ -1,3 +1,5 @@
+package com.redcreator37.playermanagement;
+
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;

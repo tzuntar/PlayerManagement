@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -69,7 +70,7 @@ public final class PlayerCard implements Listener {
         ItemMeta data = stack.getItemMeta();
         Objects.requireNonNull(data).setDisplayName("ID Card: " + target);
 
-        List<String> lore = new ArrayList<>();
+        List<UUID> lore = new ArrayList<>();
         lore.add(PlayerManagement.prefs.cardItemLore);
         lore.add(target.getUuid());
         Objects.requireNonNull(data).setLore(lore);

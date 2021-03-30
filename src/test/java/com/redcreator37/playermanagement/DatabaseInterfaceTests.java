@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
 
 /**
  * Tests the database interface capabilities
@@ -29,7 +30,7 @@ public class DatabaseInterfaceTests {
     /**
      * The generic placeholder value to use when filling fields
      */
-    private static final String GENERIC_PH = "N/A";
+    private static final UUID GENERIC_PH = "N/A";
 
     /**
      * Tests the database creation/operation/deletion capabilities

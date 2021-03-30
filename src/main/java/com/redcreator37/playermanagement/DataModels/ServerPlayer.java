@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.DataModels;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a Minecraft player on the server
@@ -107,7 +108,7 @@ public class ServerPlayer {
         this.name = name;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return tag.getUuid();
     }
 

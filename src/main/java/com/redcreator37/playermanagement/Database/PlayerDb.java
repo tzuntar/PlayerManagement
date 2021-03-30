@@ -12,11 +12,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Player-related database routines
  */
-public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> {
+public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
 
     /**
      * Constructs a new PlayerDb instance
@@ -63,8 +64,8 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * @throws SQLException on errors
      */
     @Override
-    public Map<String, ServerPlayer> commonQuery(String sql) throws SQLException {
-        Map<String, ServerPlayer> players = new HashMap<>();
+    public Map<UUID, ServerPlayer> commonQuery(String sql) throws SQLException {
+        Map<UUID, ServerPlayer> players = new HashMap<>();
         Statement st = db.createStatement();
         st.closeOnCompletion();
         ResultSet set = st.executeQuery(sql);
@@ -93,7 +94,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<String, ServerPlayer>> 
      * @throws SQLException on errors
      */
     @Override
-    public Map<String, ServerPlayer> getAll() throws SQLException {
+    public Map<UUID, ServerPlayer> getAll() throws SQLException {
         String cmd = "SELECT players.* FROM players INNER JOIN jobs ON jobs.name = players.job" +
                 " INNER JOIN companies ON companies.name = players.company;";
         return commonQuery(cmd);

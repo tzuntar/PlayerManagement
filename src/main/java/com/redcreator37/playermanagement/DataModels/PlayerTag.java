@@ -4,6 +4,7 @@ import com.redcreator37.playermanagement.PlayerRoutines;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a combination tag containing the player's in-game
@@ -19,7 +20,7 @@ public class PlayerTag {
     /**
      * The player's UUID
      */
-    private final String uuid;
+    private final UUID uuid;
 
     /**
      * Constructs a new PlayerTag instance with this username
@@ -28,7 +29,7 @@ public class PlayerTag {
      * @param username the player's in-game username
      * @param uuid     the player's unique UUID
      */
-    public PlayerTag(String username, String uuid) {
+    public PlayerTag(String username, UUID uuid) {
         this.username = username;
         this.uuid = uuid;
     }
@@ -55,7 +56,7 @@ public class PlayerTag {
         return username;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 

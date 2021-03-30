@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -24,20 +23,6 @@ public final class PlayerRoutines {
      * Non-instantiable
      */
     private PlayerRoutines() {
-    }
-
-    /**
-     * Returns the UUID of the ServerPlayer with the matching username
-     *
-     * @param players  the player list to get the player from
-     * @param username the entered username
-     * @return the matching UUID string, or null if the
-     * player with this username wasn't found
-     */
-    public static String uuidFromUsername(Map<String, ServerPlayer> players, String username) {
-        return players.values().stream().filter(pl -> pl.getUsername().equals(username))
-                .map(ServerPlayer::getUuid)
-                .findFirst().orElse(null);
     }
 
     /**

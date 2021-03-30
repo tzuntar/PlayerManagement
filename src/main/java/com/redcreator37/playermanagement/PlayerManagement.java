@@ -17,7 +17,6 @@ import com.redcreator37.playermanagement.Commands.PlayerCommands.SetJob;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetNotes;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Job;
-import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
 import com.redcreator37.playermanagement.Database.CompanyDb;
 import com.redcreator37.playermanagement.Database.JobDb;
@@ -74,11 +73,9 @@ public final class PlayerManagement extends JavaPlugin {
     public static PreferencesHolder prefs;
 
     /**
-     * Contains the data for all players on the server
-     * The key is the player UUID, the value is the matching
-     * ServerPlayer object
+     * Contains data for all player on the server
      */
-    public static Map<String, ServerPlayer> players = null;
+    public static PlayerDataContainer players = null;
 
     /**
      * Contains the data for all jobs on the server
@@ -189,7 +186,7 @@ public final class PlayerManagement extends JavaPlugin {
 
         if (prefs.experimentalFeatures) {
             globalDataBoard = new IdBoard(Objects.requireNonNull(Bukkit.getScoreboardManager()),
-                    "Players", new ArrayList<>(players.values()));
+                    "Players", new ArrayList<>(players.getPlayers().values()));
             enableScoreboards();
         }
     }
@@ -249,11 +246,6 @@ public final class PlayerManagement extends JavaPlugin {
         companyDb = new CompanyDb(database);
         transactionDb = new TransactionDb(database);
 
-        players = new HashMap<>();
-        jobs = new HashMap<>();
-        companies = new HashMap<>();
-        transactions = new ArrayList<>();
-
         if (newDb) // empty database
             try {
                 SharedDb.createTables(database, PlayerManagement.class
@@ -271,7 +263,7 @@ public final class PlayerManagement extends JavaPlugin {
             jobs = jobDb.getAll();   // it has to be done in this exact order!
             companies = companyDb.getAll();
             transactions = transactionDb.getAll();
-            players = playerDb.getAll();
+            players = new PlayerDataContainer(playerDb.getAll());
             getLogger().info(Localization.lc("player-db-loaded-successfully"));
         } catch (SQLException e) {
             getLogger().severe(Localization.lc("error-reading-from-db") + e.getMessage());

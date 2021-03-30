@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Contains all user-settable preferences which apply to the currently
@@ -44,7 +45,7 @@ public class PreferencesHolder {
      * The item lore (description) text which separates ID cards from
      * other items
      */
-    public String cardItemLore = "Unique Player ID Card";
+    public UUID cardItemLore = "Unique Player ID Card";
 
     /**
      * Enables experimental features

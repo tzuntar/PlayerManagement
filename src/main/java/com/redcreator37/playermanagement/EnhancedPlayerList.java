@@ -73,7 +73,7 @@ public class EnhancedPlayerList implements Listener {
                 String company = "N/A";
                 if (s.contains("{playercompany}")) {    // for performance reasons
                     ServerPlayer target = PlayerManagement.players
-                            .get(player.getUniqueId().toString());
+                            .byUuid(player.getUniqueId());
                     if (target != null)
                         company = target.getCompany().getName();
                 }

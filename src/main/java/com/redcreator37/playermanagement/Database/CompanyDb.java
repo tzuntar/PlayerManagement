@@ -71,7 +71,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
 
         // loop through the records
         while (set.next()) {
-            String uuid = set.getString("owner");
+            UUID uuid = set.getString("owner");
             PlayerTag ownerTag = new PlayerTag(!uuid.equals("N/A")
                     ? Bukkit.getOfflinePlayer(UUID
                     .fromString(uuid)).getName() : "N/A", uuid);
@@ -108,7 +108,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
      * @return the list of matching companies
      * @throws SQLException on errors
      */
-    public Map<String, Company> getCompaniesByOwner(String uuid) throws SQLException {
+    public Map<String, Company> getCompaniesByOwner(UUID uuid) throws SQLException {
         return commonQuery("SELECT * FROM companies WHERE owner = '" + uuid + "'");
     }
 

@@ -17,38 +17,6 @@ import java.util.List;
 public class AdvancementReward implements Listener {
 
     /**
-     * Handles the advancement done event
-     *
-     * @param event the advancement done event
-     */
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
-        Player p = event.getPlayer();
-        if (PlayerManagement.players.doesNotExist(event.getPlayer().getName()))
-            return;
-
-        Bukkit.getScheduler().runTask(PlayerManagement.getPlugin(PlayerManagement.class), () -> {
-            // get the reward per rank
-            double reward;
-            String adv = event.getAdvancement().getKey().getKey();
-            if (adv.contains("recipes/")) return;   // skip the recipes
-            if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank1, adv))
-                reward = PlayerManagement.prefs.rewardRank1;
-            else if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank2, adv))
-                reward = PlayerManagement.prefs.rewardRank2;
-            else if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank3, adv))
-                reward = PlayerManagement.prefs.rewardRank3;
-            else return;
-
-            PlayerManagement.eco.depositPlayer(p, reward);
-            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("advancement-made")
-                    + ChatColor.GREEN + "$" + reward + ChatColor.GOLD
-                    + Localization.lc("has-been-added-to-your-account"));
-        });
-    }
-
-    /**
      * Contains the default rank 1 advancements
      */
     private static final String defaultRank1 = "story/mine_stone;" +
@@ -82,7 +50,6 @@ public class AdvancementReward implements Listener {
             "husbandry/fishy_business;" +
             "husbandry/plant_seed;" +
             "husbandry/tactical_fishing";
-
     /**
      * Contains the default rank 2 advancements
      */
@@ -99,7 +66,6 @@ public class AdvancementReward implements Listener {
             "adventure/totem_of_undying;" +
             "adventure/summon_iron_golem;" +
             "adventure/sniper_duel";
-
     /**
      * Contains the default rank 3 advancements
      */
@@ -131,6 +97,38 @@ public class AdvancementReward implements Listener {
         String source = rank == 1 ? defaultRank1
                 : (rank == 2 ? defaultRank2 : defaultRank3);
         return Arrays.asList(source.split(";"));
+    }
+
+    /**
+     * Handles the advancement done event
+     *
+     * @param event the advancement done event
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
+        Player p = event.getPlayer();
+        if (PlayerManagement.players.doesNotExist(event.getPlayer().getName()))
+            return;
+
+        Bukkit.getScheduler().runTask(PlayerManagement.getPlugin(PlayerManagement.class), () -> {
+            // get the reward per rank
+            double reward;
+            String adv = event.getAdvancement().getKey().getKey();
+            if (adv.contains("recipes/")) return;   // skip the recipes
+            if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank1, adv))
+                reward = PlayerManagement.prefs.rewardRank1;
+            else if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank2, adv))
+                reward = PlayerManagement.prefs.rewardRank2;
+            else if (PlayerRoutines.checkIfContains(PlayerManagement.prefs.advRank3, adv))
+                reward = PlayerManagement.prefs.rewardRank3;
+            else return;
+
+            PlayerManagement.eco.depositPlayer(p, reward);
+            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
+                    + Localization.lc("advancement-made")
+                    + ChatColor.GREEN + "$" + reward + ChatColor.GOLD
+                    + Localization.lc("has-been-added-to-your-account"));
+        });
     }
 
 }

@@ -42,6 +42,25 @@ public abstract class SharedDb<T, R> {
     }
 
     /**
+     * Creates possibly nonexistent database tables
+     *
+     * @param con       database connection
+     * @param sqlStream the stream to the file which contains SQL
+     *                  queries to execute to generate the tables
+     * @throws SQLException on errors
+     */
+    public static void createTables(Connection con, InputStream sqlStream) throws SQLException, IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(sqlStream));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null)
+            if (line.startsWith("--")) {
+                con.prepareStatement(builder.toString()).execute();
+                builder = new StringBuilder();
+            } else builder.append(line).append(" ");
+    }
+
+    /**
      * Executes this sql update query
      *
      * @param sql    the SQL command. Example: {@code INSERT INTO
@@ -95,24 +114,5 @@ public abstract class SharedDb<T, R> {
      * @throws SQLException on errors
      */
     public abstract void remove(T t) throws SQLException;
-
-    /**
-     * Creates possibly nonexistent database tables
-     *
-     * @param con       database connection
-     * @param sqlStream the stream to the file which contains SQL
-     *                  queries to execute to generate the tables
-     * @throws SQLException on errors
-     */
-    public static void createTables(Connection con, InputStream sqlStream) throws SQLException, IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(sqlStream));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null)
-            if (line.startsWith("--")) {
-                con.prepareStatement(builder.toString()).execute();
-                builder = new StringBuilder();
-            } else builder.append(line).append(" ");
-    }
 
 }

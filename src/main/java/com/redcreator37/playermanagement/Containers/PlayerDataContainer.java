@@ -1,7 +1,8 @@
-package com.redcreator37.playermanagement;
+package com.redcreator37.playermanagement.Containers;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
+import com.redcreator37.playermanagement.PlayerManagement;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * ToDo: complete this class and fix all related errors
+ * Contains containerized global server player data
  */
 public class PlayerDataContainer {
 

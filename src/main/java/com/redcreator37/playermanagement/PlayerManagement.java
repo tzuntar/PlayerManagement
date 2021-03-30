@@ -15,6 +15,7 @@ import com.redcreator37.playermanagement.Commands.PlayerCommands.RegisterId;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetCompany;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetJob;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetNotes;
+import com.redcreator37.playermanagement.Containers.PlayerDataContainer;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.Transaction;
@@ -60,71 +61,59 @@ public final class PlayerManagement extends JavaPlugin {
      * The currently loaded Vault plugin object
      */
     public static Economy eco = null;
-
-    /**
-     * The database connection to use for all operations
-     */
-    private static Connection database = null;
-
     /**
      * Contains all user-settable preferences of the currently
      * running instance of this plugin
      */
     public static PreferencesHolder prefs;
-
     /**
      * Contains data for all player on the server
      */
     public static PlayerDataContainer players = null;
-
     /**
      * Contains the data for all jobs on the server
      * The key is the job name, the value is the matching Job object
      */
     public static Map<String, Job> jobs = null;
-
     /**
      * Contains the data for all companies on the server
      * The key is the company name, the value is the matching Company
      * object
      */
     public static Map<String, Company> companies = null;
-
     /**
      * Contains all transactions on the server
      */
     public static List<Transaction> transactions = null;
-
     /**
      * Provides access to the player database
      */
     public static PlayerDb playerDb = null;
-
     /**
      * Provides access to the job database
      */
     public static JobDb jobDb = null;
-
     /**
      * Provides access to the company database
      */
     public static CompanyDb companyDb = null;
-
     /**
      * Provides access to the transaction database
      */
     public static TransactionDb transactionDb = null;
-
     /**
      * Provides in-game economy-related features
      */
     public static EconomyProvider economyProvider = null;
-
     /**
      * The global scoreboard which displays basic data for
      * all players
      */
     public static IdBoard globalDataBoard;
+    /**
+     * The database connection to use for all operations
+     */
+    private static Connection database = null;
 
     /**
      * Plugin startup logic

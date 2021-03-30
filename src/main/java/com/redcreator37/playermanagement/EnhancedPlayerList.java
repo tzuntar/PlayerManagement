@@ -16,16 +16,6 @@ import java.util.Objects;
 public class EnhancedPlayerList implements Listener {
 
     /**
-     * Initially sets the player list for the player on join
-     *
-     * @param event the player join event
-     */
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        updateList(event.getPlayer());
-    }
-
-    /**
      * Updates / sets the advanced player list
      *
      * @param p the player that'll see the updated player list
@@ -111,6 +101,16 @@ public class EnhancedPlayerList implements Listener {
                 .replace("{playerrank}", rank)
                 .replace("{playercompany}", company)
                 .replace("{playergamemode}", p.getGameMode().toString().toLowerCase());
+    }
+
+    /**
+     * Initially sets the player list for the player on join
+     *
+     * @param event the player join event
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        updateList(event.getPlayer());
     }
 
 }

@@ -36,58 +36,6 @@ public class EconomyProvider {
     private final MinimalWage minimalWage;
 
     /**
-     * Represents an in-game minimal wage
-     */
-    public static class MinimalWage {
-
-        /**
-         * The amount of money paid as the minimal wage
-         */
-        private final double amount;
-
-        /**
-         * The balance threshold after which a player will no longer
-         * be eligible to receive the minimal wage
-         */
-        private final double threshold;
-
-        /**
-         * Constructs a new MinimalWage objects
-         *
-         * @param amount    the amount of money paid as the minimal wage
-         * @param threshold the balance threshold after which a player
-         *                  will no longer be eligible to receive the
-         *                  minimal wage
-         */
-        public MinimalWage(double amount, double threshold) {
-            this.amount = amount;
-            this.threshold = threshold;
-        }
-
-        /**
-         * Calculates the minimal wage for this balance
-         *
-         * @param balance the player's current balance
-         * @return the calculated minimal wage, or 0 if the threshold
-         * was already reached
-         */
-        private double calculateMinimalWage(double balance) {
-            assert threshold != 0;
-            double d = balance / threshold;
-            if (d > 1) return 0;
-            return amount * (1 - d);
-        }
-
-        public double getAmount() {
-            return amount;
-        }
-
-        public double getThreshold() {
-            return threshold;
-        }
-    }
-
-    /**
      * Constructs a new EconomyProvider object
      *
      * @param eco         the currently used Vault plugin object
@@ -98,6 +46,18 @@ public class EconomyProvider {
         this.eco = eco;
         this.ess = ess;
         this.minimalWage = minimalWage;
+    }
+
+    /**
+     * Checks if this player is unemployed
+     *
+     * @param player the player to check
+     * @return true if the player is found to be unemployed (ie. the
+     * company's name is the same as the placeholder value) or false
+     * otherwise
+     */
+    public static boolean isPlayerUnemployed(ServerPlayer player) {
+        return player.getCompany().getName().equals("N/A");
     }
 
     /**
@@ -181,15 +141,55 @@ public class EconomyProvider {
     }
 
     /**
-     * Checks if this player is unemployed
-     *
-     * @param player the player to check
-     * @return true if the player is found to be unemployed (ie. the
-     * company's name is the same as the placeholder value) or false
-     * otherwise
+     * Represents an in-game minimal wage
      */
-    public static boolean isPlayerUnemployed(ServerPlayer player) {
-        return player.getCompany().getName().equals("N/A");
+    public static class MinimalWage {
+
+        /**
+         * The amount of money paid as the minimal wage
+         */
+        private final double amount;
+
+        /**
+         * The balance threshold after which a player will no longer
+         * be eligible to receive the minimal wage
+         */
+        private final double threshold;
+
+        /**
+         * Constructs a new MinimalWage objects
+         *
+         * @param amount    the amount of money paid as the minimal wage
+         * @param threshold the balance threshold after which a player
+         *                  will no longer be eligible to receive the
+         *                  minimal wage
+         */
+        public MinimalWage(double amount, double threshold) {
+            this.amount = amount;
+            this.threshold = threshold;
+        }
+
+        /**
+         * Calculates the minimal wage for this balance
+         *
+         * @param balance the player's current balance
+         * @return the calculated minimal wage, or 0 if the threshold
+         * was already reached
+         */
+        private double calculateMinimalWage(double balance) {
+            assert threshold != 0;
+            double d = balance / threshold;
+            if (d > 1) return 0;
+            return amount * (1 - d);
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public double getThreshold() {
+            return threshold;
+        }
     }
 
 }

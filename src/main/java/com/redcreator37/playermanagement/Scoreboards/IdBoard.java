@@ -52,7 +52,7 @@ public class IdBoard {
 
     public void refreshData() {
         players.forEach(pl -> {
-            ServerPlayer newData = PlayerManagement.players.get(pl.getUuid());
+            ServerPlayer newData = PlayerManagement.players.byUuid(pl.getUuid());
             if (newData == null) return;
             Objective money = objectives.get("money");
             money.setDisplaySlot(DisplaySlot.SIDEBAR);

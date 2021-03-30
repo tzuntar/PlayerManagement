@@ -4,8 +4,8 @@ import com.redcreator37.playermanagement.Commands.CommandHelper;
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.IdHandling.PlayerCard;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Registers a new player to the database
@@ -31,13 +32,13 @@ public class RegisterId extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
-        ServerPlayer test = PlayerManagement.players.get(player.getUniqueId().toString());
-        if (test != null) {
+    public void execute(Player player, String[] args, UUID executor) {
+        if (!PlayerManagement.players.doesNotExist(player.getName())) {
             player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("already-registered"));
             return;
@@ -47,7 +48,7 @@ public class RegisterId extends PlayerCommand {
         // to give them an ID card after registration
         if (PlayerRoutines.checkInventoryFull(player)) return;
         ServerPlayer target = new ServerPlayer(4097,    // register with a dummy id
-                new PlayerTag(player.getName(), player.getUniqueId().toString()));
+                new PlayerTag(player.getName(), player.getUniqueId()));
 
         target.setName(CommandHelper.getFullEntry(args, 0));
         target.setJoinDate(PlayerRoutines
@@ -59,19 +60,16 @@ public class RegisterId extends PlayerCommand {
         try {
             PlayerManagement.playerDb.insert(target);
             // reload from the database
-            PlayerManagement.players = PlayerManagement.playerDb.getNewlyRegistered();
-
-            ServerPlayer registeredPlayer = PlayerManagement.players
-                    .get(player.getUniqueId().toString());
-            if (registeredPlayer == null) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("failed-to-give-id"));
-                return;
-            }
-
-            PlayerCard.giveNewCard(player, registeredPlayer);
+            ServerPlayer registered = PlayerManagement.playerDb
+                    .getPlayerByUuid(target.getUuid());
+            PlayerManagement.players.setByUuid(target.getUuid(), registered);
+            PlayerCard.giveNewCard(player, registered);
             player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("registration-successful"));
+        } catch (IllegalStateException e) {
+            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
+                    + Localization.lc("failed-to-give-id")
+                    + ChatColor.RED + e.getMessage());
         } catch (SQLException e) {
             player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("error-updating-playerdata")

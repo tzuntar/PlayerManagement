@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Displays the specified player's job
@@ -27,13 +28,13 @@ public class GetJob extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
-        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
-                .uuidFromUsername(PlayerManagement.players, args[0]));
+    public void execute(Player player, String[] args, UUID executor) {
+        ServerPlayer target = PlayerManagement.players.byUsername(args[0]);
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0])) return;
         player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
                 + ChatColor.GOLD + Localization.lc("is-employed-as")

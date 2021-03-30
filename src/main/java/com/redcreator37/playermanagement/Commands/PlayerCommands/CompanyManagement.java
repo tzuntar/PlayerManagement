@@ -2,11 +2,11 @@ package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
 import com.redcreator37.playermanagement.Commands.CommandHelper;
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
-import com.redcreator37.playermanagement.IdHandling.CompanyMenu;
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
+import com.redcreator37.playermanagement.IdHandling.CompanyMenu;
 import com.redcreator37.playermanagement.IdHandling.InfoCards;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
@@ -47,11 +48,12 @@ public class CompanyManagement extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args, UUID executor) {
         Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 0, 0);
         if (!optTarget.isPresent()) return;
         ServerPlayer target = optTarget.get();
@@ -155,8 +157,7 @@ public class CompanyManagement extends PlayerCommand {
                 player.sendMessage(prefix + "§6" + lc("description-set"));
                 break;
             case "setowner":
-                ServerPlayer newOwner = players.get(PlayerRoutines
-                        .uuidFromUsername(players, args[2]));
+                ServerPlayer newOwner = players.byUsername(args[2]);
                 if (PlayerRoutines.checkPlayerNonExistent(player, newOwner, args[2]))
                     return;
 

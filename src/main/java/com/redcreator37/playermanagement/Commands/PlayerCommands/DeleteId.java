@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Unregisters the player from the database
@@ -31,14 +32,14 @@ public class DeleteId extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args, UUID executor) {
         String prefix = PlayerManagement.prefs.prefix;
-        ServerPlayer target = PlayerManagement.players.get(PlayerRoutines
-                .uuidFromUsername(PlayerManagement.players, args[0]));
+        ServerPlayer target = PlayerManagement.players.byUsername(args[0]);
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0]))
             return;
 
@@ -60,8 +61,7 @@ public class DeleteId extends PlayerCommand {
                 .getPlugin(PlayerManagement.class), () -> {
             try {
                 PlayerManagement.playerDb.remove(target);
-                // reload from the database
-                PlayerManagement.players = PlayerManagement.playerDb.getAll();
+                PlayerManagement.players.removeByUuid(target.getUuid());
                 player.sendMessage(prefix + ChatColor.GOLD
                         + Localization.lc("the-player")
                         + ChatColor.GREEN + target.getUsername() + ChatColor.GOLD

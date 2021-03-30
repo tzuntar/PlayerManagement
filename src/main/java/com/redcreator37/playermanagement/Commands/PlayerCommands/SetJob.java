@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Sets the player's job
@@ -32,11 +33,12 @@ public class SetJob extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args, UUID executor) {
         Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 1, 1);
         if (!optTarget.isPresent()) return;
         ServerPlayer target = optTarget.get();
@@ -53,8 +55,7 @@ public class SetJob extends PlayerCommand {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
-                PlayerManagement.playerDb.update(target);
-                PlayerManagement.players = PlayerManagement.playerDb.getAll();
+                PlayerManagement.players.updatePlayerEntry(target);
                 player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
                         + ChatColor.GOLD + Localization.lc("now-employed-as")
                         + ChatColor.GREEN + newJob + ChatColor.GOLD + ".");

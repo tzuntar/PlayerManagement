@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Represents implementation data of a player-executable plugin command
@@ -109,9 +110,9 @@ public abstract class PlayerCommand implements CommandExecutor {
 
         String targetName = args.length == adminArgsLength
                 ? player.getName() : args[nameArgPos];
-        ServerPlayer target = PlayerManagement.players.get(args.length == adminArgsLength
-                ? player.getUniqueId().toString()
-                : PlayerRoutines.uuidFromUsername(PlayerManagement.players, targetName));
+        ServerPlayer target = PlayerManagement.players.byUuid(args.length == adminArgsLength
+                ? player.getUniqueId()
+                : PlayerManagement.players.uuidFromUsername(targetName));
         if (PlayerRoutines.checkPlayerNonExistent(player, target, targetName))
             return Optional.empty();
         return Optional.of(target);
@@ -135,17 +136,18 @@ public abstract class PlayerCommand implements CommandExecutor {
         Player player = PlayerRoutines.playerFromSender(sender);
         assert player != null;
         if (isInvalid(player, args)) return true;
-        execute(player, args);
+        execute(player, args, player.getUniqueId());
         return true;
     }
 
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
-    public abstract void execute(Player player, String[] args);
+    public abstract void execute(Player player, String[] args, UUID executor);
 
     public String getName() {
         return name;

@@ -52,7 +52,8 @@ public final class PlayerCard implements Listener {
      * @param lore   the item (card) lore
      */
     private static void handlePlayerCardEvent(Player player, List<String> lore) {
-        ServerPlayer target = PlayerManagement.players.get(lore.get(1));
+        ServerPlayer target = PlayerManagement.players
+                .byUuid(UUID.fromString(lore.get(1)));
         if (target != null) InfoCards.displayPlayerInfo(player, target);
         else player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                 + lc("invalid-id-card"));
@@ -70,9 +71,9 @@ public final class PlayerCard implements Listener {
         ItemMeta data = stack.getItemMeta();
         Objects.requireNonNull(data).setDisplayName("ID Card: " + target);
 
-        List<UUID> lore = new ArrayList<>();
+        List<String> lore = new ArrayList<>();
         lore.add(PlayerManagement.prefs.cardItemLore);
-        lore.add(target.getUuid());
+        lore.add(target.getUuid().toString());
         Objects.requireNonNull(data).setLore(lore);
         stack.setItemMeta(data);
 

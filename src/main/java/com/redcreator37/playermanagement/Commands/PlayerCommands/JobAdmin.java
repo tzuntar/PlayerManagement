@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Manages the job database
@@ -28,11 +29,12 @@ public class JobAdmin extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args, UUID executor) {
         if (args.length < 2 || args.length < 3 && args[0].matches("add|update")) {
             player.sendMessage(PlayerManagement.prefs.prefix + CommandHelper
                     .parseCommandUsage("jobadmin", new HashMap<String, Boolean>() {{

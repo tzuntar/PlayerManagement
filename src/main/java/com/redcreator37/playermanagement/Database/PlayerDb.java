@@ -41,7 +41,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
         st.setString(1, player.getUsername());
-        st.setString(2, player.getUuid());
+        st.setString(2, player.getUuid().toString());
         st.setString(3, player.getName());
         st.setString(4, player.getJoinDate());
         String job = "";    // because of a possible null pointer
@@ -65,26 +65,10 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
      */
     @Override
     public Map<UUID, ServerPlayer> commonQuery(String sql) throws SQLException {
-        Map<UUID, ServerPlayer> players = new HashMap<>();
         Statement st = db.createStatement();
         st.closeOnCompletion();
         ResultSet set = st.executeQuery(sql);
-
-        // loop through the records
-        while (set.next()) {
-            ServerPlayer p = new ServerPlayer(set.getInt("id"),
-                    new PlayerTag(set.getString("username"),
-                            set.getString("uuid")));
-            p.setName(set.getString("name"));
-            p.setJoinDate(set.getString("join_date"));
-            p.setJob(PlayerManagement.jobs.get(set.getString("job")));
-            p.setCompany(PlayerManagement.companies.get(set.getString("company")));
-            p.setNotes(set.getString("notes"));
-            p.setPunishments(set.getInt("punishments"));
-            players.put(p.getUuid(), p);
-        }
-        set.close();
-        return players;
+        return playerDataFromResultSet(set);
     }
 
     /**
@@ -101,14 +85,56 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
     }
 
     /**
+     * Returns the player with this UUID from the database
+     *
+     * @param uuid the UUID to look for
+     * @return the matching {@link ServerPlayer} object
+     * @throws SQLException
+     */
+    public ServerPlayer getPlayerByUuid(UUID uuid) throws SQLException {
+        PreparedStatement st = db.prepareStatement("SELECT * FROM players WHERE uuid = ?");
+        st.setString(1, uuid.toString());
+        st.closeOnCompletion();
+        ResultSet set = st.executeQuery();
+        Map<UUID, ServerPlayer> result = playerDataFromResultSet(set);
+        return result.get(uuid);
+    }
+
+    /**
      * Returns the list of all server players, use only when
      * registering new players
      *
      * @return the player list
      * @throws SQLException on errors
      */
-    public Map<String, ServerPlayer> getNewlyRegistered() throws SQLException {
+    public Map<UUID, ServerPlayer> getNewlyRegistered() throws SQLException {
         return commonQuery("SELECT * FROM players");
+    }
+
+    /**
+     * Iterates through this {@link ResultSet}, retrieves all {@link ServerPlayer}
+     * objects inside and closes the set
+     *
+     * @param set the set to iterate through
+     * @return a {@link Map} containing the ServerPlayer objects
+     * @throws SQLException on errors
+     */
+    private Map<UUID, ServerPlayer> playerDataFromResultSet(ResultSet set) throws SQLException {
+        Map<UUID, ServerPlayer> playerMap = new HashMap<>();
+        while (set.next()) {
+            ServerPlayer p = new ServerPlayer(set.getInt("id"),
+                    new PlayerTag(set.getString("username"),
+                            UUID.fromString(set.getString("uuid"))));
+            p.setName(set.getString("name"));
+            p.setJoinDate(set.getString("join_date"));
+            p.setJob(PlayerManagement.jobs.get(set.getString("job")));
+            p.setCompany(PlayerManagement.companies.get(set.getString("company")));
+            p.setNotes(set.getString("notes"));
+            p.setPunishments(set.getInt("punishments"));
+            playerMap.put(p.getUuid(), p);
+        }
+        set.close();
+        return playerMap;
     }
 
     /**
@@ -136,6 +162,26 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
                 "join_date = ?, job = ?, company = ?, notes = ?, punishments = ? " +
                 "WHERE id = ?";
         runSqlUpdate(cmd, player, true);
+    }
+
+    /**
+     * Updates the data for this player and returns its updated version
+     * from the database
+     *
+     * @param player the {@link ServerPlayer} to update
+     * @return the updated version of the aforementioned {@link ServerPlayer}
+     * @throws SQLException on errors or if the passed {@link ServerPlayer}
+     *                      object doesn't exist in the database
+     */
+    public ServerPlayer updateAndGet(ServerPlayer player) throws SQLException {
+        String cmd = "UPDATE players SET username = ?, uuid = ?, name = ?," +
+                "join_date = ?, job = ?, company = ?, notes = ?, punishments = ? " +
+                "WHERE id = ?";
+        runSqlUpdate(cmd, player, true);
+        ServerPlayer updated = getPlayerByUuid(player.getUuid());
+        if (updated == null)
+            throw new IllegalStateException("The updated value has been written but re-loading has failed");
+        return updated;
     }
 
     /**

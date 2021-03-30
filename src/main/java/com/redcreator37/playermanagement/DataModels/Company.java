@@ -66,7 +66,7 @@ public class Company {
         this.balance = new BigDecimal(0);
         this.wage = new BigDecimal(10);
         this.employees = 0;
-        this.owner = new PlayerTag("N/A", "N/A");
+        this.owner = new PlayerTag("N/A", null);    // ToDo: null check
         this.established = PlayerRoutines
                 .getCurrentDate(PlayerManagement.prefs.dateFormat);
     }

@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement;
 
-import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,9 +24,8 @@ public class AdvancementReward implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
         Player p = event.getPlayer();
-        ServerPlayer target = PlayerManagement.players.get(event.getPlayer()
-                .getUniqueId().toString());
-        if (target == null) return;
+        if (PlayerManagement.players.doesNotExist(event.getPlayer().getName()))
+            return;
 
         Bukkit.getScheduler().runTask(PlayerManagement.getPlugin(PlayerManagement.class), () -> {
             // get the reward per rank

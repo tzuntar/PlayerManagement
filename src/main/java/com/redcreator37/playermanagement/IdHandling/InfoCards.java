@@ -18,8 +18,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -87,7 +85,7 @@ public final class InfoCards {
             return;
         }
 
-        OfflinePlayer offlinePl = Bukkit.getOfflinePlayer(UUID.fromString(player.getUuid()));
+        OfflinePlayer offlinePl = Bukkit.getOfflinePlayer(player.getUuid());
         String balance = "N/A";
         try {
             balance = PlayerRoutines.formatDecimal(BigDecimal
@@ -185,9 +183,7 @@ public final class InfoCards {
         List<String> pages = new ArrayList<>();
         BigDecimal afterPayments = c.getBalance().subtract(c.getWage()
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
-        List<ServerPlayer> employees = PlayerManagement.players.values().stream()
-                .filter(pl -> pl.getCompany().equals(c))
-                .collect(Collectors.toList());
+        List<ServerPlayer> employees = PlayerManagement.players.getCompanyEmployees(c);
 
         pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l > --"
                 + "\n\n§0§l" + lc("name") + " §r§2§l§o" + c

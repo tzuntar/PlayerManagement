@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Establishes a new in-game company
@@ -30,11 +31,12 @@ public class EstablishCompany extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args, UUID executor) {
         if (PlayerManagement.companies.get(args[0]) != null) {
             player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
                     + Localization.lc("already-exists"));
@@ -48,7 +50,7 @@ public class EstablishCompany extends PlayerCommand {
         }
 
         Company newCompany = new Company(4097, args[0]);
-        newCompany.setOwner(new PlayerTag(player.getName(), player.getUniqueId().toString()));
+        newCompany.setOwner(new PlayerTag(player.getName(), player.getUniqueId()));
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {

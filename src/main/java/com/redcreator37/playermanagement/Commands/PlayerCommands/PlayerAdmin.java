@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static com.redcreator37.playermanagement.PlayerRoutines.truncate;
 
@@ -24,15 +25,16 @@ public class PlayerAdmin extends PlayerCommand {
     /**
      * Runs this command and performs the actions
      *
-     * @param player the {@link Player} who ran the command
-     * @param args   the arguments entered by the player
+     * @param player   the {@link Player} who ran the command
+     * @param args     the arguments entered by the player
+     * @param executor the UUID of the executing player
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args, UUID executor) {
         player.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
         player.sendMessage("§bID §9|   §bUSERNAME   §9|   §bJOINED   §9| §bJOB NAME §9| §bCOMPANY §9|   §bPT.");
         player.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
-        PlayerManagement.players.forEach((s, pl) -> {
+        PlayerManagement.players.getPlayers().forEach((s, pl) -> {
             StringBuilder b = new StringBuilder();
             String id = String.valueOf(pl.getId());
             if (id.length() < 2) id += " ";

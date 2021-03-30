@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.UUID;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -110,8 +109,7 @@ public class EconomyProvider {
      * @param player the player which will receive the payment
      */
     public void globalPayWage(Player player) {
-        ServerPlayer target = PlayerManagement.players.get(player
-                .getUniqueId().toString());
+        ServerPlayer target = PlayerManagement.players.byUuid(player.getUniqueId());
         if (target == null || Objects.requireNonNull(ess)
                 .getUser(player).isAfk()) return;   // unknown player or AFK
 
@@ -143,13 +141,12 @@ public class EconomyProvider {
         BigDecimal wage = targetCompany.getWage();
         if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
             // get the owner player handle
-            User owner = ess.getOfflineUser(targetCompany.getOwner().getUuid());
+            User owner = ess.getOfflineUser(targetCompany.getOwner().getUuid().toString());
 
             // get the OfflinePlayer object from the UUID
             OfflinePlayer ownerPl;
             try {
-                ownerPl = Bukkit.getOfflinePlayer(UUID
-                        .fromString(targetCompany.getOwner().getUuid()));
+                ownerPl = Bukkit.getOfflinePlayer(targetCompany.getOwner().getUuid());
             } catch (NullPointerException e) {
                 player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.RED
                         + lc("db-company-invalid"));

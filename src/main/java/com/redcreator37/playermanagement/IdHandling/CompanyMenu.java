@@ -31,21 +31,18 @@ public final class CompanyMenu implements Listener {
      * Represents the internal inventory
      */
     private final Inventory inventory;
-
-    /**
-     * The player that is currently using the inventory
-     */
-    private Player player;
-
     /**
      * The company the player is managing
      */
     private final Company company;
-
     /**
      * Used to perform a safety-check
      */
     private final String guiTitle;
+    /**
+     * The player that is currently using the inventory
+     */
+    private Player player;
 
     /**
      * Constructs a new CompanyMenu display

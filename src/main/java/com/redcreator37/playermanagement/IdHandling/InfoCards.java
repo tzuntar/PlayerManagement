@@ -15,7 +15,9 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,21 +96,14 @@ public final class InfoCards {
 
         Player p = offlinePl.getPlayer();
         String job = PlayerRoutines.getValueOrEmpty(player.getJob().getName()),
-                company = PlayerRoutines.getValueOrEmpty(player.getCompany().getName());
-        List<String> pages = new ArrayList<>();
-        pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
-                + "\n\n§0§l" + lc("username") + " §r§1" + player
-                + "\n\n§0§l" + lc("name") + " §r§1" + player.getName()
-                + "\n\n§0§l" + lc("registration-date") + " §r§1" + player.getJoinDate()
-                + "\n\n§0§l" + lc("job-name") + " §r§1" + job);
+                company = PlayerRoutines.getValueOrEmpty(player.getCompany().getName()),
+                notes = PlayerRoutines.getValueOrEmpty(player.getNotes());
 
-        pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
-                + "\n\n§0§l" + lc("company") + " §r§1" + company
-                + "\n\n§0§l" + lc("notes") + " §r§1§o"
-                + PlayerRoutines.getValueOrEmpty(player.getNotes())
-                + "\n\n§0§l" + lc("money") + " §r§1" + balance
-                + "\n\n§0§l" + lc("punishments") + " §r§1"
-                + formatPunishments(player));
+        String page1 = MessageFormat.format(lc("card-playerinfo-1"),
+                player, player.getName(), player.getJoinDate(), job);
+        String page2 = MessageFormat.format(lc("card-playerinfo-2"),
+                company, notes, balance, formatPunishments(player));
+        List<String> pages = new ArrayList<>(Arrays.asList(page1, page2));
 
         if (p != null) {    // these are only available if the player is online
             String health = drawBarGraph(p.getHealth(), 20);
@@ -119,56 +114,38 @@ public final class InfoCards {
             String armorLevel = drawBarGraph(armor, 20);
 
             // values are cast to int for formatting purposes
-            pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
-                    + "\n\n §0§l" + lc("health")
-                    + "      §1" + (int) p.getHealth() + "§8/§120"
-                    + "\n §r§8[" + health + "§8]"
-                    + "\n\n §0§l" + lc("food")
-                    + "         §1" + p.getFoodLevel() + "§8/§120"
-                    + "\n §r§8[" + foodLevel + "§8]"
-                    + "\n\n §0§l" + lc("saturation")
-                    + "  §1" + (int) p.getSaturation() + "§8/§120"
-                    + "\n §r§8[" + saturationLevel + "§8]"
-                    + "\n\n §0§l" + lc("armor")
-                    + "        §1" + (int) armor + "§8/§120"
-                    + "\n §r§8[" + armorLevel + "§8]");
+            String page3 = MessageFormat.format(lc("card-playerinfo-3"),
+                    (int) p.getHealth(), health,
+                    p.getFoodLevel(), foodLevel,
+                    (int) p.getSaturation(), saturationLevel,
+                    (int) armor, armorLevel);
+            pages.add(page3);
 
             DecimalFormat fourPlaces = new DecimalFormat("##.0000");
-            pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
-                    + "\n\n§0§l" + lc("location")
-                    + "\n§1§lX: §r" + fourPlaces.format(p.getLocation().getX())
-                    + "\n§1§lY: §r" + fourPlaces.format(p.getLocation().getY())
-                    + "\n§1§lZ: §r" + fourPlaces.format(p.getLocation().getZ())
-                    + "\n\n§r§l" + lc("experience")
-                    + "\n§r" + lc("level") + " §r§1" + p.getLevel()
-                    + "\n§r" + lc("to-next-level") + " §r§1" + p.getExpToLevel()
-                    + "\n§r" + lc("total") + " §r§1" + p.getTotalExperience());
-        } else pages.add("§1§l ---< §9§l" + lc("player-uppercase") + " §1§l>---"
-                + "\n\n§0§o§l" + lc("unavailable") + " \n§r"
-                + lc("player-not-online"));
+            String page4 = MessageFormat.format(lc("card-playerinfo-4"),
+                    fourPlaces.format(p.getLocation().getX()),
+                    fourPlaces.format(p.getLocation().getY()),
+                    fourPlaces.format(p.getLocation().getZ()),
+                    p.getLevel(), p.getExpToLevel(), p.getTotalExperience());
+            pages.add(page4);
+        } else pages.add(lc("card-player-offline"));
 
-        if (!job.equals("N/A"))
-            pages.add("§1§l ----< §5§l" + lc("job-uppercase") + " §1§l>----"
-                    + "\n\n§0§l" + lc("job-name") + " §r§1" + player.getJob()
-                    + "\n\n§0§l" + lc("job-description")
-                    + " §r§1§o" + player.getJob().getDescription());
+        if (!job.equals("N/A")) {
+            String jobPage = MessageFormat.format(lc("card-job"),
+                    player.getJob(), player.getJob().getDescription());
+            pages.add(jobPage);
+        }
 
         if (!company.equals("N/A")) {
-            pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
-                    + "\n\n§0§l" + lc("name") + " §r§1" + player.getCompany()
-                    + "\n\n§0§l" + lc("description") + " §r§1§o"
-                    + player.getCompany().getDescription()
-                    + "\n\n§0§l" + lc("owner") + " §r§1"
-                    + player.getCompany().getOwner().getUsername());
-            pages.add("§1§l ---< §2§l" + lc("job-uppercase") + " §1§l>---"
-                    + "\n\n§0§l" + lc("employees") + " §r§1"
-                    + player.getCompany().getEmployees()
-                    + "\n\n§0§l" + lc("established") + " §r§1"
-                    + player.getCompany().getEstablishedDate()
-                    + "\n\n§0§l" + lc("wage") + " §r§1" + PlayerRoutines
-                    .formatDecimal(player.getCompany().getWage())
-                    + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
-                    .prefs.autoEcoTimeSeconds / 60 + "§r " + lc("minutes"));
+            String companyPage1 = MessageFormat.format(lc("card-company-1"),
+                    player.getCompany(), player.getCompany().getDescription(),
+                    player.getCompany().getOwner().getUsername());
+            String companyPage2 = MessageFormat.format(lc("card-company-2"),
+                    player.getCompany().getEmployees(),
+                    player.getCompany().getEstablishedDate(),
+                    PlayerRoutines.formatDecimal(player.getCompany().getWage()),
+                    PlayerManagement.prefs.autoEcoTimeSeconds / 60);
+            pages.addAll(Arrays.asList(companyPage1, companyPage2));
         }
         openBook(invoker, pages, "N/A", "N/A");
     }
@@ -180,29 +157,22 @@ public final class InfoCards {
      * @param c the company to get the data from
      */
     public static void displayCompanyInfo(Player p, Company c) {
-        List<String> pages = new ArrayList<>();
         BigDecimal afterPayments = c.getBalance().subtract(c.getWage()
                 .multiply(BigDecimal.valueOf(c.getEmployees())));
         List<ServerPlayer> employees = PlayerManagement.players.getCompanyEmployees(c);
 
-        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l > --"
-                + "\n\n§0§l" + lc("name") + " §r§2§l§o" + c
-                + "\n\n§0§l" + lc("description") + " §r§1§o" + c.getDescription()
-                + "\n\n§0§l" + lc("balance") + " §r§1" + PlayerRoutines.formatDecimal(c.getBalance())
-                + "\n\n§0§l" + lc("employees") + " §r§1" + c.getEmployees());
-        pages.add("§1§l --< §2§l" + lc("company-uppercase") + " §1§l>--"
-                + "\n\n§0§l" + lc("wage") + " §r§1" + PlayerRoutines.formatDecimal(c.getWage())
-                + "\n§r" + lc("paid-every") + " §1" + PlayerManagement
-                .prefs.autoEcoTimeSeconds / 60 + "§r " + lc("minutes")
-                + "\n\n§0" + lc("balance-after-payments")
-                + " §r§1" + PlayerRoutines.formatDecimal(afterPayments)
-                + "\n\n§0§l" + lc("owner") + " §r§1" + c.getOwner()
-                + "\n\n§0§l" + lc("established") + " §r§1" + c.getEstablishedDate());
+        String page1 = MessageFormat.format(lc("company-card-1"),
+                c, c.getDescription(), PlayerRoutines.formatDecimal(c.getBalance()),
+                c.getEmployees());
+        String page2 = MessageFormat.format(lc("company-card-2"),
+                PlayerRoutines.formatDecimal(c.getWage()),
+                PlayerManagement.prefs.autoEcoTimeSeconds / 60,
+                PlayerRoutines.formatDecimal(afterPayments),
+                c.getOwner(), c.getEstablishedDate());
+        List<String> pages = new ArrayList<>(Arrays.asList(page1, page2));
 
         for (int i = 0; i < employees.size(); i++) {
-            StringBuilder sb = new StringBuilder("§1§l --< §2§l"
-                    + lc("company-uppercase") + " §1§l>--"
-                    + "\n\n§r§l" + lc("employees") + "\n\n§r");
+            StringBuilder sb = new StringBuilder(lc("company-card-employees"));
             ServerPlayer pl = employees.get(i);
             sb.append(pl).append("\n");
             for (int j = 0; j < 8; j++) {

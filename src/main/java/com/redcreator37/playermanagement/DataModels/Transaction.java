@@ -68,6 +68,42 @@ public class Transaction {
         this.amount = amount;
     }
 
+    /**
+     * Displays a list of all transactions
+     *
+     * @param p the player that'll see the list
+     * @param c the company to get the data from
+     */
+    public static void listTransactions(Player p, Company c) {
+        List<Transaction> transactions = PlayerManagement
+                .transactions.stream().filter(t -> t.getCompanyId() == c.getId())
+                .collect(Collectors.toList());
+
+        if (transactions.size() < 1) {
+            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
+                    + Localization.lc("the-company")
+                    + ChatColor.GREEN + c.getName() + ChatColor.GOLD
+                    + Localization.lc("has-no-transactions"));
+            return;
+        }
+
+        List<String> pages = new ArrayList<>();
+        for (int i = 0; i < transactions.size(); i++) {
+            StringBuilder sb = new StringBuilder(Localization.lc("transactions-header"));
+            Transaction t = transactions.get(i);
+            sb.append(t);
+            for (int j = 0; j < 3; j++) {
+                i++;
+                if (i < transactions.size()) {
+                    t = transactions.get(i);
+                    sb.append(t);
+                }
+            }
+            pages.add(sb.toString());
+        }
+        InfoCards.openBook(p, pages, "N/A", "N/A");
+    }
+
     public int getId() {
         return id;
     }
@@ -106,43 +142,6 @@ public class Transaction {
                 : PlayerRoutines.formatDecimal(this.amount) + "-";
         return "\n" + formattedDirection + " | " + this.title
                 + " | §1§l" + formattedAmount + "\n";
-    }
-
-    /**
-     * Displays a list of all transactions
-     *
-     * @param p the player that'll see the list
-     * @param c the company to get the data from
-     */
-    public static void listTransactions(Player p, Company c) {
-        List<Transaction> transactions = PlayerManagement
-                .transactions.stream().filter(t -> t.getCompanyId() == c.getId())
-                .collect(Collectors.toList());
-
-        if (transactions.size() < 1) {
-            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("the-company")
-                    + ChatColor.GREEN + c.getName() + ChatColor.GOLD
-                    + Localization.lc("has-no-transactions"));
-            return;
-        }
-
-        List<String> pages = new ArrayList<>();
-        for (int i = 0; i < transactions.size(); i++) {
-            StringBuilder sb = new StringBuilder("§1§lDIR §r§1|" +
-                    " §1§lTEXT §r§1| §1§lAMOUNT§r\n");
-            Transaction t = transactions.get(i);
-            sb.append(t);
-            for (int j = 0; j < 3; j++) {
-                i++;
-                if (i < transactions.size()) {
-                    t = transactions.get(i);
-                    sb.append(t);
-                }
-            }
-            pages.add(sb.toString());
-        }
-        InfoCards.openBook(p, pages, "N/A", "N/A");
     }
 
     /**

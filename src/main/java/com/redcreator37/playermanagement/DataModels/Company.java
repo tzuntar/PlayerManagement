@@ -21,32 +21,26 @@ public class Company {
      * Company name
      */
     private final String name;
-
-    /**
-     * Company description
-     */
-    private String description;
-
-    /**
-     * Money the company has assigned to it
-     */
-    private BigDecimal balance;
-
-    /**
-     * The number of employees
-     */
-    private int employees;
-
-    /**
-     * The username/uuid tag of the company owner
-     */
-    private PlayerTag owner;
-
     /**
      * The date of company establishment
      */
     private final String established;
-
+    /**
+     * Company description
+     */
+    private String description;
+    /**
+     * Money the company has assigned to it
+     */
+    private BigDecimal balance;
+    /**
+     * The number of employees
+     */
+    private int employees;
+    /**
+     * The username/uuid tag of the company owner
+     */
+    private PlayerTag owner;
     /**
      * The amount of money the players can earn
      */
@@ -108,16 +102,32 @@ public class Company {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public void setBalance(BigDecimal money) {
+        this.balance = money;
     }
 
     public int getEmployees() {
         return employees;
     }
 
+    public void setEmployees(int employees) {
+        this.employees = employees;
+    }
+
     public PlayerTag getOwner() {
         return owner;
+    }
+
+    public void setOwner(PlayerTag owner) {
+        this.owner = owner;
     }
 
     public String getEstablishedDate() {
@@ -126,22 +136,6 @@ public class Company {
 
     public BigDecimal getWage() {
         return wage;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setBalance(BigDecimal money) {
-        this.balance = money;
-    }
-
-    public void setEmployees(int employees) {
-        this.employees = employees;
-    }
-
-    public void setOwner(PlayerTag owner) {
-        this.owner = owner;
     }
 
     /**

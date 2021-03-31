@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class PlayerAdmin extends PlayerCommand {
     @Override
     public void execute(Player player, String[] args, UUID executor) {
         player.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
-        player.sendMessage("§bID §9|   §bUSERNAME   §9|   §bJOINED   §9| §bJOB NAME §9| §bCOMPANY §9|   §bPT.");
+        player.sendMessage(Localization.lc("playerlist-header"));
         player.sendMessage(ChatColor.BLUE + "-----------------------------------------------------");
         PlayerManagement.players.getPlayers().forEach((s, pl) -> {
             StringBuilder b = new StringBuilder();

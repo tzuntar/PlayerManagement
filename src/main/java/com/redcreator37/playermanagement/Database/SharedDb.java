@@ -50,6 +50,7 @@ public abstract class SharedDb<T, R> {
      * @throws SQLException on errors
      */
     public static void createTables(Connection con, InputStream sqlStream) throws SQLException, IOException {
+        // ToDo: attempt merging with PlayerRoutines::readResourceFile
         BufferedReader br = new BufferedReader(new InputStreamReader(sqlStream));
         StringBuilder builder = new StringBuilder();
         String line;

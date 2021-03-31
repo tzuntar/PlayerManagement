@@ -5,6 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -172,6 +176,22 @@ public final class PlayerRoutines {
      */
     public static String[] stringListToArray(List<String> list) {
         return list.toArray(new String[0]);
+    }
+
+    /**
+     * Reads a file from the JAR resources area
+     *
+     * @param stream the {@link InputStream} of the file
+     * @return the read text
+     * @throws IOException on errors
+     */
+    public static String readResourcesFile(InputStream stream) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null)
+            builder.append(line).append(" ");
+        return builder.toString();
     }
 
 }

@@ -83,7 +83,7 @@ public final class InfoCards {
     public static void displayPlayerInfo(Player invoker, ServerPlayer player) {
         if (player == null) {   // invalid uuid or invalid card
             invoker.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + "Invalid ID card!");
+                    + lc("invalid-id-card"));
             return;
         }
 

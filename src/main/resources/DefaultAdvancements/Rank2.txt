@@ -1,0 +1,13 @@
+story/form_obsidian
+story/mine_diamond
+story/enter_the_nether
+story/enchant_item
+story/follow_ender_eye
+nether/get_wither_skull
+end/dragon_egg
+end/respawn_dragon
+end/dragon_breath
+end/elytra
+adventure/totem_of_undying
+adventure/summon_iron_golem
+adventure/sniper_duel

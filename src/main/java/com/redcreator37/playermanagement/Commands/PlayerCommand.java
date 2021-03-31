@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -151,5 +152,10 @@ public abstract class PlayerCommand implements CommandExecutor {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, arguments, permissions);
     }
 }

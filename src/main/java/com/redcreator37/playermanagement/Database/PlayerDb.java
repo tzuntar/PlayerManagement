@@ -89,7 +89,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
      *
      * @param uuid the UUID to look for
      * @return the matching {@link ServerPlayer} object
-     * @throws SQLException
+     * @throws SQLException on errors
      */
     public ServerPlayer getPlayerByUuid(UUID uuid) throws SQLException {
         PreparedStatement st = db.prepareStatement("SELECT * FROM players WHERE uuid = ?");
@@ -98,17 +98,6 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
         ResultSet set = st.executeQuery();
         Map<UUID, ServerPlayer> result = playerDataFromResultSet(set);
         return result.get(uuid);
-    }
-
-    /**
-     * Returns the list of all server players, use only when
-     * registering new players
-     *
-     * @return the player list
-     * @throws SQLException on errors
-     */
-    public Map<UUID, ServerPlayer> getNewlyRegistered() throws SQLException {
-        return commonQuery("SELECT * FROM players");
     }
 
     /**

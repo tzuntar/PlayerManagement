@@ -28,7 +28,7 @@ public final class CommandHelper {
      * @return the formatted string
      */
     public static String parseCommandUsage(String name, HashMap<String, Boolean> arguments) {
-        StringBuilder usage = new StringBuilder("§6" + Localization.lc("usage") + " §a/");
+        StringBuilder usage = new StringBuilder(Localization.lc("usage"));
         usage.append(name).append(" ");
         arguments.forEach((argName, req) -> {
             String[] args = argName.split("\\|");

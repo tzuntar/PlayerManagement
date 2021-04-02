@@ -5,9 +5,9 @@ import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -36,8 +36,7 @@ public class GetJob extends PlayerCommand {
     public void execute(Player player, String[] args, UUID executor) {
         ServerPlayer target = PlayerManagement.players.byUsername(args[0]);
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0])) return;
-        player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
-                + ChatColor.GOLD + Localization.lc("is-employed-as")
-                + ChatColor.GREEN + target.getJob() + ChatColor.GOLD + ".");
+        player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat.format(Localization
+                .lc("player-is-employed-as"), target, target.getJob()));
     }
 }

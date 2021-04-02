@@ -7,11 +7,11 @@ import com.redcreator37.playermanagement.DataModels.Transaction;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -57,15 +57,15 @@ public class CompanyPay extends PlayerCommand {
         Company source = companies.get(args[0]),
                 target = companies.get(args[1]);
         if (source == null || target == null) {
-            player.sendMessage(prefix + ChatColor.GOLD + lc("unknown-company"));
+            player.sendMessage(prefix + MessageFormat.format(lc("unknown-company"),
+                    source == null ? args[0] : args[1]));
             return;
         }
 
         // check the ownership
         if (!source.getOwner().getUsername().equals(player.getName()) && !player
                 .hasPermission("management.admin")) {
-            player.sendMessage(prefix + ChatColor.GOLD
-                    + lc("you-can-only-manage-your-company"));
+            player.sendMessage(prefix + lc("you-can-only-manage-your-company"));
             return;
         }
 
@@ -73,33 +73,30 @@ public class CompanyPay extends PlayerCommand {
         try {
             amount = new BigDecimal(args[2]);
         } catch (NumberFormatException e) {
-            player.sendMessage(prefix + ChatColor.GOLD + lc("invalid-number")
-                    + ChatColor.GREEN + args[2]);
+            player.sendMessage(prefix + MessageFormat.format(lc("invalid-number"), args[2]));
             return;
         }
 
         String formattedAmount = PlayerRoutines.formatDecimal(amount);
         if (source.getBalance().doubleValue() < amount.doubleValue()) {
-            player.sendMessage(prefix + ChatColor.GOLD
-                    + lc("the-company") + ChatColor.GREEN + source
-                    + ChatColor.GOLD + lc("cant-afford-to-pay")
-                    + ChatColor.GREEN + formattedAmount + ChatColor.GOLD + "!");
+            player.sendMessage(prefix + MessageFormat.format(lc("company-cannot-afford-to-pay"),
+                    source, formattedAmount));
             return;
         }
 
         // withdraw the amount from the source
         source.setBalance(source.getBalance().subtract(amount));
         transactionDb.addAsync(player, new Transaction(4097,
-                source.getId(), "->", lc("pay")
-                + formattedAmount, lc("pay") + formattedAmount
-                + lc("to") + target, amount));
+                source.getId(), "->",
+                MessageFormat.format(lc("pay-amount"), formattedAmount),
+                MessageFormat.format(lc("pay-company"), formattedAmount, target), amount));
 
         // add to the target
         target.setBalance(target.getBalance().add(amount));
         transactionDb.addAsync(player, new Transaction(4097,
-                target.getId(), "<-", lc("receive")
-                + formattedAmount, lc("receive") + formattedAmount
-                + lc("from") + source, amount));
+                target.getId(), "<-",
+                MessageFormat.format(lc("receive-amount"), formattedAmount),
+                MessageFormat.format(lc("receive-company"), formattedAmount, target), amount));
 
         // update and re-read the data
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
@@ -108,9 +105,8 @@ public class CompanyPay extends PlayerCommand {
             try {
                 transactions = transactionDb.getAll();
             } catch (SQLException e) {
-                player.sendMessage(prefix + ChatColor.GOLD
-                        + lc("error-saving-transaction-data")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(prefix + MessageFormat.format(lc("error-saving-transaction-data"),
+                        e.getMessage()));
             }
         });
     }

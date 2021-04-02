@@ -6,11 +6,11 @@ import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -38,14 +38,14 @@ public class EstablishCompany extends PlayerCommand {
     @Override
     public void execute(Player player, String[] args, UUID executor) {
         if (PlayerManagement.companies.get(args[0]) != null) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("already-exists"));
+            player.sendMessage(PlayerManagement.prefs.prefix + Localization
+                    .lc("already-exists"));
             return;
         }
 
         if (!PlayerManagement.eco.has(player, PlayerManagement.prefs.establishPrice)) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("not-enough-money-to-establish"));
+            player.sendMessage(PlayerManagement.prefs.prefix + Localization
+                    .lc("not-enough-money-to-establish"));
             return;
         }
 
@@ -61,12 +61,11 @@ public class EstablishCompany extends PlayerCommand {
 
                 PlayerManagement.companyDb.insert(newCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("company-registration-successful"));
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat.format(Localization
+                        .lc("company-registration-successful"), newCompany));
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("error-saving-company-data")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat.format(Localization
+                        .lc("error-saving-company-data"), e.getMessage()));
             }
         });
     }

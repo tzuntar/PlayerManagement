@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
@@ -36,7 +35,7 @@ public class PreferencesHolder {
      * The item lore (description) text which separates ID cards from
      * other items
      */
-    public String cardItemLore = "Unique Player ID Card";
+    public String cardItemLore = Localization.lc("card-item-lore");
     /**
      * Enables experimental features
      */
@@ -104,23 +103,14 @@ public class PreferencesHolder {
      * Player list header, displayed above the list of players
      */
     public String[] playerListHeader = {
-            "§b§oA Minecraft Server                                   §r§a{playercount}§8/§a{maxplayers}",
-            "§8--------------------------------------------"
+            Localization.lc("playerlist-header-1"),
+            Localization.lc("playerlist-header-2")
     };
     /**
      * Player list footer, displayed below the list of players
      */
-    public String[] playerListFooter = {
-            "§8--------------------------------------------",
-            "§6Money: §f{playerbalance}    §r§8: :    §6Messages: §f{playermail}",
-            "§6Gamemode: §f{playergamemode}    §r§8: :    §6World: §f{playerworld}",
-            "§6Rank: §f{playerrank}    §r§8: :    §6Company: §f{playercompany}",
-            "§8--------------------------------------------",
-            "§7§oStatistics are updated every 5 min",
-            "§8--------------------------------------------",
-            "§4YouTube:   §r§f§nlink§r      §r§8: :      §9Discord:   §r§f§nlink§r             ",
-            "\n§8§oPowered by PlayerManagement v1.6 by RedCreator37"
-    };
+    public String[] playerListFooter = Localization
+            .lc("playerlist-footer").split("\n");
     /**
      * The style of a player entry in the player list for players
      * without ranks
@@ -174,8 +164,7 @@ public class PreferencesHolder {
      * @return the formatted string
      */
     private static String getDefaultPrefix() {
-        return ChatColor.DARK_GRAY + "[" + ChatColor.BLUE
-                + Localization.lc("server") + ChatColor.DARK_GRAY + "] ";
+        return Localization.lc("default-prefix") + " ";
     }
 
     /**

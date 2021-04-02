@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement;
 
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,9 +40,8 @@ public final class PlayerRoutines {
      */
     public static boolean checkPlayerNonExistent(Player invoker, ServerPlayer target, String entered) {
         if (target == null) {
-            invoker.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + lc("unknown-player")
-                    + ChatColor.GREEN + entered + ChatColor.GOLD + ".");
+            invoker.sendMessage(PlayerManagement.prefs.prefix
+                    + MessageFormat.format(lc("unknown-player"), entered));
             return true;
         }
         return false;
@@ -57,8 +56,7 @@ public final class PlayerRoutines {
      */
     public static boolean lacksPermission(Player player, String permission) {
         if (!player.hasPermission(permission)) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + lc("no-permission"));
+            player.sendMessage(PlayerManagement.prefs.prefix + lc("no-permission"));
             return true;
         }
         return false;
@@ -72,8 +70,7 @@ public final class PlayerRoutines {
      */
     public static boolean checkInventoryFull(Player player) {
         if (player.getInventory().firstEmpty() == -1) {  // firstEmpty() returns -1 if it's full
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + lc("inventory-full"));
+            player.sendMessage(PlayerManagement.prefs.prefix + lc("inventory-full"));
             return true;
         }
         return false;
@@ -88,8 +85,7 @@ public final class PlayerRoutines {
     public static Player playerFromSender(CommandSender sender) {
         assert sender != null;
         if (!(sender instanceof Player)) {
-            sender.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + lc("player-only-command"));
+            sender.sendMessage(PlayerManagement.prefs.prefix + lc("player-only-command"));
             return null;
         }
         return (Player) sender;
@@ -118,9 +114,8 @@ public final class PlayerRoutines {
         try {
             return new BigDecimal(entered);
         } catch (Exception e) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + lc("invalid-number")
-                    + ChatColor.GREEN + entered);
+            player.sendMessage(PlayerManagement.prefs.prefix
+                    + MessageFormat.format(lc("invalid-number"), entered));
             return null;
         }
     }

@@ -4,10 +4,10 @@ import com.redcreator37.playermanagement.IdHandling.InfoCards;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,19 +71,17 @@ public class Transaction {
     /**
      * Displays a list of all transactions
      *
-     * @param p the player that'll see the list
-     * @param c the company to get the data from
+     * @param player  the {@link ServerPlayer} receiving the list
+     * @param company the {@link Company} with the data
      */
-    public static void listTransactions(Player p, Company c) {
+    public static void listTransactions(Player player, Company company) {
         List<Transaction> transactions = PlayerManagement
-                .transactions.stream().filter(t -> t.getCompanyId() == c.getId())
+                .transactions.stream().filter(t -> t.getCompanyId() == company.getId())
                 .collect(Collectors.toList());
 
         if (transactions.size() < 1) {
-            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("the-company")
-                    + ChatColor.GREEN + c.getName() + ChatColor.GOLD
-                    + Localization.lc("has-no-transactions"));
+            player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                    .format(Localization.lc("company-has-no-transactions"), company));
             return;
         }
 
@@ -101,7 +99,7 @@ public class Transaction {
             }
             pages.add(sb.toString());
         }
-        InfoCards.openBook(p, pages, "N/A", "N/A");
+        InfoCards.openBook(player, pages, "N/A", "N/A");
     }
 
     public int getId() {

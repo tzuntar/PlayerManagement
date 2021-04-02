@@ -6,10 +6,10 @@ import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -45,9 +45,8 @@ public class SetJob extends PlayerCommand {
 
         Job newJob = PlayerManagement.jobs.get(args[0]);
         if (newJob == null) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("unknown-job")
-                    + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
+            player.sendMessage(PlayerManagement.prefs.prefix
+                    + MessageFormat.format(Localization.lc("unknown-job"), args[0]));
             return;
         }
 
@@ -56,13 +55,11 @@ public class SetJob extends PlayerCommand {
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
                 PlayerManagement.players.updatePlayerEntry(target);
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
-                        + ChatColor.GOLD + Localization.lc("now-employed-as")
-                        + ChatColor.GREEN + newJob + ChatColor.GOLD + ".");
+                player.sendMessage(PlayerManagement.prefs.prefix
+                        + MessageFormat.format(Localization.lc("now-employed-as"), target, newJob));
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("error-updating-playerdata")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                        .format(Localization.lc("error-updating-playerdata"), e.getMessage()));
             }
         });
     }

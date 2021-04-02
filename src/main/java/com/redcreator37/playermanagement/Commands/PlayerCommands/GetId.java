@@ -10,6 +10,7 @@ import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -44,9 +45,10 @@ public class GetId extends PlayerCommand {
         ServerPlayer target = optTarget.get();
 
         if (args.length < 1) {  // if there are no elements specified, just give the player a new card
-            if (!PlayerManagement.eco.has(player, PlayerManagement.prefs.cardPrice)) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("not-enough-money-for-new-id"));
+            double cardPrice = PlayerManagement.prefs.cardPrice;
+            if (!PlayerManagement.eco.has(player, cardPrice)) {
+                player.sendMessage(PlayerManagement.prefs.prefix + Localization
+                        .lc("not-enough-money-for-new-id"));
                 return;
             }
 
@@ -57,10 +59,9 @@ public class GetId extends PlayerCommand {
             }
 
             PlayerCard.giveNewCard(player, target);
-            PlayerManagement.eco.withdrawPlayer(player, PlayerManagement.prefs.cardPrice);
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("bought-new-id")
-                    + ChatColor.GREEN + "$" + PlayerManagement.prefs.cardPrice + ChatColor.GOLD + ".");
+            PlayerManagement.eco.withdrawPlayer(player, cardPrice);
+            player.sendMessage(PlayerManagement.prefs.prefix
+                    + MessageFormat.format(Localization.lc("bought-new-id"), cardPrice));
             return;
         }
 

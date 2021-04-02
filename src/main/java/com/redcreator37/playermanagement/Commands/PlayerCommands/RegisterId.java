@@ -8,10 +8,10 @@ import com.redcreator37.playermanagement.IdHandling.PlayerCard;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -39,8 +39,8 @@ public class RegisterId extends PlayerCommand {
     @Override
     public void execute(Player player, String[] args, UUID executor) {
         if (!PlayerManagement.players.doesNotExist(player.getName())) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("already-registered"));
+            player.sendMessage(PlayerManagement.prefs.prefix + Localization
+                    .lc("already-registered"));
             return;
         }
 
@@ -64,16 +64,14 @@ public class RegisterId extends PlayerCommand {
                     .getPlayerByUuid(target.getUuid());
             PlayerManagement.players.setByUuid(target.getUuid(), registered);
             PlayerCard.giveNewCard(player, registered);
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("registration-successful"));
+            player.sendMessage(PlayerManagement.prefs.prefix + Localization
+                    .lc("registration-successful"));
         } catch (IllegalStateException e) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("failed-to-give-id")
-                    + ChatColor.RED + e.getMessage());
+            player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                    .format(Localization.lc("failed-to-give-id"), e.getMessage()));
         } catch (SQLException e) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("error-updating-playerdata")
-                    + ChatColor.RED + e.getMessage());
+            player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                    .format(Localization.lc("error-updating-playerdata"), e.getMessage()));
         }
     }
 }

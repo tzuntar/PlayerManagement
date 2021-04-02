@@ -6,10 +6,10 @@ import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -46,12 +46,11 @@ public class SetNotes extends PlayerCommand {
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the notes and update the player list
                 PlayerManagement.players.updatePlayerEntry(target);
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
+                player.sendMessage(PlayerManagement.prefs.prefix
                         + Localization.lc("notes-updated"));
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("error-updating-playerdata")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                        .format(Localization.lc("error-updating-playerdata"), e.getMessage()));
             }
         });
     }

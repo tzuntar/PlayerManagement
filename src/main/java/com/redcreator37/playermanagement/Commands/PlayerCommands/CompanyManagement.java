@@ -11,11 +11,11 @@ import com.redcreator37.playermanagement.IdHandling.InfoCards;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -77,24 +77,22 @@ public class CompanyManagement extends PlayerCommand {
         String companyName = player.hasPermission("management.admin") && args.length > 0
                 ? args[0] : target.getCompany().getName();
         if (companyName.equals("N/A")) {
-            player.sendMessage(prefix + ChatColor.GOLD
-                    + lc("player-not-an-owner-of-any-company"));
+            player.sendMessage(prefix + lc("player-not-an-owner-of-any-company"));
             return;
         }
 
         // try to get the company from the database
         Company company = companies.get(companyName);
         if (company == null) {
-            player.sendMessage(prefix + ChatColor.GOLD + lc("unknown-company")
-                    + ChatColor.GREEN + companyName);
+            player.sendMessage(prefix + MessageFormat.format(lc("unknown-company"),
+                    companyName));
             return;
         }
 
         // check the ownership
         if (!company.getOwner().getUsername().equals(player.getName())
                 && !player.hasPermission("management.admin")) {
-            player.sendMessage(prefix + ChatColor.GOLD
-                    + lc("you-can-only-manage-your-company"));
+            player.sendMessage(prefix + lc("you-can-only-manage-your-company"));
             return;
         }
 
@@ -116,45 +114,43 @@ public class CompanyManagement extends PlayerCommand {
                 break;
             case "increase":
                 company.setWage(company.getWage().add(amount));
-                player.sendMessage(prefix + "§6" + lc("wages-increased-by")
-                        + "§a$" + amount + "§6.");
+                player.sendMessage(prefix + MessageFormat.format(lc("wages-increased-by"), amount));
                 break;
             case "decrease":
                 try {
                     company.setWage(company.getWage().subtract(amount));
-                    player.sendMessage(prefix + "§6" + lc("wages-decreased-by")
-                            + "§a$" + amount + "§6.");
+                    player.sendMessage(prefix + MessageFormat.format(lc("wages-decreased-by"),
+                            amount));
                 } catch (IllegalArgumentException e) {
-                    player.sendMessage(prefix + "§6" + lc("wage-cannot-be-negative"));
+                    player.sendMessage(prefix + lc("wage-cannot-be-negative"));
                 }
                 break;
             case "deposit":
                 eco.withdrawPlayer(player, Objects.requireNonNull(amount)
                         .doubleValue());
                 company.setBalance(company.getBalance().add(amount));
-                player.sendMessage(prefix + "§a$" + amount + " §6"
-                        + lc("has-been-taken-from-your-account"));
+                player.sendMessage(prefix + MessageFormat.format(lc("has-been-taken-from-your-account"),
+                        amount));
 
                 PlayerManagement.transactionDb.addAsync(player, new Transaction(4097,
-                        company.getId(), "<-", "Deposit $"
-                        + amount, lc("deposit") + " $" + amount
-                        + lc("from-the-player") + target, amount));
+                        company.getId(), "<-",
+                        MessageFormat.format(lc("deposit-amount"), amount),
+                        MessageFormat.format(lc("deposit-to-player"), amount, target), amount));
                 break;
             case "withdraw":
                 company.setBalance(company.getBalance().subtract(amount));
-                eco.depositPlayer(player, Objects.requireNonNull(amount)
-                        .doubleValue());
-                player.sendMessage(prefix + "§a$" + amount + " §6"
-                        + lc("has-been-added-to-your-account"));
+                eco.depositPlayer(player, Objects.requireNonNull(amount).doubleValue());
+                player.sendMessage(prefix + MessageFormat.format(lc("has-been-added-to-your-account"),
+                        amount));
 
                 PlayerManagement.transactionDb.addAsync(player, new Transaction(4097,
-                        company.getId(), "->", lc("withdraw") + " $"
-                        + amount, lc("withdraw") + " $" + amount
-                        + lc("to-the-player") + target, amount));
+                        company.getId(), "->",
+                        MessageFormat.format(lc("withdraw-amount"), amount),
+                        MessageFormat.format(lc("withdraw-from-player"), amount, target), amount));
                 break;
             case "setdesc":
                 company.setDescription(CommandHelper.getFullEntry(args, 2));
-                player.sendMessage(prefix + "§6" + lc("description-set"));
+                player.sendMessage(prefix + lc("description-set"));
                 break;
             case "setowner":
                 ServerPlayer newOwner = players.byUsername(args[2]);
@@ -162,8 +158,8 @@ public class CompanyManagement extends PlayerCommand {
                     return;
 
                 company.setOwner(new PlayerTag(newOwner.getUsername(), newOwner.getUuid()));
-                player.sendMessage(prefix + "§6" + lc("ownership-changed-to") + " §a"
-                        + newOwner.getUsername());
+                player.sendMessage(prefix + MessageFormat.format(lc("ownership-changed-to"),
+                        target));
                 break;
             case "transactions":
                 Transaction.listTransactions(player, company);
@@ -172,15 +168,15 @@ public class CompanyManagement extends PlayerCommand {
                 try {
                     companyDb.remove(company);
                     companies = companyDb.getAll();
-                    player.sendMessage(prefix + "§" + lc("removed-company")
-                            + " §a" + args[1]);
+                    player.sendMessage(prefix + MessageFormat.format(lc("removed-company"),
+                            args[1]));
                 } catch (SQLException e) {
-                    player.sendMessage(prefix + "§6" + lc("error-removing-company-data")
-                            + " §4" + e.getMessage());
+                    player.sendMessage(prefix + MessageFormat.format(lc("error-removing-company-data"),
+                            e.getMessage()));
                 }
             default:
-                player.sendMessage(prefix + "§6" + lc("unknown-command")
-                        + " §a" + args[1]);
+                player.sendMessage(prefix + MessageFormat.format(lc("unknown-company"),
+                        args[1]));
                 return;
         }
 
@@ -193,9 +189,8 @@ public class CompanyManagement extends PlayerCommand {
                 PlayerManagement.transactions = PlayerManagement
                         .transactionDb.getAll();
             } catch (SQLException e) {
-                player.sendMessage(prefix + ChatColor.GOLD
-                        + lc("error-saving-transaction-data")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(prefix + MessageFormat.format(lc("error-saving-transaction-data"),
+                        e.getMessage()));
             }
         });
     }

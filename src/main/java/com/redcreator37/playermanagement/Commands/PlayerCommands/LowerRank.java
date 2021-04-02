@@ -6,10 +6,10 @@ import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -54,10 +54,8 @@ public class LowerRank extends PlayerCommand {
                     PlayerManagement.eco.withdrawPlayer(player.getServer().getPlayer(target
                             .getUsername()), PlayerManagement.prefs.fineAmount);
                 } catch (Exception e) {
-                    player.sendMessage(prefix + ChatColor.GOLD
-                            + lc("the-player")
-                            + ChatColor.GREEN + target + ChatColor.GOLD
-                            + lc("isnt-online-money-not-taken"));
+                    player.sendMessage(prefix + MessageFormat
+                            .format(lc("player-not-online-money-not-taken"), target));
                 }
 
                 target.setPunishments(target.getPunishments() + 1);
@@ -67,8 +65,7 @@ public class LowerRank extends PlayerCommand {
                     try {   // tell them if they're online, otherwise ignore it
                         Objects.requireNonNull(player.getServer().getPlayer(target
                                 .getUsername())).sendMessage(prefix
-                                + ChatColor.GOLD + lc("you-have-been-punished")
-                                + ChatColor.GREEN + reason);
+                                + MessageFormat.format(lc("you-have-been-punished"), reason));
                     } catch (NullPointerException ignored) {}
                 }
 
@@ -76,19 +73,16 @@ public class LowerRank extends PlayerCommand {
                 if (target.getPunishments() > PlayerManagement.prefs.maxFines) {
                     player.getServer().getBannedPlayers().add(player.getServer()
                             .getPlayer(target.getUsername()));
-                    player.sendMessage(prefix + ChatColor.GOLD
-                            + lc("the-player") + ChatColor.GREEN + target
-                            + ChatColor.GOLD + lc("has-exceeded-max-punishments"));
+                    player.sendMessage(prefix + MessageFormat.format(lc("punishment-limit-exceeded"),
+                            target));
                 } else {
-                    player.sendMessage(prefix + ChatColor.GOLD
-                            + lc("the-player") + ChatColor.GREEN + target
-                            + ChatColor.GOLD + lc("has-been-punished"));
+                    player.sendMessage(prefix + MessageFormat.format(lc("player-punished"),
+                            target));
                 }
                 PlayerManagement.players.updatePlayerEntry(target);
             } catch (SQLException e) {
-                player.sendMessage(prefix + ChatColor.GOLD
-                        + lc("error-updating-playerdata")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(prefix + MessageFormat.format(lc("error-updating-playerdata"),
+                        e.getMessage()));
             }
         });
     }

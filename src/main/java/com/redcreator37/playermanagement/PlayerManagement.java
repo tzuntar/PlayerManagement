@@ -28,7 +28,6 @@ import com.redcreator37.playermanagement.IdHandling.PlayerCard;
 import com.redcreator37.playermanagement.Scoreboards.IdBoard;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -244,7 +243,8 @@ public final class PlayerManagement extends JavaPlugin {
                 companyDb.insert(new Company(4097, "N/A"));
                 getLogger().info(Localization.lc("created-empty-db"));
             } catch (SQLException | IOException e) {
-                getLogger().severe(Localization.lc("error-creating-db") + e.getMessage());
+                getLogger().severe(MessageFormat.format(Localization
+                        .lc("error-creating-db"), e.getMessage()));
                 success = false;
             }
 
@@ -255,7 +255,8 @@ public final class PlayerManagement extends JavaPlugin {
             players = new PlayerDataContainer(playerDb.getAll());
             getLogger().info(Localization.lc("player-db-loaded-successfully"));
         } catch (SQLException e) {
-            getLogger().severe(Localization.lc("error-reading-from-db") + e.getMessage());
+            getLogger().severe(MessageFormat.format(Localization
+                    .lc("error-reading-from-db"), e.getMessage()));
             success = false;
         }
         return success;
@@ -273,9 +274,8 @@ public final class PlayerManagement extends JavaPlugin {
                         try {
                             companyDb.update(company);
                         } catch (SQLException e) {
-                            Bukkit.getLogger().severe(prefs.prefix + ChatColor.GOLD
-                                    + Localization.lc("error-updating-playerdata")
-                                    + ChatColor.RED + e.getMessage());
+                            Bukkit.getLogger().severe(prefs.prefix + MessageFormat.format(Localization
+                                    .lc("error-updating-playerdata"), e.getMessage()));
                         }
                     });
                 }), 1, prefs.autoEcoTimeSeconds * 20L);

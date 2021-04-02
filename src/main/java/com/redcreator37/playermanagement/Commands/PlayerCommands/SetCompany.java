@@ -7,10 +7,10 @@ import com.redcreator37.playermanagement.EconomyProvider;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -46,15 +46,14 @@ public class SetCompany extends PlayerCommand {
 
         Company newCompany = PlayerManagement.companies.get(args[0]);
         if (newCompany == null) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("unknown-company")
-                    + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
+            player.sendMessage(PlayerManagement.prefs.prefix
+                    + MessageFormat.format(Localization.lc("unknown-company"), args[0]));
             return;
         }
 
         if (!newCompany.getOwner().getUsername().equals(target.getUsername()) &&
                 !player.hasPermission("management.company.employ")) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
+            player.sendMessage(PlayerManagement.prefs.prefix
                     + Localization.lc("cant-employ-yourself"));
             return;
         }
@@ -65,9 +64,8 @@ public class SetCompany extends PlayerCommand {
                 .getPlugin(PlayerManagement.class), () -> {
             try {   // set the job and update the player list
                 PlayerManagement.players.updatePlayerEntry(target);
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN + target
-                        + ChatColor.GOLD + Localization.lc("now-part-of-company")
-                        + ChatColor.GREEN + args[0] + ChatColor.GOLD + ".");
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                        .format(Localization.lc("now-employed-at"), target, args[0]));
 
                 // decrease the employee count when switching to a different company
                 Company prevCompany = target.getCompany();
@@ -78,9 +76,8 @@ public class SetCompany extends PlayerCommand {
                 PlayerManagement.companyDb.update(prevCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + Localization.lc("error-updating-playerdata")
-                        + ChatColor.RED + e.getMessage());
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                        .format(Localization.lc("error-updating-playerdata"), e.getMessage()));
             }
         });
     }

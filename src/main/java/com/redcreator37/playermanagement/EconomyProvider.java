@@ -6,11 +6,11 @@ import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Objects;
 
 import static com.redcreator37.playermanagement.Localization.lc;
@@ -82,9 +82,8 @@ public class EconomyProvider {
         eco.depositPlayer(player, amount);
 
         if ((int) amount < 1) return;    // don't display on small / negative values
-        player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
-                + "$" + amount + ChatColor.GOLD
-                + lc("has-been-added-to-your-account"));
+        player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                .format(lc("has-been-added-to-your-account"), amount));
     }
 
     /**
@@ -108,8 +107,7 @@ public class EconomyProvider {
             try {
                 ownerPl = Bukkit.getOfflinePlayer(targetCompany.getOwner().getUuid());
             } catch (NullPointerException e) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.RED
-                        + lc("db-company-invalid"));
+                player.sendMessage(PlayerManagement.prefs.prefix + lc("db-company-invalid"));
                 return 0; // failsafe in case an invalid player is specified in the db
             }
 
@@ -117,19 +115,17 @@ public class EconomyProvider {
                 eco.withdrawPlayer(ownerPl, wage.doubleValue());
                 owner.addMail(lc("money-taken-to-pay-wages"));
             } else {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GREEN
-                        + targetCompany + ChatColor.GOLD
-                        + lc("cant-afford-to-pay-your-wage"));
-                owner.addMail(lc("unable-to-pay-wage-for-player")
-                        + player.getName() + "!");
+                player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                        .format(lc("company-cannot-afford-to-pay-wages"), targetCompany));
+                owner.addMail(MessageFormat.format(lc("unable-to-pay-wage-for-player"),
+                        player.getName()));
                 return 0;
             }
         } else {
             Company company = PlayerManagement.companies.get(targetCompany.getName());
             if (company == null) {
-                player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                        + lc("unknown-company")
-                        + ChatColor.GREEN + targetCompany);
+                player.sendMessage(PlayerManagement.prefs.prefix
+                        + MessageFormat.format(lc("unknown-company"), targetCompany));
                 return 0;
             }
 

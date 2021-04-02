@@ -1,7 +1,6 @@
 package com.redcreator37.playermanagement;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,8 +24,7 @@ public class AdvancementReward implements Listener {
      * @return the filled list of advancements
      */
     static List<String> getAdvancements(int rank) {
-        String source = rank == 1 ? getDefaultRank(1)
-                : (rank == 2 ? getDefaultRank(2) : getDefaultRank(3));
+        String source = getDefaultRank(rank);
         return Arrays.asList(source.split("\n"));
     }
 
@@ -34,15 +32,15 @@ public class AdvancementReward implements Listener {
      * Attempts to read the default advancement list for this rank
      * from the corresponding resources file
      *
-     * @param rank the rank id
+     * @param rank the rank ID
      * @return the text in the file or a blank string if there were
      * errors reading the file
      */
     private static String getDefaultRank(int rank) {
         String result = "";
         try {
-            PlayerRoutines.readResourcesFile(PlayerManagement.class.getClassLoader()
-                    .getResourceAsStream("DefaultAdvancements/Rank" + rank));
+            result = PlayerRoutines.readResourcesFile(PlayerManagement.class.getClassLoader()
+                    .getResourceAsStream("DefaultAdvancements/Rank" + rank + ".txt"));
         } catch (IOException e) {
             System.err.println(MessageFormat.format(Localization
                     .lc("loading-default-rank-failed"), e.getMessage()));
@@ -75,10 +73,8 @@ public class AdvancementReward implements Listener {
             else return;
 
             PlayerManagement.eco.depositPlayer(p, reward);
-            p.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("advancement-made")
-                    + ChatColor.GREEN + "$" + reward + ChatColor.GOLD
-                    + Localization.lc("has-been-added-to-your-account"));
+            p.sendMessage(PlayerManagement.prefs.prefix + MessageFormat.format(Localization
+                    .lc("advancement-completed-reward"), reward));
         });
     }
 

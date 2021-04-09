@@ -30,7 +30,7 @@ public class DatabaseInterfaceTests {
     /**
      * The generic placeholder value to use when filling fields
      */
-    private static final UUID GENERIC_PH = "N/A";
+    private static final String GENERIC_PH = "N/A";
 
     /**
      * Tests the database creation/operation/deletion capabilities
@@ -81,7 +81,7 @@ public class DatabaseInterfaceTests {
         System.out.println("Inserting some data...");
         try (Connection db = SharedDb.connect(DB_PATH)) {
             ServerPlayer p = new ServerPlayer(4097,
-                    new PlayerTag(GENERIC_PH, GENERIC_PH));
+                    new PlayerTag(GENERIC_PH, UUID.randomUUID()));
             p.setJob(new JobDb(db).getAll().get(GENERIC_PH));
             p.setCompany(new CompanyDb(db).getAll().get(GENERIC_PH));
             new PlayerDb(db).insert(p);

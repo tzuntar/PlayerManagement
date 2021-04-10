@@ -61,7 +61,7 @@ public final class CommandHelper {
     private static String formatRequiredArgs(String[] arguments) {
         StringBuilder result = new StringBuilder("§8[");
         for (String a : arguments)
-            result.append(ChatColor.RED).append(a.substring(1)).append("§8|");
+            result.append(ChatColor.RED).append(a).append("§8|");
         result.deleteCharAt(result.length() - 1).append("§8]");
         return result.toString();
     }

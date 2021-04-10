@@ -75,7 +75,7 @@ public class CompanyManagement extends PlayerCommand {
         // manage the player's company or someone else's if the
         // player has the admin permissions
         Optional<Company> comp = player.hasPermission("management.admin") && args.length > 0
-                ? Optional.of(companies.get(args[0])) : target.getCompany();
+                ? Optional.ofNullable(companies.get(args[0])) : target.getCompany();
         if (!comp.isPresent()) {
             player.sendMessage(prefix + lc("player-not-an-owner-of-any-company"));
             return;

@@ -6,6 +6,7 @@ import com.redcreator37.playermanagement.PlayerRoutines;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents an in-game company
@@ -60,7 +61,6 @@ public class Company {
         this.balance = new BigDecimal(0);
         this.wage = new BigDecimal(10);
         this.employees = 0;
-        this.owner = new PlayerTag("N/A", null);    // ToDo: null check
         this.established = PlayerRoutines
                 .getCurrentDate(PlayerManagement.prefs.dateFormat);
     }
@@ -122,8 +122,8 @@ public class Company {
         this.employees = employees;
     }
 
-    public PlayerTag getOwner() {
-        return owner;
+    public Optional<PlayerTag> getOwner() {
+        return Optional.ofNullable(owner);
     }
 
     public void setOwner(PlayerTag owner) {

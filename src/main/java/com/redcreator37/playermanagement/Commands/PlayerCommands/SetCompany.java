@@ -2,8 +2,8 @@ package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
-import com.redcreator37.playermanagement.EconomyProvider;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
@@ -51,8 +51,9 @@ public class SetCompany extends PlayerCommand {
             return;
         }
 
-        if (!newCompany.getOwner().getUsername().equals(target.getUsername()) &&
-                !player.hasPermission("management.company.employ")) {
+        Optional<PlayerTag> newOwnerTag = newCompany.getOwner();
+        if ((!newOwnerTag.isPresent() || !newOwnerTag.get().getUsername().equals(target.getUsername()))
+                && !player.hasPermission("management.company.employ")) {
             player.sendMessage(PlayerManagement.prefs.prefix
                     + Localization.lc("cant-employ-yourself"));
             return;
@@ -68,12 +69,13 @@ public class SetCompany extends PlayerCommand {
                         .format(Localization.lc("now-employed-at"), target, args[0]));
 
                 // decrease the employee count when switching to a different company
-                Company prevCompany = target.getCompany();
-                if (!EconomyProvider.isPlayerUnemployed(target))
-                    prevCompany.setEmployees(prevCompany.getEmployees() - 1);
+                Optional<Company> prevCompany = target.getCompany();
+                if (prevCompany.isPresent()) {
+                    prevCompany.get().setEmployees(prevCompany.get().getEmployees() - 1);
+                    PlayerManagement.companyDb.update(prevCompany.get());
+                }
 
                 PlayerManagement.companyDb.update(newCompany);
-                PlayerManagement.companyDb.update(prevCompany);
                 PlayerManagement.companies = PlayerManagement.companyDb.getAll();
             } catch (SQLException e) {
                 player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat

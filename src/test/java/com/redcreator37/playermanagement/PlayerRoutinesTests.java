@@ -87,13 +87,4 @@ public class PlayerRoutinesTests {
         PlayerRoutines.getCurrentDate("yyyy-mm.DD:HH.tt");
     }
 
-    /**
-     * Tests the getValueOrEmpty method in PlayerRoutines class by
-     * submitting a null value
-     */
-    @Test
-    public void getValueOrEmptyNullValueTest() {
-        Assert.assertEquals("N/A", PlayerRoutines.getValueOrEmpty(null));
-    }
-
 }

@@ -53,8 +53,6 @@ public class RegisterId extends PlayerCommand {
         target.setName(CommandHelper.getFullEntry(args, 0));
         target.setJoinDate(PlayerRoutines
                 .getCurrentDate(PlayerManagement.prefs.dateFormat));
-        target.setJob(PlayerManagement.jobs.get("N/A"));
-        target.setCompany(PlayerManagement.companies.get("N/A"));
         target.setNotes("");
 
         try {

@@ -2,6 +2,7 @@ package com.redcreator37.playermanagement.Commands.PlayerCommands;
 
 import com.redcreator37.playermanagement.Commands.PlayerCommand;
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.DataModels.Transaction;
 import com.redcreator37.playermanagement.PlayerManagement;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.redcreator37.playermanagement.Localization.lc;
@@ -63,8 +65,9 @@ public class CompanyPay extends PlayerCommand {
         }
 
         // check the ownership
-        if (!source.getOwner().getUsername().equals(player.getName()) && !player
-                .hasPermission("management.admin")) {
+        Optional<PlayerTag> sourceOwnerTag = source.getOwner();
+        if ((!sourceOwnerTag.isPresent() || !sourceOwnerTag.get().getUsername().equals(player.getName()))
+                && !player.hasPermission("management.admin")) {
             player.sendMessage(prefix + lc("you-can-only-manage-your-company"));
             return;
         }

@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement.Database;
 
-import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
@@ -44,12 +43,12 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
         st.setString(2, player.getUuid().toString());
         st.setString(3, player.getName());
         st.setString(4, player.getJoinDate());
-        String job = "";    // because of a possible null pointer
-        if (player.getJob() != null) job = player.getJob().getName();
-        st.setString(5, job);
-        Company c = player.getCompany();
-        st.setString(6, c == null ? "N/A" : c.getName());
-        st.setString(7, player.getNotes());
+        st.setString(5, player.getJob().isPresent()
+                ? player.getJob().get().getName() : "");
+        st.setString(6, player.getCompany().isPresent()
+                ? player.getCompany().get().getName() : "");
+        st.setString(7, player.getNotes().isPresent()
+                ? player.getNotes().get() : "");
         st.setInt(8, player.getPunishments());
         if (update) st.setInt(9, player.getId());
         st.executeUpdate();

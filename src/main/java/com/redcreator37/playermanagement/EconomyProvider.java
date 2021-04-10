@@ -3,6 +3,7 @@ package com.redcreator37.playermanagement;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -57,7 +59,7 @@ public class EconomyProvider {
      * otherwise
      */
     public static boolean isPlayerUnemployed(ServerPlayer player) {
-        return player.getCompany().getName().equals("N/A");
+        return !player.getCompany().isPresent();
     }
 
     /**
@@ -96,16 +98,22 @@ public class EconomyProvider {
      * was paid
      */
     private double payWageEmployed(Player player, ServerPlayer target) {
-        Company targetCompany = target.getCompany();
+        Optional<Company> playerCompany = target.getCompany();
+        if (!playerCompany.isPresent())
+            throw new IllegalStateException("The player has to be employed receive a paycheck.");
+        Company targetCompany = playerCompany.get();
         BigDecimal wage = targetCompany.getWage();
         if (targetCompany.getBalance().doubleValue() < wage.doubleValue()) {
             // get the owner player handle
-            User owner = ess.getOfflineUser(targetCompany.getOwner().getUuid().toString());
+            Optional<PlayerTag> ownerTag = targetCompany.getOwner();
+            if (!ownerTag.isPresent())
+                throw new IllegalStateException("The company needs to be owned by someone.");
+            User owner = ess.getOfflineUser(ownerTag.get().getUuid().toString());
 
             // get the OfflinePlayer object from the UUID
             OfflinePlayer ownerPl;
             try {
-                ownerPl = Bukkit.getOfflinePlayer(targetCompany.getOwner().getUuid());
+                ownerPl = Bukkit.getOfflinePlayer(ownerTag.get().getUuid());
             } catch (NullPointerException e) {
                 player.sendMessage(PlayerManagement.prefs.prefix + lc("db-company-invalid"));
                 return 0; // failsafe in case an invalid player is specified in the db

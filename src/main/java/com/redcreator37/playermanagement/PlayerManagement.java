@@ -238,9 +238,6 @@ public final class PlayerManagement extends JavaPlugin {
             try {
                 SharedDb.createTables(database, PlayerManagement.class
                         .getClassLoader().getResourceAsStream("GenerateDb.sql"));
-                // just insert a blank player, job and company using a bogus id
-                jobDb.insert(new Job(4097, "N/A", "N/A"));
-                companyDb.insert(new Company(4097, "N/A"));
                 getLogger().info(Localization.lc("created-empty-db"));
             } catch (SQLException | IOException e) {
                 getLogger().severe(MessageFormat.format(Localization

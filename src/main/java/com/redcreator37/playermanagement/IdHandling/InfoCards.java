@@ -1,6 +1,7 @@
 package com.redcreator37.playermanagement.IdHandling;
 
 import com.redcreator37.playermanagement.DataModels.Company;
+import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.ServerPlayer;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 
@@ -88,16 +90,16 @@ public final class InfoCards {
         }
 
         OfflinePlayer offlinePl = Bukkit.getOfflinePlayer(player.getUuid());
-        String balance = "N/A";
+        String balance = lc("unknown");
         try {
             balance = PlayerRoutines.formatDecimal(BigDecimal
                     .valueOf(PlayerManagement.eco.getBalance(offlinePl)));
         } catch (RuntimeException ignored) {}
 
         Player p = offlinePl.getPlayer();
-        String job = PlayerRoutines.getValueOrEmpty(player.getJob().getName()),
-                company = PlayerRoutines.getValueOrEmpty(player.getCompany().getName()),
-                notes = PlayerRoutines.getValueOrEmpty(player.getNotes());
+        Optional<Job> job = player.getJob();
+        Optional<Company> company = player.getCompany();
+        Optional<String> notes = player.getNotes();
 
         String page1 = MessageFormat.format(lc("card-playerinfo-1"),
                 player, player.getName(), player.getJoinDate(), job);
@@ -130,20 +132,21 @@ public final class InfoCards {
             pages.add(page4);
         } else pages.add(lc("card-player-offline"));
 
-        if (!job.equals("N/A")) {
+        if (job.isPresent()) {
             String jobPage = MessageFormat.format(lc("card-job"),
-                    player.getJob(), player.getJob().getDescription());
+                    job.get(), job.get().getDescription());
             pages.add(jobPage);
         }
 
-        if (!company.equals("N/A")) {
+        if (company.isPresent()) {
+            String ownerUsername = company.get().getOwner().isPresent()
+                    ? company.get().getOwner().get().getUsername() : lc("unknown");
             String companyPage1 = MessageFormat.format(lc("card-company-1"),
-                    player.getCompany(), player.getCompany().getDescription(),
-                    player.getCompany().getOwner().getUsername());
+                    company.get(), company.get().getDescription(), ownerUsername);
             String companyPage2 = MessageFormat.format(lc("card-company-2"),
-                    player.getCompany().getEmployees(),
-                    player.getCompany().getEstablishedDate(),
-                    PlayerRoutines.formatDecimal(player.getCompany().getWage()),
+                    company.get().getEmployees(),
+                    company.get().getEstablishedDate(),
+                    PlayerRoutines.formatDecimal(company.get().getWage()),
                     PlayerManagement.prefs.autoEcoTimeSeconds / 60);
             pages.addAll(Arrays.asList(companyPage1, companyPage2));
         }

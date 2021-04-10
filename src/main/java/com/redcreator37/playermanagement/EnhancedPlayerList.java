@@ -60,12 +60,12 @@ public class EnhancedPlayerList implements Listener {
             if (!s.matches("\\{.*}")) {
                 builder.append(s).append('\n');
             } else {
-                String company = "N/A";
+                String company = Localization.lc("unknown");
                 if (s.contains("{playercompany}")) {    // for performance reasons
                     ServerPlayer target = PlayerManagement.players
                             .byUuid(player.getUniqueId());
-                    if (target != null)
-                        company = target.getCompany().getName();
+                    if (target != null && target.getCompany().isPresent())
+                        company = target.getCompany().get().getName();
                 }
                 builder.append(replacePlaceholders(s, player, company,
                         rank, isAfk)).append('\n');

@@ -1,7 +1,13 @@
 package com.redcreator37.playermanagement;
 
-import java.util.Locale;
+import org.apache.commons.lang.StringEscapeUtils;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -24,7 +30,7 @@ public class Localization {
      * @return the message (or {@code null} if the key isn't valid)
      */
     public static String lc(String key) {
-        return strings.getString(key);
+        return StringEscapeUtils.unescapeJava(strings.getString(key));
     }
 
     /**
@@ -38,10 +44,11 @@ public class Localization {
      * if the matching bundle-language combination wasn't found
      */
     private static Optional<ResourceBundle> getBundleFromLangCode(String baseName, String langCode) {
-        String[] locale = langCode.split("_");
         try {
-            return Optional.of(ResourceBundle.getBundle(baseName, new Locale(locale[0]
-                    .toLowerCase(), locale[1].toUpperCase())));
+            InputStream stream = PlayerManagement.class.getClassLoader()
+                    .getResourceAsStream(baseName + "_" + langCode + ".properties");
+            Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+            return Optional.of(new PropertyResourceBundle(reader));
         } catch (Exception e) {
             return Optional.empty();
         }

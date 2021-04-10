@@ -57,7 +57,7 @@ public class EnhancedPlayerList implements Listener {
 
         StringBuilder builder = new StringBuilder();
         for (String s : str)
-            if (!s.matches("\\{.*}")) {
+            if (!s.matches(".*\\{.*}.*")) {
                 builder.append(s).append('\n');
             } else {
                 String company = Localization.lc("unknown");

@@ -102,9 +102,12 @@ public final class InfoCards {
         Optional<String> notes = player.getNotes();
 
         String page1 = MessageFormat.format(lc("card-playerinfo-1"),
-                player, player.getName(), player.getJoinDate(), job);
+                player, player.getName(), player.getJoinDate(),
+                job.isPresent() ? job : lc("unknown"));
         String page2 = MessageFormat.format(lc("card-playerinfo-2"),
-                company, notes, balance, formatPunishments(player));
+                company, notes.isPresent() && !notes.get().equals("")
+                        ? notes : "-",
+                balance, formatPunishments(player));
         List<String> pages = new ArrayList<>(Arrays.asList(page1, page2));
 
         if (p != null) {    // these are only available if the player is online

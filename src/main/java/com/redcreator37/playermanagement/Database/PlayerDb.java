@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -43,12 +44,15 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
         st.setString(2, player.getUuid().toString());
         st.setString(3, player.getName());
         st.setString(4, player.getJoinDate());
-        st.setString(5, player.getJob().isPresent()
-                ? player.getJob().get().getName() : "");
-        st.setString(6, player.getCompany().isPresent()
-                ? player.getCompany().get().getName() : "");
-        st.setString(7, player.getNotes().isPresent()
-                ? player.getNotes().get() : "");
+        if (player.getJob().isPresent())
+            st.setString(5, player.getJob().get().getName());
+        else st.setNull(5, Types.VARCHAR);
+        if (player.getCompany().isPresent())
+            st.setString(6, player.getCompany().get().getName());
+        else st.setNull(6, Types.VARCHAR);
+        if (player.getNotes().isPresent())
+            st.setString(7, player.getNotes().get());
+        else st.setNull(7, Types.VARCHAR);
         st.setInt(8, player.getPunishments());
         if (update) st.setInt(9, player.getId());
         st.executeUpdate();
@@ -78,8 +82,8 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
      */
     @Override
     public Map<UUID, ServerPlayer> getAll() throws SQLException {
-        String cmd = "SELECT players.* FROM players INNER JOIN jobs ON jobs.name = players.job" +
-                " INNER JOIN companies ON companies.name = players.company;";
+        String cmd = "SELECT players.* FROM players LEFT JOIN jobs ON jobs.name = players.job" +
+                " LEFT JOIN companies ON companies.name = players.company;";
         return commonQuery(cmd);
     }
 

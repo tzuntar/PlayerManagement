@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -47,8 +48,9 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         st.setString(2, c.getDescription());
         st.setString(3, c.getBalance().toString());
         st.setInt(4, c.getEmployees());
-        st.setString(5, c.getOwner().isPresent()
-                ? c.getOwner().get().getUuid().toString() : "");
+        if (c.getOwner().isPresent())
+            st.setString(5, c.getOwner().get().getUuid().toString());
+        else st.setNull(5, Types.VARCHAR);
         st.setString(6, c.getEstablishedDate());
         st.setString(7, c.getWage().toString());
         if (update) st.setInt(8, c.getId());

@@ -28,6 +28,7 @@ public class GetId extends PlayerCommand {
             put("player_name", false);
         }}, new ArrayList<String>() {{
             add("management.user");
+            add("management.admin");
         }});
     }
 

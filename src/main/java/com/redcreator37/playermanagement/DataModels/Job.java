@@ -43,10 +43,6 @@ public class Job {
         this.description = description;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getId() {
         return id;
     }
@@ -68,7 +64,7 @@ public class Job {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription());
+        return Objects.hash(getId(), toString(), getDescription());
     }
 
 }

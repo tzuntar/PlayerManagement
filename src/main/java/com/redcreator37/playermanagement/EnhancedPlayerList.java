@@ -65,7 +65,7 @@ public class EnhancedPlayerList implements Listener {
                     ServerPlayer target = PlayerManagement.players
                             .byUuid(player.getUniqueId());
                     if (target != null && target.getCompany().isPresent())
-                        company = target.getCompany().get().getName();
+                        company = target.getCompany().get().toString();
                 }
                 builder.append(replacePlaceholders(s, player, company,
                         rank, isAfk)).append('\n');

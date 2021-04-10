@@ -43,9 +43,9 @@ public class PlayerAdmin extends PlayerCommand {
             b.append(truncate(pl.getUsername(), 14)).append(" | ");
             b.append(truncate(pl.getJoinDate(), 10)).append(" | ");
             pl.getJob().ifPresent(job ->
-                    b.append(truncate(job.getName(), 14)).append(" | "));
+                    b.append(truncate(job.toString(), 14)).append(" | "));
             pl.getCompany().ifPresent(company ->
-                    b.append(truncate(company.getName(), 10)).append(" | "));
+                    b.append(truncate(company.toString(), 10)).append(" | "));
             b.append(pl.getPunishments());
             player.sendMessage(b.toString());
         });

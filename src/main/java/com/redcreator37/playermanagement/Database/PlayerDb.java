@@ -45,10 +45,10 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
         st.setString(3, player.getName());
         st.setString(4, player.getJoinDate());
         if (player.getJob().isPresent())
-            st.setString(5, player.getJob().get().getName());
+            st.setString(5, player.getJob().get().toString());
         else st.setNull(5, Types.VARCHAR);
         if (player.getCompany().isPresent())
-            st.setString(6, player.getCompany().get().getName());
+            st.setString(6, player.getCompany().get().toString());
         else st.setNull(6, Types.VARCHAR);
         if (player.getNotes().isPresent())
             st.setString(7, player.getNotes().get());

@@ -36,7 +36,10 @@ public class GetJob extends PlayerCommand {
     public void execute(Player player, String[] args, UUID executor) {
         ServerPlayer target = PlayerManagement.players.byUsername(args[0]);
         if (PlayerRoutines.checkPlayerNonExistent(player, target, args[0])) return;
-        player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat.format(Localization
-                .lc("player-is-employed-as"), target, target.getJob()));
+        String message = target.getJob().isPresent()
+                ? MessageFormat.format(Localization
+                .lc("player-is-employed-as"), target, target.getJob())
+                : MessageFormat.format(Localization.lc("player-is-unemployed"), target);
+        player.sendMessage(PlayerManagement.prefs.prefix + message);
     }
 }

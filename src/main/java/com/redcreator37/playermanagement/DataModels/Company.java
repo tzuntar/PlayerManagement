@@ -94,10 +94,6 @@ public class Company {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -168,7 +164,7 @@ public class Company {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getBalance(),
+        return Objects.hash(getId(), toString(), getDescription(), getBalance(),
                 getEmployees(), getOwner(), getEstablishedDate(), getWage());
     }
 

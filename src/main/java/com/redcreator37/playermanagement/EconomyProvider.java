@@ -130,7 +130,7 @@ public class EconomyProvider {
                 return 0;
             }
         } else {
-            Company company = PlayerManagement.companies.get(targetCompany.getName());
+            Company company = PlayerManagement.companies.get(targetCompany.toString());
             if (company == null) {
                 player.sendMessage(PlayerManagement.prefs.prefix
                         + MessageFormat.format(lc("unknown-company"), targetCompany));
@@ -138,7 +138,7 @@ public class EconomyProvider {
             }
 
             // update the database Company object
-            PlayerManagement.companies.get(company.getName()).setBalance(company
+            PlayerManagement.companies.get(company.toString()).setBalance(company
                     .getBalance().subtract(wage));
         }
         return wage.doubleValue();

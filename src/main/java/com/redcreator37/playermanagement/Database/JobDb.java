@@ -36,7 +36,7 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
     void runSqlUpdate(String sql, Job job, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
-        st.setString(1, job.getName());
+        st.setString(1, job.toString());
         st.setString(2, job.getDescription());
         if (update) st.setInt(3, job.getId());
         st.executeUpdate();
@@ -62,7 +62,7 @@ public class JobDb extends SharedDb<Job, Map<String, Job>> {
             Job j = new Job(set.getInt("id"),
                     set.getString("name"),
                     set.getString("description"));
-            jobs.put(j.getName(), j);
+            jobs.put(j.toString(), j);
         }
         set.close();
         return jobs;

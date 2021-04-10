@@ -44,7 +44,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     void runSqlUpdate(String sql, Company c, boolean update) throws SQLException {
         PreparedStatement st = db.prepareStatement(sql);
         st.closeOnCompletion();
-        st.setString(1, c.getName());
+        st.setString(1, c.toString());
         st.setString(2, c.getDescription());
         st.setString(3, c.getBalance().toString());
         st.setInt(4, c.getEmployees());
@@ -84,7 +84,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
                     ownerTag,
                     set.getString("established"),
                     set.getString("paycheck"));
-            companies.put(c.getName(), c);
+            companies.put(c.toString(), c);
         }
         set.close();
         return companies;

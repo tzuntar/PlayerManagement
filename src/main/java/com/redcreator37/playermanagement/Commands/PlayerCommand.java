@@ -110,8 +110,10 @@ public abstract class PlayerCommand implements CommandExecutor {
             return Optional.empty();
 
         String targetName = args.length == adminArgsLength
+                || adminArgsLength == -1
                 ? player.getName() : args[nameArgPos];
         ServerPlayer target = PlayerManagement.players.byUuid(args.length == adminArgsLength
+                || adminArgsLength == -1
                 ? player.getUniqueId()
                 : PlayerManagement.players.uuidFromUsername(targetName));
         if (PlayerRoutines.checkPlayerNonExistent(player, target, targetName))

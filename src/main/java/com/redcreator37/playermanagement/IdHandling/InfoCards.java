@@ -105,8 +105,8 @@ public final class InfoCards {
                 player, player.getName(), player.getJoinDate(),
                 job.isPresent() ? job : lc("unknown"));
         String page2 = MessageFormat.format(lc("card-playerinfo-2"),
-                company, notes.isPresent() && !notes.get().equals("")
-                        ? notes : "-",
+                company.isPresent() ? company : lc("unknown"),
+                notes.isPresent() && !notes.get().equals("") ? notes : "-",
                 balance, formatPunishments(player));
         List<String> pages = new ArrayList<>(Arrays.asList(page1, page2));
 
@@ -174,7 +174,9 @@ public final class InfoCards {
                 PlayerRoutines.formatDecimal(c.getWage()),
                 PlayerManagement.prefs.autoEcoTimeSeconds / 60,
                 PlayerRoutines.formatDecimal(afterPayments),
-                c.getOwner(), c.getEstablishedDate());
+                c.getOwner().isPresent() ? c.getOwner().get().getUsername()
+                        : lc("unknown"),
+                c.getEstablishedDate());
         List<String> pages = new ArrayList<>(Arrays.asList(page1, page2));
 
         for (int i = 0; i < employees.size(); i++) {

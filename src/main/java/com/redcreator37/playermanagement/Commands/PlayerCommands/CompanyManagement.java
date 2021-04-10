@@ -37,8 +37,7 @@ public class CompanyManagement extends PlayerCommand {
 
     public CompanyManagement() {
         super("company", new HashMap<String, Boolean>() {{
-            put("info", false);
-            put("transactions", false);
+            put("info|transactions", false);
         }}, new ArrayList<String>() {{
             add("management.company");
             add("management.admin");
@@ -54,7 +53,7 @@ public class CompanyManagement extends PlayerCommand {
      */
     @Override
     public void execute(Player player, String[] args, UUID executor) {
-        Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 0, 0);
+        Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, -1, -1);
         if (!optTarget.isPresent()) return;
         ServerPlayer target = optTarget.get();
         String prefix = PlayerManagement.prefs.prefix;
@@ -91,7 +90,7 @@ public class CompanyManagement extends PlayerCommand {
         }
 
         if (args.length < 2) {  // no arguments, open the menu
-            new CompanyMenu(player, company + lc("management"), company);
+            new CompanyMenu(player, MessageFormat.format(lc("company-management"), company), company);
             return;
         }
 

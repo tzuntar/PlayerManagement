@@ -45,7 +45,7 @@ public class DeleteId extends PlayerCommand {
 
         try {
             Map<String, Company> ownedCompanies = PlayerManagement.companyDb
-                    .getCompaniesByOwner(target.getUuid());
+                    .getByOwner(target.getUuid());
             if (ownedCompanies.size() > 0) {
                 player.sendMessage(prefix + Localization.lc("cant-unregister-still-owns-companies"));
                 return;

@@ -59,7 +59,7 @@ public class RegisterId extends PlayerCommand {
             PlayerManagement.playerDb.insert(target);
             // reload from the database
             ServerPlayer registered = PlayerManagement.playerDb
-                    .getPlayerByUuid(target.getUuid());
+                    .getByUuid(target.getUuid());
             PlayerManagement.players.setByUuid(target.getUuid(), registered);
             PlayerCard.giveNewCard(player, registered);
             player.sendMessage(PlayerManagement.prefs.prefix + Localization

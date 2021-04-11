@@ -71,7 +71,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
         Statement st = db.createStatement();
         st.closeOnCompletion();
         ResultSet set = st.executeQuery(sql);
-        return playerDataFromResultSet(set);
+        return dataFromResultSet(set);
     }
 
     /**
@@ -94,12 +94,12 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
      * @return the matching {@link ServerPlayer} object
      * @throws SQLException on errors
      */
-    public ServerPlayer getPlayerByUuid(UUID uuid) throws SQLException {
+    public ServerPlayer getByUuid(UUID uuid) throws SQLException {
         PreparedStatement st = db.prepareStatement("SELECT * FROM players WHERE uuid = ?");
         st.setString(1, uuid.toString());
         st.closeOnCompletion();
         ResultSet set = st.executeQuery();
-        Map<UUID, ServerPlayer> result = playerDataFromResultSet(set);
+        Map<UUID, ServerPlayer> result = dataFromResultSet(set);
         return result.get(uuid);
     }
 
@@ -111,7 +111,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
      * @return a {@link Map} containing the ServerPlayer objects
      * @throws SQLException on errors
      */
-    private Map<UUID, ServerPlayer> playerDataFromResultSet(ResultSet set) throws SQLException {
+    private Map<UUID, ServerPlayer> dataFromResultSet(ResultSet set) throws SQLException {
         Map<UUID, ServerPlayer> playerMap = new HashMap<>();
         while (set.next()) {
             ServerPlayer p = new ServerPlayer(set.getInt("id"),
@@ -170,7 +170,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
                 "join_date = ?, job = ?, company = ?, notes = ?, punishments = ? " +
                 "WHERE id = ?";
         runSqlUpdate(cmd, player, true);
-        ServerPlayer updated = getPlayerByUuid(player.getUuid());
+        ServerPlayer updated = getByUuid(player.getUuid());
         if (updated == null)
             throw new IllegalStateException("The updated value has been written but re-loading has failed");
         return updated;

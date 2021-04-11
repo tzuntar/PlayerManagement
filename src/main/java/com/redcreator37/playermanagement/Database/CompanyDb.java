@@ -65,7 +65,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     Map<String, Company> commonQuery(String sql) throws SQLException {
         Statement st = db.createStatement();
         st.closeOnCompletion();
-        return companyDataFromResultSet(st.executeQuery(sql));
+        return dataFromResultSet(st.executeQuery(sql));
     }
 
     /**
@@ -92,8 +92,20 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         st.setString(1, name);
         st.closeOnCompletion();
         ResultSet set = st.executeQuery();
-        Map<String, Company> result = companyDataFromResultSet(set);
+        Map<String, Company> result = dataFromResultSet(set);
         return result.get(name);
+    }
+
+    /**
+     * Returns the list of companies owned by the player with
+     * this UUID
+     *
+     * @param uuid the owner's UUID
+     * @return the list of matching companies
+     * @throws SQLException on errors
+     */
+    public Map<String, Company> getByOwner(UUID uuid) throws SQLException {
+        return commonQuery("SELECT * FROM companies WHERE owner = '" + uuid + "'");
     }
 
     /**
@@ -104,7 +116,7 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
      * @return a {@link Map} containing all data in the set
      * @throws SQLException on errors
      */
-    private Map<String, Company> companyDataFromResultSet(ResultSet set) throws SQLException {
+    private Map<String, Company> dataFromResultSet(ResultSet set) throws SQLException {
         Map<String, Company> companyMap = new HashMap<>();
         while (set.next()) {
             UUID uuid = UUID.fromString(set.getString("owner"));
@@ -121,18 +133,6 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         }
         set.close();
         return companyMap;
-    }
-
-    /**
-     * Returns the list of companies owned by the player with
-     * this UUID
-     *
-     * @param uuid the owner's UUID
-     * @return the list of matching companies
-     * @throws SQLException on errors
-     */
-    public Map<String, Company> getCompaniesByOwner(UUID uuid) throws SQLException {
-        return commonQuery("SELECT * FROM companies WHERE owner = '" + uuid + "'");
     }
 
     /**

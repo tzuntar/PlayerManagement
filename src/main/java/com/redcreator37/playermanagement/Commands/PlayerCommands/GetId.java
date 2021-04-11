@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ import java.util.UUID;
 public class GetId extends PlayerCommand {
 
     public GetId() {
-        super("getid", new HashMap<String, Boolean>() {{
+        super("getid", new LinkedHashMap<String, Boolean>() {{
             put("player_name", true);
         }}, new ArrayList<String>() {{
             add("management.user");

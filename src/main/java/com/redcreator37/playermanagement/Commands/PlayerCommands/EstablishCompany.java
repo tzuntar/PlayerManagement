@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class EstablishCompany extends PlayerCommand {
 
     public EstablishCompany() {
-        super("establish", new HashMap<String, Boolean>() {{
+        super("establish", new LinkedHashMap<String, Boolean>() {{
             put("company_name", true);
         }}, new ArrayList<String>() {{
             add("company.management.establish");
@@ -37,7 +37,7 @@ public class EstablishCompany extends PlayerCommand {
      */
     @Override
     public void execute(Player player, String[] args, UUID executor) {
-        if (PlayerManagement.companies.get(args[0]) != null) {
+        if (!PlayerManagement.companies.doesNotExist(args[0])) {
             player.sendMessage(PlayerManagement.prefs.prefix + Localization
                     .lc("already-exists"));
             return;
@@ -58,9 +58,7 @@ public class EstablishCompany extends PlayerCommand {
                         .prefs.establishPrice);
                 newCompany.setBalance(new BigDecimal(PlayerManagement
                         .prefs.establishPrice / 2));
-
-                PlayerManagement.companyDb.insert(newCompany);
-                PlayerManagement.companies = PlayerManagement.companyDb.getAll();
+                PlayerManagement.companies.setByName(newCompany);
                 player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat.format(Localization
                         .lc("company-registration-successful"), newCompany));
             } catch (SQLException e) {

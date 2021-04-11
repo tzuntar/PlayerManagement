@@ -108,8 +108,15 @@ public class PlayerDataContainer {
         players.put(uuid, player);
     }
 
-    public void removeByUuid(UUID uuid) {
-        players.remove(uuid);
+    /**
+     * Removes this player from the database and the data set
+     *
+     * @param player the {@link ServerPlayer} to remove
+     * @throws SQLException on errors
+     */
+    public void removeByUuid(ServerPlayer player) throws SQLException {
+        PlayerManagement.playerDb.remove(player);
+        players.remove(player.getUuid());
     }
 
     public Map<UUID, ServerPlayer> getPlayers() {

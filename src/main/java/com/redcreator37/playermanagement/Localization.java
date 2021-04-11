@@ -47,6 +47,7 @@ public class Localization {
         try {
             InputStream stream = PlayerManagement.class.getClassLoader()
                     .getResourceAsStream(baseName + "_" + langCode + ".properties");
+            assert stream != null;
             Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
             return Optional.of(new PropertyResourceBundle(reader));
         } catch (Exception e) {

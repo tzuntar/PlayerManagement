@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ import static com.redcreator37.playermanagement.Localization.lc;
 public class LowerRank extends PlayerCommand {
 
     public LowerRank() {
-        super("punish", new HashMap<String, Boolean>() {{
+        super("punish", new LinkedHashMap<String, Boolean>() {{
             put("player_name", true);
             put("Reason...", false);
         }}, new ArrayList<String>() {{

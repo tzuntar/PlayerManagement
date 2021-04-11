@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class RegisterId extends PlayerCommand {
 
     public RegisterId() {
-        super("registerid", new HashMap<String, Boolean>() {{
+        super("registerid", new LinkedHashMap<String, Boolean>() {{
             put("Real Name", true);
         }}, new ArrayList<String>() {{
             add("management.user");

@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import static com.redcreator37.playermanagement.PlayerRoutines.truncate;
@@ -18,7 +18,7 @@ import static com.redcreator37.playermanagement.PlayerRoutines.truncate;
 public class PlayerAdmin extends PlayerCommand {
 
     public PlayerAdmin() {
-        super("playeradmin", new HashMap<>(), new ArrayList<String>() {{
+        super("playeradmin", new LinkedHashMap<>(), new ArrayList<String>() {{
             add("management.admin");
         }});
     }

@@ -14,13 +14,12 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
-import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
 import static com.redcreator37.playermanagement.PlayerManagement.transactionDb;
@@ -32,7 +31,7 @@ import static com.redcreator37.playermanagement.PlayerManagement.transactions;
 public class CompanyPay extends PlayerCommand {
 
     public CompanyPay() {
-        super("cpay", new HashMap<String, Boolean>() {{
+        super("cpay", new LinkedHashMap<String, Boolean>() {{
             put("from", true);
             put("to", true);
             put("amount", true);
@@ -56,8 +55,8 @@ public class CompanyPay extends PlayerCommand {
             return;
 
         // attempt to look up both companies
-        Company source = companies.get(args[0]),
-                target = companies.get(args[1]);
+        Company source = companies.byName(args[0]),
+                target = companies.byName(args[1]);
         if (source == null || target == null) {
             player.sendMessage(prefix + MessageFormat.format(lc("unknown-company"),
                     source == null ? args[0] : args[1]));
@@ -103,8 +102,8 @@ public class CompanyPay extends PlayerCommand {
 
         // update and re-read the data
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
-            companyDb.updateByPlayer(player, source);
-            companyDb.updateByPlayer(player, target);
+            companies.updateByPlayer(player, source);
+            companies.updateByPlayer(player, target);
             try {
                 transactions = transactionDb.getAll();
             } catch (SQLException e) {

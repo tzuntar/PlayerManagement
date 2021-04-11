@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class SetJob extends PlayerCommand {
 
     public SetJob() {
-        super("setjob", new HashMap<String, Boolean>() {{
+        super("setjob", new LinkedHashMap<String, Boolean>() {{
             put("job_name", true);
             put("player_name", false);
         }}, new ArrayList<String>() {{

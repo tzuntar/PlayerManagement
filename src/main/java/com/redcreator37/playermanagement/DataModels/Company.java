@@ -141,7 +141,7 @@ public class Company {
      * @throws IllegalArgumentException if the wage is negative
      */
     public void setWage(BigDecimal wage) {
-        if (wage.intValue() < 0)
+        if (wage.intValue() <= -1)
             throw new IllegalArgumentException(Localization
                     .lc("wage-cannot-be-negative"));
         this.wage = wage;

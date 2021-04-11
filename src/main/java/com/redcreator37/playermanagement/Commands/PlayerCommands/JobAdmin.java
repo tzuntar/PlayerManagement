@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class JobAdmin extends PlayerCommand {
 
     public JobAdmin() {
-        super("jobadmin", new HashMap<String, Boolean>() {{
+        super("jobadmin", new LinkedHashMap<String, Boolean>() {{
             put("add|update|remove", true);
         }}, new ArrayList<String>() {{
             add("management.admin");

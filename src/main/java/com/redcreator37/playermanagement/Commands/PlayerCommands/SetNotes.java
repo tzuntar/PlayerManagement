@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class SetNotes extends PlayerCommand {
 
     public SetNotes() {
-        super("setnotes", new HashMap<String, Boolean>() {{
+        super("setnotes", new LinkedHashMap<String, Boolean>() {{
             put("player_name", true);
             put("Any notes...", false);
         }}, new ArrayList<String>() {{

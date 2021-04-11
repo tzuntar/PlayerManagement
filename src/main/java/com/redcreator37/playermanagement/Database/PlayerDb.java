@@ -120,7 +120,7 @@ public class PlayerDb extends SharedDb<ServerPlayer, Map<UUID, ServerPlayer>> {
             p.setName(set.getString("name"));
             p.setJoinDate(set.getString("join_date"));
             p.setJob(PlayerManagement.jobs.get(set.getString("job")));
-            p.setCompany(PlayerManagement.companies.get(set.getString("company")));
+            p.setCompany(PlayerManagement.companies.byName(set.getString("company")));
             p.setNotes(set.getString("notes"));
             p.setPunishments(set.getInt("punishments"));
             playerMap.put(p.getUuid(), p);

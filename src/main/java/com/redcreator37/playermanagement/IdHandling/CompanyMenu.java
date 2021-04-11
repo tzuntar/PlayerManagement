@@ -212,7 +212,7 @@ public final class CompanyMenu implements Listener {
                 break;
         }
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class),
-                () -> PlayerManagement.companyDb.updateByPlayer(player, company));
+                () -> PlayerManagement.companies.updateByPlayer(player, company));
     }
 
     /**

@@ -17,14 +17,13 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.redcreator37.playermanagement.Localization.lc;
 import static com.redcreator37.playermanagement.PlayerManagement.companies;
-import static com.redcreator37.playermanagement.PlayerManagement.companyDb;
 import static com.redcreator37.playermanagement.PlayerManagement.eco;
 import static com.redcreator37.playermanagement.PlayerManagement.getPlugin;
 import static com.redcreator37.playermanagement.PlayerManagement.players;
@@ -36,7 +35,8 @@ import static com.redcreator37.playermanagement.PlayerManagement.players;
 public class CompanyManagement extends PlayerCommand {
 
     public CompanyManagement() {
-        super("company", new HashMap<String, Boolean>() {{
+        super("company", new LinkedHashMap<String, Boolean>() {{
+            put("name", true);
             put("info|transactions", false);
         }}, new ArrayList<String>() {{
             add("management.company");
@@ -62,19 +62,14 @@ public class CompanyManagement extends PlayerCommand {
             return;
 
         if (args.length == 2 && !args[1].matches("info|transactions")) {
-            HashMap<String, Boolean> subArgs = new HashMap<String, Boolean>() {{
-                put("name", true);
-                put("increase|decrease|deposit|withdraw|setdesc|setowner|transaction|remove", false);
-                put("args...", false);
-            }};
-            player.sendMessage(prefix + CommandHelper.parseCommandUsage(getName(), subArgs));
+            displaySubcommandHelp(player);
             return;
         }
 
         // manage the player's company or someone else's if the
         // player has the admin permissions
         Optional<Company> comp = player.hasPermission("management.admin") && args.length > 0
-                ? Optional.ofNullable(companies.get(args[0])) : target.getCompany();
+                ? Optional.ofNullable(companies.byName(args[0])) : target.getCompany();
         if (!comp.isPresent()) {
             player.sendMessage(prefix + lc("player-not-an-owner-of-any-company"));
             return;
@@ -159,8 +154,7 @@ public class CompanyManagement extends PlayerCommand {
                 break;
             case "remove":
                 try {
-                    companyDb.remove(company);
-                    companies = companyDb.getAll();
+                    companies.remove(company);
                     player.sendMessage(prefix + MessageFormat.format(lc("removed-company"),
                             args[1]));
                 } catch (SQLException e) {
@@ -168,8 +162,7 @@ public class CompanyManagement extends PlayerCommand {
                             e.getMessage()));
                 }
             default:
-                player.sendMessage(prefix + MessageFormat.format(lc("unknown-company"),
-                        args[1]));
+                displaySubcommandHelp(player);
                 return;
         }
 
@@ -177,7 +170,7 @@ public class CompanyManagement extends PlayerCommand {
             return;    // no changes made, don't update the db
 
         Bukkit.getScheduler().runTask(getPlugin(PlayerManagement.class), () -> {
-            PlayerManagement.companyDb.updateByPlayer(player, company);
+            companies.updateByPlayer(player, company);
             try {
                 PlayerManagement.transactions = PlayerManagement
                         .transactionDb.getAll();
@@ -187,4 +180,20 @@ public class CompanyManagement extends PlayerCommand {
             }
         });
     }
+
+    /**
+     * Displays subcommand usage to this player
+     *
+     * @param player the player who will see the output
+     */
+    private void displaySubcommandHelp(Player player) {
+        LinkedHashMap<String, Boolean> subArgs = new LinkedHashMap<String, Boolean>() {{
+            put("name", true);
+            put("increase|decrease|deposit|withdraw|setdesc|setowner|transaction|remove", false);
+            put("args...", false);
+        }};
+        player.sendMessage(PlayerManagement.prefs.prefix
+                + CommandHelper.parseCommandUsage(getName(), subArgs));
+    }
+
 }

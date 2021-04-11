@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,11 +26,11 @@ public abstract class PlayerCommand implements CommandExecutor {
     private final String name;
 
     /**
-     * A {@link HashMap} of arguments this command accepts.
+     * A {@link LinkedHashMap} of arguments this command accepts.
      * Keys are names of the arguments, values tell whether a specific
      * argument is required or not
      */
-    private final HashMap<String, Boolean> arguments;
+    private final LinkedHashMap<String, Boolean> arguments;
 
     /**
      * List of permissions this command can be expected to require
@@ -41,13 +41,13 @@ public abstract class PlayerCommand implements CommandExecutor {
      * Constructs a new PlayerCommand instance
      *
      * @param name        The name of the command by which it can be invoked
-     * @param arguments   A {@link HashMap} of arguments this command
+     * @param arguments   A {@link LinkedHashMap} of arguments this command
      *                    accepts. Keys are names of the arguments, values
      *                    tell whether a specific argument is required or not
      * @param permissions List of permissions this command can be
      *                    expected to require
      */
-    public PlayerCommand(String name, HashMap<String, Boolean> arguments, List<String> permissions) {
+    public PlayerCommand(String name, LinkedHashMap<String, Boolean> arguments, List<String> permissions) {
         this.name = name;
         this.arguments = arguments;
         this.permissions = permissions;

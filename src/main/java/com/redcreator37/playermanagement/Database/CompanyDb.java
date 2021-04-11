@@ -2,11 +2,7 @@ package com.redcreator37.playermanagement.Database;
 
 import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
-import com.redcreator37.playermanagement.Localization;
-import com.redcreator37.playermanagement.PlayerManagement;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -67,27 +63,9 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
      */
     @Override
     Map<String, Company> commonQuery(String sql) throws SQLException {
-        Map<String, Company> companies = new HashMap<>();
         Statement st = db.createStatement();
         st.closeOnCompletion();
-        ResultSet set = st.executeQuery(sql);
-
-        // loop through the records
-        while (set.next()) {
-            UUID uuid = UUID.fromString(set.getString("owner"));
-            PlayerTag ownerTag = new PlayerTag(Bukkit.getOfflinePlayer(uuid).getName(), uuid);
-            Company c = new Company(set.getInt("id"),
-                    set.getString("name"),
-                    set.getString("description"),
-                    set.getString("money"),
-                    set.getInt("employees"),
-                    ownerTag,
-                    set.getString("established"),
-                    set.getString("paycheck"));
-            companies.put(c.toString(), c);
-        }
-        set.close();
-        return companies;
+        return companyDataFromResultSet(st.executeQuery(sql));
     }
 
     /**
@@ -99,6 +77,50 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     @Override
     public Map<String, Company> getAll() throws SQLException {
         return commonQuery("SELECT * FROM companies");
+    }
+
+    /**
+     * Returns the company with this name from the database
+     *
+     * @param name the company name to look for
+     * @return the matching Company object or {@code null} if
+     * there are no matching companies
+     * @throws SQLException on errors
+     */
+    public Company getByName(String name) throws SQLException {
+        PreparedStatement st = db.prepareStatement("SELECT * FROM companies WHERE name = ?");
+        st.setString(1, name);
+        st.closeOnCompletion();
+        ResultSet set = st.executeQuery();
+        Map<String, Company> result = companyDataFromResultSet(set);
+        return result.get(name);
+    }
+
+    /**
+     * Traverses this result set and returns a {@link Map} with all
+     * companies in this result set
+     *
+     * @param set the {@link ResultSet} to traverse
+     * @return a {@link Map} containing all data in the set
+     * @throws SQLException on errors
+     */
+    private Map<String, Company> companyDataFromResultSet(ResultSet set) throws SQLException {
+        Map<String, Company> companyMap = new HashMap<>();
+        while (set.next()) {
+            UUID uuid = UUID.fromString(set.getString("owner"));
+            PlayerTag ownerTag = new PlayerTag(Bukkit.getOfflinePlayer(uuid).getName(), uuid);
+            Company c = new Company(set.getInt("id"),
+                    set.getString("name"),
+                    set.getString("description"),
+                    set.getString("money"),
+                    set.getInt("employees"),
+                    ownerTag,
+                    set.getString("established"),
+                    set.getString("paycheck"));
+            companyMap.put(c.toString(), c);
+        }
+        set.close();
+        return companyMap;
     }
 
     /**
@@ -140,6 +162,24 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     }
 
     /**
+     * Updates this company instance in the database and returns its
+     * updated version
+     *
+     * @param company the Company object to update
+     * @return the updated version of this company object
+     * @throws SQLException on errors
+     */
+    public Company updateAndGet(Company company) throws SQLException {
+        String cmd = "UPDATE companies SET name = ?, description = ?, money = ?," +
+                " employees = ?, owner = ?, established = ?, paycheck = ? WHERE id = ?";
+        runSqlUpdate(cmd, company, true);
+        Company updated = getByName(company.toString());
+        if (updated == null)
+            throw new IllegalStateException("The updated value has been written but re-loading has failed");
+        return updated;
+    }
+
+    /**
      * Removes this company from the database
      *
      * @param company the company to remove
@@ -149,25 +189,6 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
     public void remove(Company company) throws SQLException {
         String cmd = "DELETE FROM companies WHERE id = " + company.getId() + ";";
         db.prepareStatement(cmd).executeUpdate();
-    }
-
-    /**
-     * Updates the data for this company in the database
-     *
-     * @param player  the player that'll see any output
-     * @param company the company to update
-     */
-    public void updateByPlayer(Player player, Company company) {
-        try {
-            update(company);
-            PlayerManagement.companies = getAll();
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("company-data-saved"));
-        } catch (SQLException ex) {
-            player.sendMessage(PlayerManagement.prefs.prefix + ChatColor.GOLD
-                    + Localization.lc("error-saving-company-data")
-                    + ChatColor.RED + ex.getMessage());
-        }
     }
 
 }

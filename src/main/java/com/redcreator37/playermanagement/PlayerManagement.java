@@ -15,8 +15,8 @@ import com.redcreator37.playermanagement.Commands.PlayerCommands.RegisterId;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetCompany;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetJob;
 import com.redcreator37.playermanagement.Commands.PlayerCommands.SetNotes;
+import com.redcreator37.playermanagement.Containers.CompanyDataContainer;
 import com.redcreator37.playermanagement.Containers.PlayerDataContainer;
-import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.Job;
 import com.redcreator37.playermanagement.DataModels.Transaction;
 import com.redcreator37.playermanagement.Database.CompanyDb;
@@ -76,10 +76,8 @@ public final class PlayerManagement extends JavaPlugin {
     public static Map<String, Job> jobs = null;
     /**
      * Contains the data for all companies on the server
-     * The key is the company name, the value is the matching Company
-     * object
      */
-    public static Map<String, Company> companies = null;
+    public static CompanyDataContainer companies = null;
     /**
      * Contains all transactions on the server
      */
@@ -247,7 +245,7 @@ public final class PlayerManagement extends JavaPlugin {
 
         try {
             jobs = jobDb.getAll();   // it has to be done in this exact order!
-            companies = companyDb.getAll();
+            companies = new CompanyDataContainer(companyDb.getAll());
             transactions = transactionDb.getAll();
             players = new PlayerDataContainer(playerDb.getAll());
             getLogger().info(Localization.lc("player-db-loaded-successfully"));
@@ -267,7 +265,7 @@ public final class PlayerManagement extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getScheduler()
                 .runTask(this, () -> {
                     Bukkit.getOnlinePlayers().forEach(economyProvider::globalPayWage);
-                    companies.forEach((s, company) -> {
+                    companies.getCompanies().forEach((s, company) -> {
                         try {
                             companyDb.update(company);
                         } catch (SQLException e) {

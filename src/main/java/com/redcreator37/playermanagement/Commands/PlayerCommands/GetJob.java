@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class GetJob extends PlayerCommand {
 
     public GetJob() {
-        super("getjob", new HashMap<String, Boolean>() {{
+        super("getjob", new LinkedHashMap<String, Boolean>() {{
             put("player_name", true);
         }}, new ArrayList<String>() {{
             add("management.user");

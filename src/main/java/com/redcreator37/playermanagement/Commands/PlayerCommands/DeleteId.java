@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class DeleteId extends PlayerCommand {
 
     public DeleteId() {
-        super("deleteid", new HashMap<String, Boolean>() {{
+        super("deleteid", new LinkedHashMap<String, Boolean>() {{
             put("player_name", true);
         }}, new ArrayList<String>() {{
             add("management.admin");
@@ -58,8 +58,7 @@ public class DeleteId extends PlayerCommand {
         Bukkit.getScheduler().runTask(PlayerManagement
                 .getPlugin(PlayerManagement.class), () -> {
             try {
-                PlayerManagement.playerDb.remove(target);
-                PlayerManagement.players.removeByUuid(target.getUuid());
+                PlayerManagement.players.removeByUuid(target);
                 player.sendMessage(prefix + MessageFormat.format(Localization
                         .lc("player-unregistered"), target));
             } catch (SQLException e) {

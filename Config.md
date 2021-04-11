@@ -54,7 +54,7 @@ PlayerList:
   - '§4YouTube:   §r§f§nlink§r      §r§8: :      §9Discord:   §r§f§nlink§r             '
   - |2-
 
-    §8§oPowered by PlayerManagement v1.6 by RedCreator37
+    §8§oPowered by PlayerManagement v1.7 by RedCreator37
   # you can remove these 3 credit lines ^^^
   Display:                      # formatting used for players of each rank in the playerlist
     Generic: §8[ §f{playername} §8]

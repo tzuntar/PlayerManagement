@@ -25,7 +25,7 @@ public class GetId extends PlayerCommand {
 
     public GetId() {
         super("getid", new HashMap<String, Boolean>() {{
-            put("player_name", false);
+            put("player_name", true);
         }}, new ArrayList<String>() {{
             add("management.user");
             add("management.admin");
@@ -41,11 +41,11 @@ public class GetId extends PlayerCommand {
      */
     @Override
     public void execute(Player player, String[] args, UUID executor) {
-        Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 0, 0);
+        Optional<ServerPlayer> optTarget = getUserOrAdmin(player, args, 0, 1);
         if (!optTarget.isPresent()) return;
         ServerPlayer target = optTarget.get();
 
-        if (args.length < 1) {  // if there are no elements specified, just give the player a new card
+        if (args[0].equalsIgnoreCase(player.getName())) {  // if used by the player themselves, give them a new ID
             double cardPrice = PlayerManagement.prefs.cardPrice;
             if (!PlayerManagement.eco.has(player, cardPrice)) {
                 player.sendMessage(PlayerManagement.prefs.prefix + Localization

@@ -66,7 +66,7 @@ public class PlayerDataContainer {
      */
     public List<ServerPlayer> getCompanyEmployees(Company company) {
         return players.values().stream()
-                .filter(pl -> pl.getCompany().equals(company))
+                .filter(pl -> pl.getCompany().toString().equals(company.toString()))
                 .collect(Collectors.toList());
     }
 

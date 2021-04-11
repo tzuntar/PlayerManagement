@@ -6,7 +6,7 @@
 
     <groupId>com.redcreator37</groupId>
     <artifactId>PlayerManagement</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <packaging>jar</packaging>
 
     <name>PlayerManagement</name>
@@ -16,7 +16,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>redcreator37.github.io</url>
+    <url>https://github.com/RedCreator37/PlayerManagement</url>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

@@ -1,10 +1,12 @@
 package com.redcreator37.playermanagement.DataModels;
 
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents an in-game company
@@ -20,32 +22,26 @@ public class Company {
      * Company name
      */
     private final String name;
-
-    /**
-     * Company description
-     */
-    private String description;
-
-    /**
-     * Money the company has assigned to it
-     */
-    private BigDecimal balance;
-
-    /**
-     * The number of employees
-     */
-    private int employees;
-
-    /**
-     * The username/uuid tag of the company owner
-     */
-    private PlayerTag owner;
-
     /**
      * The date of company establishment
      */
     private final String established;
-
+    /**
+     * Company description
+     */
+    private String description;
+    /**
+     * Money the company has assigned to it
+     */
+    private BigDecimal balance;
+    /**
+     * The number of employees
+     */
+    private int employees;
+    /**
+     * The username/uuid tag of the company owner
+     */
+    private PlayerTag owner;
     /**
      * The amount of money the players can earn
      */
@@ -65,9 +61,8 @@ public class Company {
         this.balance = new BigDecimal(0);
         this.wage = new BigDecimal(10);
         this.employees = 0;
-        this.owner = new PlayerTag("N/A", "N/A");
         this.established = PlayerRoutines
-                .getCurrentDate(PlayerManagement.dateFormat);
+                .getCurrentDate(PlayerManagement.prefs.dateFormat);
     }
 
     /**
@@ -99,24 +94,36 @@ public class Company {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public BigDecimal getBalance() {
         return balance;
     }
 
+    public void setBalance(BigDecimal money) {
+        this.balance = money;
+    }
+
     public int getEmployees() {
         return employees;
     }
 
-    public PlayerTag getOwner() {
-        return owner;
+    public void setEmployees(int employees) {
+        this.employees = employees;
+    }
+
+    public Optional<PlayerTag> getOwner() {
+        return Optional.ofNullable(owner);
+    }
+
+    public void setOwner(PlayerTag owner) {
+        this.owner = owner;
     }
 
     public String getEstablishedDate() {
@@ -127,22 +134,6 @@ public class Company {
         return wage;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setBalance(BigDecimal money) {
-        this.balance = money;
-    }
-
-    public void setEmployees(int employees) {
-        this.employees = employees;
-    }
-
-    public void setOwner(PlayerTag owner) {
-        this.owner = owner;
-    }
-
     /**
      * Sets the wage for this company
      *
@@ -150,9 +141,9 @@ public class Company {
      * @throws IllegalArgumentException if the wage is negative
      */
     public void setWage(BigDecimal wage) {
-        if (wage.intValue() < 0)
-            throw new IllegalArgumentException(PlayerManagement.strings
-                    .getString("wage-cannot-be-negative"));
+        if (wage.intValue() <= -1)
+            throw new IllegalArgumentException(Localization
+                    .lc("wage-cannot-be-negative"));
         this.wage = wage;
     }
 
@@ -173,16 +164,8 @@ public class Company {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + getId();
-        result *= 37 + Objects.hashCode(getName());
-        result *= 37 + Objects.hashCode(getDescription());
-        result *= 37 + Objects.hashCode(getBalance());
-        result *= 37 + Objects.hashCode(getEmployees());
-        result *= 37 + Objects.hashCode(getOwner());
-        result *= 37 + Objects.hashCode(getEstablishedDate());
-        result *= 37 + Objects.hashCode(getWage());
-        return result;
+        return Objects.hash(getId(), toString(), getDescription(), getBalance(),
+                getEmployees(), getOwner(), getEstablishedDate(), getWage());
     }
 
 }

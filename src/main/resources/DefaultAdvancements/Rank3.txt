@@ -1,0 +1,17 @@
+story/shiny_gear
+story/cure_zombie_villager
+nether/fast_travel
+nether/uneasy_alliance
+nether/all_potions
+nether/create_full_beacon
+nether/all_effects
+end/levitate
+adventure/hero_of_the_village
+adventure/kill_all_mobs
+adventure/two_birds_one_arrow
+adventure/arbalistic
+adventure/adventuring_time
+husbandry/bred_all_animals
+husbandry/complete_catalogue
+husbandry/balanced_diet
+husbandry/break_diamond_hoe

@@ -1,12 +1,13 @@
 package com.redcreator37.playermanagement.DataModels;
 
-import com.redcreator37.playermanagement.PlayerCard;
+import com.redcreator37.playermanagement.IdHandling.InfoCards;
+import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,6 +68,40 @@ public class Transaction {
         this.amount = amount;
     }
 
+    /**
+     * Displays a list of all transactions
+     *
+     * @param player  the {@link ServerPlayer} receiving the list
+     * @param company the {@link Company} with the data
+     */
+    public static void listTransactions(Player player, Company company) {
+        List<Transaction> transactions = PlayerManagement
+                .transactions.stream().filter(t -> t.getCompanyId() == company.getId())
+                .collect(Collectors.toList());
+
+        if (transactions.size() < 1) {
+            player.sendMessage(PlayerManagement.prefs.prefix + MessageFormat
+                    .format(Localization.lc("company-has-no-transactions"), company));
+            return;
+        }
+
+        List<String> pages = new ArrayList<>();
+        for (int i = 0; i < transactions.size(); i++) {
+            StringBuilder sb = new StringBuilder(Localization.lc("transactions-header"));
+            Transaction t = transactions.get(i);
+            sb.append(t);
+            for (int j = 0; j < 3; j++) {
+                i++;
+                if (i < transactions.size()) {
+                    t = transactions.get(i);
+                    sb.append(t);
+                }
+            }
+            pages.add(sb.toString());
+        }
+        InfoCards.openBook(player, pages, "N/A", "N/A");
+    }
+
     public int getId() {
         return id;
     }
@@ -108,57 +143,14 @@ public class Transaction {
     }
 
     /**
-     * Displays a list of all transactions
-     *
-     * @param p the player that'll see the list
-     * @param c the company to get the data from
-     */
-    public static void listTransactions(Player p, Company c) {
-        List<Transaction> transactions = PlayerManagement
-                .transactions.stream().filter(t -> t.getCompanyId() == c.getId())
-                .collect(Collectors.toList());
-
-        if (transactions.size() < 1) {
-            p.sendMessage(PlayerManagement.prefix + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("the-company")
-                    + ChatColor.GREEN + c.getName() + ChatColor.GOLD
-                    + PlayerManagement.strings.getString("has-no-transactions"));
-            return;
-        }
-
-        List<String> pages = new ArrayList<>();
-        for (int i = 0; i < transactions.size(); i++) {
-            StringBuilder sb = new StringBuilder("§1§lDIR §r§1|" +
-                    " §1§lTEXT §r§1| §1§lAMOUNT§r\n");
-            Transaction t = transactions.get(i);
-            sb.append(t);
-            for (int j = 0; j < 3; j++) {
-                i++;
-                if (i < transactions.size()) {
-                    t = transactions.get(i);
-                    sb.append(t);
-                }
-            }
-            pages.add(sb.toString());
-        }
-        PlayerCard.openBook(p, pages, "N/A", "N/A");
-    }
-
-    /**
      * Provides hash code functionality
      *
      * @return the hash code for this Transaction instance
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + getId();
-        result *= 37 + getCompanyId();
-        result *= 37 + Objects.hashCode(getDirection());
-        result *= 37 + Objects.hashCode(getTitle());
-        result *= 37 + Objects.hashCode(getDescription());
-        result *= 37 + Objects.hashCode(getAmount());
-        return result;
+        return Objects.hash(getId(), getCompanyId(), getDirection(),
+                getTitle(), getDescription(), getAmount());
     }
 
 }

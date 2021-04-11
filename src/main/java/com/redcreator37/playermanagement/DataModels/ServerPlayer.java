@@ -1,6 +1,8 @@
 package com.redcreator37.playermanagement.DataModels;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Represents a Minecraft player on the server
@@ -67,24 +69,24 @@ public class ServerPlayer {
         this.punishments = punishments;
     }
 
-    public String getNotes() {
-        return notes;
+    public Optional<String> getNotes() {
+        return Optional.ofNullable(notes);
     }
 
     public void setNotes(String notes) {
         this.notes = notes;
     }
 
-    public Company getCompany() {
-        return company;
+    public Optional<Company> getCompany() {
+        return Optional.ofNullable(company);
     }
 
     public void setCompany(Company company) {
         this.company = company;
     }
 
-    public Job getJob() {
-        return job;
+    public Optional<Job> getJob() {
+        return Optional.ofNullable(job);
     }
 
     public void setJob(Job job) {
@@ -107,7 +109,7 @@ public class ServerPlayer {
         this.name = name;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return tag.getUuid();
     }
 
@@ -136,18 +138,8 @@ public class ServerPlayer {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result *= 37 + getId();
-        result *= 37 + Objects.hashCode(getUsername());
-        result *= 37 + Objects.hashCode(getUuid());
-        result *= 37 + Objects.hashCode(getName());
-        result *= 37 + Objects.hashCode(getJoinDate());
-        result *= 37 + Objects.hashCode(getJob());
-        result *= 37 + Objects.hashCode(getCompany());
-        result *= 37 + Objects.hashCode(getNotes());
-        result *= 37 + getPunishments();
-        result *= 37 + getPunishments();
-        return result;
+        return Objects.hash(getId(), getUsername(), getUuid(), getName(),
+                getJoinDate(), getJob(), getCompany(), getNotes());
     }
 
 }

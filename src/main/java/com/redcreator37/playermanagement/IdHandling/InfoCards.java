@@ -103,9 +103,9 @@ public final class InfoCards {
 
         String page1 = MessageFormat.format(lc("card-playerinfo-1"),
                 player, player.getName(), player.getJoinDate(),
-                job.isPresent() ? job : lc("unknown"));
+                job.isPresent() ? job.get() : lc("unknown"));
         String page2 = MessageFormat.format(lc("card-playerinfo-2"),
-                company.isPresent() ? company : lc("unknown"),
+                company.isPresent() ? company.get() : lc("unknown"),
                 notes.isPresent() && !notes.get().equals("") ? notes.get() : "-",
                 balance, formatPunishments(player));
         List<String> pages = new ArrayList<>(Arrays.asList(page1, page2));

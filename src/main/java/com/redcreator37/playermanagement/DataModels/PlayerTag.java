@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement.DataModels;
 
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -39,14 +38,22 @@ public class PlayerTag {
         return uuid;
     }
 
-    /**
-     * Provides hash code functionality
-     *
-     * @return this object's hash code
-     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof PlayerTag))
+            return false;
+        PlayerTag t = (PlayerTag) obj;
+        return t.uuid.equals(this.uuid)
+                && t.username.equals(this.username);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getUuid());
+        int c = this.username.hashCode();
+        c = 31 * c + this.uuid.hashCode();
+        return c;
     }
 
 }

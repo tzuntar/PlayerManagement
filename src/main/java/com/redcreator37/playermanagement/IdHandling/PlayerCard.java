@@ -51,9 +51,10 @@ public final class PlayerCard implements Listener {
         Objects.requireNonNull(data).setDisplayName(MessageFormat
                 .format(lc("id-card-display-name"), target));
 
-        List<String> lore = new ArrayList<>();
-        lore.add(PlayerManagement.prefs.cardItemLore);
-        lore.add(target.getUuid().toString());
+        List<String> lore = new ArrayList<String>() {{
+            add(PlayerManagement.prefs.cardItemLore);
+            add(target.getUuid().toString());
+        }};
         Objects.requireNonNull(data).setLore(lore);
         stack.setItemMeta(data);
 
@@ -73,7 +74,7 @@ public final class PlayerCard implements Listener {
             try {
                 lore = Objects.requireNonNull(p.getInventory()
                         .getItemInMainHand().getItemMeta()).getLore();
-            } catch (NullPointerException ignored) { }
+            } catch (NullPointerException ignored) { /* handled by the next IF */ }
 
             if (lore != null && lore.contains(PlayerManagement.prefs.cardItemLore))
                 handlePlayerCardEvent(p, lore);

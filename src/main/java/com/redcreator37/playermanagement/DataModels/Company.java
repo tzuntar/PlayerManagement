@@ -5,7 +5,6 @@ import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -48,46 +47,26 @@ public class Company {
     private BigDecimal wage;
 
     /**
-     * Company constructor - <strong>use this one only when
-     * establishing a new company!</strong>
-     *
-     * @param id   the database id
-     * @param name the name
+     * The ID to use when establishing a new company it doesn't exist
+     * in the database yet.
      */
-    public Company(int id, String name) {
-        this.id = id;
-        this.name = name;
-        this.description = "";
-        this.balance = new BigDecimal(0);
-        this.wage = new BigDecimal(10);
-        this.employees = 0;
-        this.established = PlayerRoutines
-                .getCurrentDate(PlayerManagement.prefs.dateFormat);
+    public static final int NEW_COMPANY_ID = -1;
+
+    private Company(Builder builder) {
+        id = builder.id;
+        name = builder.name;
+        established = builder.established;
+        description = builder.description;
+        balance = builder.balance;
+        employees = builder.employees;
+        owner = builder.owner;
+        wage = builder.wage;
     }
 
-    /**
-     * Company constructor
-     *
-     * @param id          the database id
-     * @param name        the name
-     * @param description the description
-     * @param balance     the amount of money the company has associated
-     *                    with it
-     * @param employees   the number of employees
-     * @param owner       the owner player
-     * @param established the date of establishment
-     * @param wage        the amount of money the players can earn
-     */
-    public Company(int id, String name, String description, String balance,
-                   int employees, PlayerTag owner, String established, String wage) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.balance = new BigDecimal(balance);
-        this.employees = employees;
-        this.owner = owner;
-        this.established = established;
-        this.wage = new BigDecimal(wage);
+    public void setWage(BigDecimal wage) {
+        if (this.wage != null && this.wage.compareTo(BigDecimal.ZERO) < 0)
+            throw new IllegalArgumentException(Localization.lc("wage-cannot-be-negative"));
+        this.wage = wage;
     }
 
     public int getId() {
@@ -134,17 +113,20 @@ public class Company {
         return wage;
     }
 
-    /**
-     * Sets the wage for this company
-     *
-     * @param wage the new wage
-     * @throws IllegalArgumentException if the wage is negative
-     */
-    public void setWage(BigDecimal wage) {
-        if (wage.intValue() <= -1)
-            throw new IllegalArgumentException(Localization
-                    .lc("wage-cannot-be-negative"));
-        this.wage = wage;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Company))
+            return false;
+        Company c = (Company) obj;
+        return c.name.equals(this.name)
+                && c.description.equals(this.description)
+                && c.balance.equals(this.balance)
+                && c.employees == this.employees
+                && c.owner.equals(this.owner)
+                && c.established.equals(this.established)
+                && c.wage.equals(this.wage);
     }
 
     /**
@@ -157,15 +139,111 @@ public class Company {
         return this.name;
     }
 
-    /**
-     * Provides hash code functionality
-     *
-     * @return the hash code for this Company instance
-     */
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), toString(), getDescription(), getBalance(),
-                getEmployees(), getOwner(), getEstablishedDate(), getWage());
+        int c = Integer.hashCode(this.id);
+        c = 31 * c + this.name.hashCode();
+        c = 31 * c + this.description.hashCode();
+        c = 31 * c + this.balance.hashCode();
+        c = 31 * c + Integer.hashCode(this.employees);
+        c = 31 * c + this.owner.hashCode();
+        c = 31 * c + this.established.hashCode();
+        c = 31 * c + this.wage.hashCode();
+        return c;
+    }
+
+    /**
+     * Handles the construction of new {@link Company} objects.
+     */
+    public static class Builder {
+
+        private final int id;
+
+        private final String name;
+
+        private String established;
+
+        private String description;
+
+        private BigDecimal balance;
+
+        private int employees;
+
+        private PlayerTag owner;
+
+        private BigDecimal wage;
+
+        /**
+         * Construct a new {@link Company} builder.
+         * <p>
+         * <strong>This constructor sets up the builder with default
+         * parameters for establishing a new company.</strong>
+         *
+         * @param id   the company's database ID.
+         * @param name the company's name.
+         */
+        public Builder(int id, String name) {
+            this.id = id;
+            this.name = name;
+            this.established = PlayerRoutines
+                    .getCurrentDate(PlayerManagement.prefs.dateFormat);
+            this.balance = new BigDecimal(0);
+            this.wage = new BigDecimal(10);
+            this.employees = 0;
+        }
+
+        /**
+         * Constructs a new {@link Company} builder.
+         *
+         * @param id                the company's database ID.
+         * @param name              the company's name.
+         * @param establishmentDate the company's establishment date.
+         */
+        public Builder(int id, String name, String establishmentDate) {
+            this.id = id;
+            this.name = name;
+            this.established = establishmentDate;
+        }
+
+        public Builder withEstablishmentDate(String establishmentDate) {
+            this.established = establishmentDate;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withBalance(BigDecimal balance) {
+            this.balance = balance;
+            return this;
+        }
+
+        public Builder withEmployees(int employeeCount) {
+            this.employees = employeeCount;
+            return this;
+        }
+
+        public Builder withOwner(PlayerTag owner) {
+            this.owner = owner;
+            return this;
+        }
+
+        public Builder withWage(BigDecimal wage) {
+            if (this.wage != null && this.wage.compareTo(BigDecimal.ZERO) < 0)
+                throw new IllegalArgumentException(Localization.lc("wage-cannot-be-negative"));
+            this.wage = wage;
+            return this;
+        }
+
+        /**
+         * Finishes and builds the {@link Company} object.
+         */
+        public Company build() {
+            return new Company(this);
+        }
+
     }
 
 }

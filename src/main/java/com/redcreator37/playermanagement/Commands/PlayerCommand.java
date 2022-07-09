@@ -8,12 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents implementation data of a player-executable plugin command
@@ -78,31 +73,31 @@ public abstract class PlayerCommand implements CommandExecutor {
      * {@link Player Player's} permissions.
      * <p>
      * This method works in a dual-permission system, where both normal
-     * users and admins can use the command. Normal users can see and
-     * modify only their data while admins can see and modify data of
-     * others as well.
+     * users and admins can use a command. Normal users can see and
+     * modify their data only while admins can see and modify data of
+     * other users as well.
      * <p>
      * This command requires at least two permissions to be set up.
      * The first permission is used when checking for the user's
-     * permission, the second is used when checking for admin's. An
-     * {@link IllegalStateException} is thrown if less than two
+     * permission, the second is used when checking for the admin's.
+     * An {@link IllegalArgumentException} is thrown if less than two
      * permissions are set up.
      *
-     * @param player          the {@link Player} who ran the command
-     * @param args            the arguments entered by the player
-     * @param nameArgPos      the position in the arguments array where
-     *                        the player names are expected to be when
-     *                        an admin runs the command
-     * @param adminArgsLength the length of the entered arguments array
+     * @param player          the {@link Player} using the command.
+     * @param args            arguments entered by the player.
+     * @param nameArgPos      position in the arguments array at which
+     *                        the targeted players' names are expected
+     *                        to be when an admin runs the command.
+     * @param adminArgsLength length of the entered arguments array
      *                        at which the command will be run in admin
-     *                        mode
-     * @return an {@link Optional} containing the target
-     * {@link ServerPlayer} object
+     *                        mode.
+     * @return an {@link Optional} containing the target {@link ServerPlayer}
+     * object.
      */
     public Optional<ServerPlayer> getUserOrAdmin(Player player, String[] args,
                                                  int nameArgPos, int adminArgsLength) {
         if (permissions.size() < 2)
-            throw new IllegalStateException("Ranking by user or admin requires at"
+            throw new IllegalArgumentException("Ranking by user or admin requires at"
                     + " least two different permissions");
         String requiredPermission = args.length == adminArgsLength
                 ? permissions.get(0) : permissions.get(1);

@@ -1,6 +1,5 @@
 package com.redcreator37.playermanagement.DataModels;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -131,15 +130,34 @@ public class ServerPlayer {
         return this.tag.getUsername();
     }
 
-    /**
-     * Provides hash code functionality
-     *
-     * @return the hash code for this ServerPlayer instance
-     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof ServerPlayer))
+            return false;
+        ServerPlayer p = (ServerPlayer) obj;
+        return p.id == this.id
+                && p.tag.equals(this.tag)
+                && p.name.equals(this.name)
+                && p.joinDate.equals(this.joinDate)
+                && p.job.equals(this.job)
+                && p.company.equals(this.company)
+                && p.notes.equals(this.notes)
+                && p.punishments == this.punishments;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getUuid(), getName(),
-                getJoinDate(), getJob(), getCompany(), getNotes());
+        int c = Integer.hashCode(this.id);
+        c = 31 * c + this.tag.hashCode();
+        c = 31 * c + this.name.hashCode();
+        c = 31 * c + this.joinDate.hashCode();
+        c = 31 * c + this.job.hashCode();
+        c = 31 * c + this.company.hashCode();
+        c = 31 * c + this.notes.hashCode();
+        c = 31 * c + Integer.hashCode(this.punishments);
+        return c;
     }
 
 }

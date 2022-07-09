@@ -27,6 +27,7 @@ public final class PlayerRoutines {
      * Non-instantiable
      */
     private PlayerRoutines() {
+        throw new AssertionError();
     }
 
     /**

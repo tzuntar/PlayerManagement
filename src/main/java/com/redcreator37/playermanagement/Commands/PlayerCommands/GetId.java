@@ -7,6 +7,7 @@ import com.redcreator37.playermanagement.IdHandling.PlayerCard;
 import com.redcreator37.playermanagement.Localization;
 import com.redcreator37.playermanagement.PlayerManagement;
 import com.redcreator37.playermanagement.PlayerRoutines;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 /**
  * Gives the player a new ID card or displays the data for another
- * player if their name was specified and the command executor
+ * player if that player's name was specified and the command executor
  * has sufficient permissions
  */
 public class GetId extends PlayerCommand {
@@ -59,8 +60,13 @@ public class GetId extends PlayerCommand {
                 return;
             }
 
+            EconomyResponse trans = PlayerManagement.eco.withdrawPlayer(player, cardPrice);
+            if (trans.type != EconomyResponse.ResponseType.SUCCESS) {
+                player.sendMessage(PlayerManagement.prefs.prefix
+                        + MessageFormat.format(Localization.lc("transaction-failed"), trans.errorMessage));
+                return;
+            }
             PlayerCard.giveNewCard(player, target);
-            PlayerManagement.eco.withdrawPlayer(player, cardPrice);
             player.sendMessage(PlayerManagement.prefs.prefix
                     + MessageFormat.format(Localization.lc("bought-new-id"), cardPrice));
             return;

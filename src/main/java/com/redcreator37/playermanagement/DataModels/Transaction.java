@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -142,15 +141,30 @@ public class Transaction {
                 + " | §1§l" + formattedAmount + "\n";
     }
 
-    /**
-     * Provides hash code functionality
-     *
-     * @return the hash code for this Transaction instance
-     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Transaction))
+            return false;
+        Transaction t = (Transaction) obj;
+        return t.id == this.id
+                && t.companyId == this.companyId
+                && t.direction.equals(this.direction)
+                && t.title.equals(this.title)
+                && t.description.equals(this.description)
+                && t.amount.equals(this.amount);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getCompanyId(), getDirection(),
-                getTitle(), getDescription(), getAmount());
+        int c = Integer.hashCode(this.id);
+        c = 31 * c + Integer.hashCode(companyId);
+        c = 31 * c + direction.hashCode();
+        c = 31 * c + title.hashCode();
+        c = 31 * c + description.hashCode();
+        c = 31 * c + amount.hashCode();
+        return c;
     }
 
 }

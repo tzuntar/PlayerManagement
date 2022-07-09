@@ -4,12 +4,8 @@ import com.redcreator37.playermanagement.DataModels.Company;
 import com.redcreator37.playermanagement.DataModels.PlayerTag;
 import org.bukkit.Bukkit;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -121,14 +117,14 @@ public class CompanyDb extends SharedDb<Company, Map<String, Company>> {
         while (set.next()) {
             UUID uuid = UUID.fromString(set.getString("owner"));
             PlayerTag ownerTag = new PlayerTag(Bukkit.getOfflinePlayer(uuid).getName(), uuid);
-            Company c = new Company(set.getInt("id"),
+            Company c = new Company.Builder(set.getInt("id"),
                     set.getString("name"),
-                    set.getString("description"),
-                    set.getString("money"),
-                    set.getInt("employees"),
-                    ownerTag,
-                    set.getString("established"),
-                    set.getString("paycheck"));
+                    set.getString("established"))
+                    .withDescription(set.getString("description"))
+                    .withBalance(new BigDecimal(set.getString("money")))
+                    .withEmployees(set.getInt("employees"))
+                    .withOwner(ownerTag)
+                    .withWage(new BigDecimal(set.getString("paycheck"))).build();
             companyMap.put(c.toString(), c);
         }
         set.close();
